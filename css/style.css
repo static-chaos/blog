@@ -1,1 +1,28 @@
+/* Style for the header */
+header {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
 
+/* Style for the main content */
+main {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+/* Style for article */
+article {
+  margin: 20px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for paragraphs */
+p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
