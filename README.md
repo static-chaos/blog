@@ -31,7 +31,7 @@
 
     <section id="about">
       <h2>About Me</h2>
-      <p>Hello! I’m a beginner blogger using GitHub Pages.</p>
+      <p>Hello! </p>
     </section>
   </main>
 
