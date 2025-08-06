@@ -1,4 +1,4 @@
-<Tentativebutthoughtful >
+<Tentativebutthoughtful>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -11,7 +11,7 @@
 </head>
 <body>
   <header>
-    <h1>Welcome to My Blog</h1>
+    <h1>A Space to express,intertwine and simply exist</h1>
     <nav>
       <a href="index.html">Home</a>
       <a href="#posts">Posts</a>
