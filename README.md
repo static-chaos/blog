@@ -11,11 +11,12 @@
 </head>
 <body>
   <header>
-    <h1>A Space to express,intertwine and simply exist</h1>
+    <h1>A space to express,intertwine and simply exist</h1>
     <nav>
       <a href="index.html">Home</a>
       <a href="#posts">Posts</a>
       <a href="#about">About</a>
+      <a href="#recipe">Recipe</a>
     </nav>
   </header>
 
