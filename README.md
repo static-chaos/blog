@@ -24,7 +24,7 @@
     <section id="posts">
       <h2>Latest Posts</h2>
       <ul>
-        <li><strong>From the Scrubs to the Soul</strong></li>
+        <li><a href="post1.html><strong>From the Scrubs to the Soul</strong></li>
         <li><strong>Another Blog Post</strong> - Coming Soon!</li>
       </ul>
     </section>
