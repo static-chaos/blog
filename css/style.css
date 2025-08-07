@@ -104,7 +104,7 @@ section {
   background-color: #f1f8e9;
 }
 
-#pictures {
+#pictures .picture-wall {
   background-image: url('https://raw.githubusercontent.com/static-chaos/blog/refs/heads/main/images/brick1.jpg');
   background-size: cover;
   background-position: center;
@@ -352,6 +352,7 @@ nav a.active {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
