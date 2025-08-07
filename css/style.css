@@ -50,6 +50,24 @@ header img {
   opacity: 0.6; /* Optional: Add opacity to make the text more readable */
 }
 
+/* Section Styling */
+section {
+  margin-bottom: 40px; /* Adds space between each section */
+  padding: 20px; /* Optional: Add some internal padding if needed */
+}
+
+/* Example for Targeting Specific Sections by ID */
+#home {
+  background-color: #e0f7fa; /* Optional background for the Home section */
+}
+
+#posts {
+  background-color: #fff3e0; /* Optional background for the Posts section */
+}
+
+#recipes {
+  background-color: #f1f8e9; /* Optional background for the Recipes section */
+}
 
 /* Main Content Styles */
 main {
@@ -152,5 +170,6 @@ footer {
     font-size: 1rem;
   }
 }
+
 
 
