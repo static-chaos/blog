@@ -340,8 +340,8 @@ nav a.active {
 
 /* Image Styles */
 .picture-gallery img {
-  width: 250px; /* Adjust width for the images */
-  height: 250px; /* Fixed height */
+  width: 50px; /* Adjust width for the images */
+  height: 50px; /* Fixed height */
   object-fit: cover; /* Maintain aspect ratio */
   border-radius: 8px; /* Rounded corners */
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animation */
@@ -353,6 +353,7 @@ nav a.active {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
