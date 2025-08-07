@@ -1,28 +1,243 @@
-/* Style for the header */
+/* Global Reset: Remove default margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header with Background Image and Overlay Text */
 header {
-  background-color: #333;
-  color: white;
+  position: relative;
+  width: 100%;
+  height: 300px; /* You can adjust the height as per your preference */
+  background-image: url('images/header.jpg'); /* Replace with your image path */
+  background-size: cover;
+  background-position: center;
   text-align: center;
+  color: white;
   padding: 20px;
 }
 
-/* Style for the main content */
+/* Title and Subtitle in Header */
+header h1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3em; /* Adjust for size */
+  margin: 0;
+}
+
+header p {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5em; /* Adjust for size */
+  margin: 0;
+}
+
+/* Main Content Area */
 main {
   padding: 20px;
-  background-color: #f9f9f9;
 }
 
-/* Style for article */
-article {
-  margin: 20px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+/* Styling for Posts Section */
+section#posts {
+  margin-top: 40px;
 }
 
-/* Style for paragraphs */
-p {
+section#posts h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+}
+
+.post-preview {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.post-preview a {
+  font-size: 1.5em;
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.post-preview a:hover {
+  text-decoration: underline;
+}
+
+.post-preview p {
   font-size: 1.2rem;
   line-height: 1.6;
 }
+
+.post-preview span {
+  color: #0366d6;
+  font-weight: bold;
+}
+
+/* Styling for About Section */
+#about {
+  background-color: white;
+  padding: 20px;
+  margin-top: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#about h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+/* Recipe Section Styling */
+#recipe {
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-top: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#recipe h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+#recipe h3 {
+  font-size: 1.8em;
+  margin-top: 20px;
+}
+
+#recipe p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+/* Pictures Section Styling */
+#pictures {
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-top: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#pictures h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+#pictures h3 {
+  font-size: 1.8em;
+  margin-top: 20px;
+}
+
+#pictures div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+#pictures img {
+  width: 100%;
+  height: auto;
+  max-width: 400px; /* You can adjust the image width */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#pictures p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Footer Styling */
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  /* Adjust header image and text for smaller screens */
+  header {
+    height: 250px;
+  }
+
+  header h1 {
+    font-size: 2em;
+  }
+
+  header p {
+    font-size: 1.2em;
+  }
+
+  /* Make the recipe and picture sections fit well on smaller screens */
+  #recipe, #pictures {
+    padding: 15px;
+  }
+
+  #recipe h2, #pictures h2 {
+    font-size: 1.8em;
+  }
+
+  #recipe h3, #pictures h3 {
+    font-size: 1.5em;
+  }
+
+  /* Adjust image layout for smaller screens */
+  #pictures div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #pictures img {
+    max-width: 90%; /* Make images responsive */
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    height: 200px;
+  }
+
+  header h1 {
+    font-size: 1.8em;
+  }
+
+  header p {
+    font-size: 1em;
+  }
+
+  .post-preview a {
+    font-size: 1.2em;
+  }
+
+  /* Make the text more readable on small screens */
+  p {
+    font-size: 1rem;
+  }
+}
+
+
