@@ -12,6 +12,7 @@ body {
   line-height: 1.6;
   margin: 0;
   padding: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/solid-black-20.png'); /* Subtle noise texture */
 }
 
 /* Header Styles */
@@ -31,12 +32,14 @@ header h1 {
   font-size: 3rem;
   margin-bottom: 10px;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+  letter-spacing: 1px;
 }
 
 header p {
   font-size: 1.2rem;
   font-style: italic;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
 }
 
 header img {
@@ -54,6 +57,7 @@ header img {
 nav {
   background-color: #333; /* Dark background for navigation */
   padding: 15px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Soft shadow to add depth */
 }
 
 nav a {
@@ -61,18 +65,21 @@ nav a {
   text-decoration: none;
   padding: 10px 20px;
   font-size: 1.1rem;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
 
 nav a:hover {
   background-color: #f1c6b8; /* Soft peach hover effect */
   color: #333; /* Dark text on hover */
+  transform: scale(1.05); /* Slightly enlarge the link on hover */
 }
 
 /* Section Styling */
 section {
   margin-bottom: 40px;
   padding: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow around sections */
 }
 
 #home {
@@ -110,9 +117,9 @@ main {
   background-color: white;
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 300px;
   display: flex;
   flex-direction: column;
@@ -123,7 +130,7 @@ main {
 
 .post-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Slightly stronger hover shadow */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2); /* Stronger hover shadow */
 }
 
 .post-image {
@@ -138,12 +145,14 @@ main {
   color: #00695c; /* Muted teal for titles */
   font-size: 1.5em;
   margin-top: 10px;
+  letter-spacing: 0.5px;
 }
 
 .post-card p {
   color: #555;
   font-size: 1em;
   margin-top: 10px;
+  line-height: 1.4; /* More space for readability */
 }
 
 /* Footer Styles */
@@ -155,6 +164,7 @@ footer {
   position: relative;
   bottom: 0;
   width: 100%;
+  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.2); /* Soft shadow for footer */
 }
 
 /* Responsive Adjustments */
