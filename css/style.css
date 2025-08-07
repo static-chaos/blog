@@ -176,10 +176,12 @@ section {
   justify-content: center;
   gap: 20px;
   margin-top: 20px;
-  background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); /* Darker rustic wood texture */
-  background-size: cover;
-  background-position: center;
+  background-image: url('images/brick1.jpg'); /* Path to your uploaded image */
+  background-size: cover; /* Make sure the texture covers the whole wall */
+  background-position: center; /* Position it in the center */
+  background-repeat: no-repeat; /* Ensure the background doesn't repeat */
 }
+
 
 /* Picture Item Styles */
 .picture-item {
@@ -329,5 +331,6 @@ nav a.active {
     grid-template-columns: 1fr;
   }
 }
+
 
 
