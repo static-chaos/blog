@@ -4,43 +4,145 @@
   <meta charset="UTF-8" />
   <title>My GitHub Blog</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
-    header, footer { text-align: center; }
-    nav a { margin: 0 10px; text-decoration: none; color: #0366d6; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    header, footer {
+      text-align: center;
+    }
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #0366d6;
+    }
+    .post-preview {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .post-content {
+      display: none; /* Hide content by default */
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #ccc;
+    }
+    .recipe, .pictures {
+      margin-top: 40px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+    }
+    .recipe h3, .pictures h3 {
+      margin-top: 0;
+    }
+    .recipe img, .pictures img {
+      width: 100%;
+      height: auto;
+      max-width: 400px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>A space to express,intertwine and simply exist</h1>
+    <h1>A space to express, intertwine, and simply exist</h1>
     <nav>
       <a href="index.html">Home</a>
       <a href="#posts">Posts</a>
       <a href="#about">About</a>
       <a href="#recipe">Recipe</a>
+      <a href="#pictures">Pictures</a>
     </nav>
   </header>
 
-   <main>
-     <!-- Posts Section -->
+  <main>
+    <!-- Posts Section -->
     <section id="posts">
       <h2>Latest Posts</h2>
-      <ul>
-        <li><a href="post1.html"><strong>From the Scrubs to the Soul</strong></a></li>
-        <li><strong>Another Blog Post</strong> - Coming Soon!</li>
-      </ul>
+
+      <!-- Post Preview 1 -->
+      <div class="post-preview" onclick="togglePost('post1')">
+        <h3>From the Scrubs to the Soul</h3>
+        <p>This is a short preview of the blog post content... <span style="color: #0366d6;">Read more</span></p>
+        <div class="post-content" id="post1">
+          <p>This is the full content of the blog post, where I share my experiences, thoughts, and stories... [full content here]</p>
+        </div>
+      </div>
+
+      <!-- Post Preview 2 -->
+      <div class="post-preview" onclick="togglePost('post2')">
+        <h3>Another Blog Post</h3>
+        <p>This is another preview. The full post is coming soon. <span style="color: #0366d6;">Read more</span></p>
+        <div class="post-content" id="post2">
+          <p>This is the full content of another blog post. More info and thoughts go here...</p>
+        </div>
+      </div>
+
     </section>
 
+    <!-- About Section -->
     <section id="about">
       <h2>About Me</h2>
-      <p>Hello! I’m still</p>
+      <p>Hello! I'm [Your Name], and welcome to my blog!</p>
     </section>
+
+    <!-- Recipe Section -->
+    <section id="recipe" class="recipe">
+      <h2>Recipe of the Week</h2>
+      <h3>Spaghetti Aglio e Olio</h3>
+      <p>This is a simple and delicious recipe for Spaghetti Aglio e Olio. It's quick to prepare and full of flavor.</p>
+      <h4>Ingredients:</h4>
+      <ul>
+        <li>Spaghetti</li>
+        <li>Olive oil</li>
+        <li>Garlic (sliced)</li>
+        <li>Chili flakes</li>
+        <li>Parsley</li>
+        <li>Parmesan (optional)</li>
+      </ul>
+      <h4>Instructions:</h4>
+      <p>1. Boil the spaghetti in salted water until al dente.</p>
+      <p>2. In a pan, heat olive oil and sauté the garlic slices until golden brown.</p>
+      <p>3. Add chili flakes and cooked spaghetti to the pan, toss everything together.</p>
+      <p>4. Garnish with parsley and Parmesan. Enjoy!</p>
+    </section>
+
+    <!-- Pictures Section -->
+    <section id="pictures" class="pictures">
+      <h2>Photo Gallery</h2>
+      <h3>My Travels</h3>
+      <div>
+        <img src="https://via.placeholder.com/400" alt="Travel Image 1" />
+        <img src="https://via.placeholder.com/400" alt="Travel Image 2" />
+        <img src="https://via.placeholder.com/400" alt="Travel Image 3" />
+      </div>
+      <p>These are just a few snapshots from my recent travels. I love capturing the beauty around me!</p>
+    </section>
+
   </main>
 
   <footer>
     <p>&copy; 2025 My GitHub Blog</p>
   </footer>
+
+  <script>
+    // Function to toggle the visibility of the full post
+    function togglePost(postId) {
+      const postContent = document.getElementById(postId);
+      if (postContent.style.display === "none" || postContent.style.display === "") {
+        postContent.style.display = "block";
+      } else {
+        postContent.style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>
+
 
 
 
