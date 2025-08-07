@@ -105,7 +105,7 @@ section {
 }
 
 #pictures {
-  background-image: url('images/brick1.jpg');
+  background-image: url('https://github.com/static-chaos/blog/blob/9d48e99df62b5df036f0a580f0a7abca7a59814b/images/brick1.jpg');
   background-size: cover;
   background-position: center;
   padding: 40px 20px;
@@ -359,6 +359,7 @@ nav a.active {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
