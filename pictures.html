@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pictures - Wandering Minds</title>
+  <!-- Link to your external CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>A space to express, intertwine, and simply exist</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="posts.html">Posts</a>
+      <a href="#about">About</a>
+      <a href="recipe.html">Recipe</a>
+      <a href="pictures.html" class="active">Pictures</a> <!-- Highlighted for active page -->
+    </nav>
+  </header>
+
+  <main>
+    <section id="pictures">
+      <h2>Picture Wall</h2>
+      <div class="picture-wall">
+        <!-- Picture Item 1 -->
+        <div class="picture-item" onclick="showPicture('img1', 'A beautiful sunset over the mountains.')">
+          <img src="images/image1.jpg" alt="Sunset" id="img1" class="preview-img">
+          <p class="caption">Sunset</p>
+        </div>
+        <!-- Picture Item 2 -->
+        <div class="picture-item" onclick="showPicture('img2', 'A tranquil beach at dawn.')">
+          <img src="images/image2.jpg" alt="Beach" id="img2" class="preview-img">
+          <p class="caption">Beach</p>
+        </div>
+        <!-- More Picture Items... -->
+      </div>
+
+      <!-- Lightbox Modal -->
+      <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+          <img id="lightbox-img" src="" alt="Full view" class="full-img">
+          <p id="story" class="story-text"></p>
+          <button class="close-btn" onclick="closeLightbox()">Close</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Link to your external JS for picture interaction -->
+  <script src="js/script.js"></script>
+</body>
+</html>
