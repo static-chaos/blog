@@ -159,46 +159,63 @@ section {
   line-height: 1.4; /* More space for readability */
 }
 
-/* Picture Wall Grid */
+/* Picture Wall */
 .picture-wall {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust grid for pictures */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
   margin-top: 20px;
 }
 
 .picture-item {
+  position: relative;
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
-  position: relative;
   cursor: pointer;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  width: 250px;
+  height: 300px;
+  margin: 10px;
+  transform-origin: center;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Random rotation and vertical offset for a more natural "wall" look */
+.picture-item:nth-child(odd) {
+  transform: rotate(-3deg) translateY(10px); /* Rotate and add slight vertical offset */
+}
+
+.picture-item:nth-child(even) {
+  transform: rotate(5deg) translateY(-10px); /* Rotate and add slight vertical offset */
 }
 
 .picture-item:hover {
-  transform: translateY(-10px);
-  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-15px) scale(1.05); /* Hover effect */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Image Preview Styling */
 .preview-img {
   width: 100%;
-  height: 200px; /* Adjust height of images in the grid */
+  height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease-in-out;
 }
 
+/* Slight zoom effect on hover */
 .picture-item:hover .preview-img {
-  transform: scale(1.1); /* Slight zoom effect on hover */
+  transform: scale(1.1);
 }
 
-/* Caption Below Image */
+/* Caption Styling */
 .caption {
   font-size: 1.1rem;
   padding: 10px;
   color: #333;
+  text-align: center;
 }
 
 /* Lightbox Modal */
@@ -259,6 +276,7 @@ nav a.active {
   font-weight: bold;
 }
 
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .post-grid {
@@ -279,3 +297,4 @@ nav a.active {
     grid-template-columns: 1fr;
   }
 }
+
