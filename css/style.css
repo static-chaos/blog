@@ -1,3 +1,13 @@
+/* Define CSS Variables at the start */
+:root {
+  --primary-color: #00695c;  /* Darker, muted teal */
+  --secondary-color: #333;   /* Dark charcoal for text */
+  --hover-color: #f1c6b8;    /* Soft peach hover color */
+  --background-color: #fafafa;  /* Soft off-white background */
+  --button-color: #004d40;    /* Dark teal for buttons */
+  --header-text-color: white;
+}
+
 /* Global Styles */
 * {
   margin: 0;
@@ -7,23 +17,23 @@
 
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #fafafa; /* Soft off-white background */
-  color: #333; /* Dark charcoal for text */
+  background-color: var(--background-color);  /* Using variable */
+  color: var(--secondary-color);  /* Using variable */
   line-height: 1.6;
   margin: 0;
   padding: 0;
-  background-image: url('https://www.transparenttextures.com/patterns/solid-black-20.png'); /* Subtle noise texture */
+  background-image: url('https://www.transparenttextures.com/patterns/solid-black-20.png');
 }
 
 /* Header Styles */
 header {
   position: relative;
-  background-color: #00695c; /* Darker, muted teal */
-  color: white;
+  background-color: var(--primary-color);  /* Using variable */
+  color: var(--header-text-color);  /* Using variable */
   text-align: center;
   padding: 60px 20px;
-  border-bottom: 3px solid #333; /* Slight contrast line under header */
-  background-image: linear-gradient(135deg, rgba(0, 105, 92, 0.8), rgba(0, 105, 92, 0.5)), url('https://www.transparenttextures.com/patterns/diagonal-stripes.png'); /* Gradient + pattern */
+  border-bottom: 3px solid var(--secondary-color);  /* Using variable */
+  background-image: linear-gradient(135deg, rgba(0, 105, 92, 0.8), rgba(0, 105, 92, 0.5)), url('https://www.transparenttextures.com/patterns/diagonal-stripes.png');
   background-size: cover;
   background-position: center;
 }
@@ -55,13 +65,13 @@ header img {
 
 /* Navigation Bar */
 nav {
-  background-color: #333; /* Dark background for navigation */
+  background-color: var(--secondary-color);  /* Using variable */
   padding: 15px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Soft shadow to add depth */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 nav a {
-  color: white;
+  color: var(--header-text-color);  /* Using variable */
   text-decoration: none;
   padding: 10px 20px;
   font-size: 1.1rem;
@@ -69,9 +79,9 @@ nav a {
 }
 
 nav a:hover {
-  background-color: #f1c6b8; /* Soft peach hover effect */
-  color: #333; /* Dark text on hover */
-  transform: scale(1.05); /* Slightly enlarge the link on hover */
+  background-color: var(--hover-color);  /* Using variable */
+  color: var(--secondary-color);  /* Using variable */
+  transform: scale(1.05);
 }
 
 /* Section Styling */
@@ -79,24 +89,24 @@ section {
   margin-bottom: 40px;
   padding: 20px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow around sections */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #home {
-  background-color: #e0f7fa; /* Soft pastel blue */
+  background-color: #e0f7fa;
 }
 
 #posts {
-  background-color: #fff3e0; /* Soft pastel peach */
+  background-color: #fff3e0;
 }
 
 #recipes {
-  background-color: #f1f8e9; /* Soft greenish */
+  background-color: #f1f8e9;
 }
 
 #pictures {
-  background-image: url('images/brick1.jpg'); /* Path to your uploaded brick texture */
-  background-size: cover; /* Ensure the texture covers the whole background */
+  background-image: url('images/brick1.jpg');
+  background-size: cover;
   background-position: center;
   padding: 40px 20px;
   text-align: center;
@@ -104,16 +114,17 @@ section {
 
 /* Adjust header color for the pictures section */
 #pictures header {
-  background-color: #4e3b31; /* Muted, neutral brown to complement the wood */
-  background-image: none; /* Remove previous background pattern */
-  color: white; /* Text color for the header */
+  background-color: #4e3b31;
+  background-image: none;
+  color: var(--header-text-color);  /* Using variable */
 }
 
 #pictures h2 {
   font-size: 2.5rem;
-  color: #333;
+  color: var(--secondary-color);  /* Using variable */
   margin-bottom: 20px;
 }
+
 
 /* Post Grid Styles (unchanged) */
 .post-grid {
@@ -195,7 +206,6 @@ section {
   height: 300px;
   margin: 10px;
   transform-origin: center;
-  transition: all 0.3s ease-in-out;
 }
 
 /* Random rotation and vertical offset for a more natural "wall" look */
@@ -299,8 +309,10 @@ nav a.active {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 
-  .picture-wall {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+ .picture-wall {
+    display: flex;
+    justify-content: center; /* Center images on smaller screens */
+    gap: 20px;
   }
 }
 
@@ -315,13 +327,7 @@ nav a.active {
 }
 
 /* Picture Gallery Styles */
-#pictures {
-  background-image: url('images/brick1.jpg'); /* Path to your uploaded brick texture */
-  background-size: cover;
-  background-position: center;
-  padding: 40px 20px;
-  text-align: center;
-}
+
 
 #pictures h2 {
   font-size: 2.5rem;
@@ -353,6 +359,7 @@ nav a.active {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
