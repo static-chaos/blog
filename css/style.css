@@ -233,13 +233,35 @@ section {
   text-align: center;
 }
 
-/* Lightbox Modal (continued) */
+/* Lightbox Modal */
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.lightbox-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 80%;
+  text-align: center;
+}
+
 .full-img {
   width: 100%;
   max-height: 400px;
   object-fit: contain;
   border-radius: 8px;
 }
+
 
 .story-text {
   margin-top: 20px;
@@ -291,3 +313,4 @@ nav a.active {
     grid-template-columns: 1fr;
   }
 }
+
