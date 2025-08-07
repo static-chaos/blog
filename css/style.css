@@ -314,3 +314,52 @@ nav a.active {
   }
 }
 
+/* Picture Gallery Styles */
+#pictures {
+  background-image: url('images/brick1.jpg'); /* Path to your uploaded brick texture */
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+#pictures h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* The Gallery of Images */
+.picture-gallery {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Image Styles */
+.picture-gallery img {
+  width: 250px; /* Set width for images */
+  height: 250px; /* Set fixed height */
+  object-fit: cover; /* Maintain aspect ratio while filling the box */
+  border-radius: 8px; /* Rounded corners */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth animation */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Light shadow */
+}
+
+/* Hover Effect */
+.picture-gallery img:hover {
+  transform: scale(1.05); /* Slight zoom effect */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+}
+
+/* Caption for the gallery section */
+#pictures p {
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 20px;
+}
+
+
+
