@@ -42,7 +42,7 @@ header img {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1; /* Ensure image stays behind text */
+  z-index: 0; /* Ensure image stays behind text */
 }
 
 /* Main Content Styles */
@@ -146,3 +146,4 @@ footer {
     font-size: 1rem;
   }
 }
+
