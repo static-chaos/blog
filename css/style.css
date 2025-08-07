@@ -1,28 +1,148 @@
-/* Style for the header */
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header Styles */
 header {
+  position: relative;
   background-color: #333;
   color: white;
   text-align: center;
-  padding: 20px;
+  padding: 40px;
 }
 
-/* Style for the main content */
+header h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+header p {
+  font-size: 1.2rem;
+  font-style: italic;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+header img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1; /* Ensure image stays behind text */
+}
+
+/* Main Content Styles */
 main {
-  padding: 20px;
-  background-color: #f9f9f9;
+  padding: 40px;
+  background-color: white;
 }
 
-/* Style for article */
+/* Article Styles */
 article {
-  margin: 20px;
-  padding: 20px;
   background-color: white;
+  padding: 30px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+article h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+article p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* Link Styles */
+a {
+  text-decoration: none;
+  color: #0366d6;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #024c8c;
+}
+
+/* Sidebar or Post Previews */
+.post-preview {
+  padding: 20px;
+  border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  background-color: #fff;
 }
 
-/* Style for paragraphs */
-p {
-  font-size: 1.2rem;
-  line-height: 1.6;
+.post-preview h3 {
+  font-size: 1.8rem;
+  color: #0366d6;
+}
+
+.post-preview p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Footer Styles */
+footer {
+  text-align: center;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header {
+    padding: 20px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  article {
+    padding: 15px;
+  }
+
+  article h2 {
+    font-size: 2rem;
+  }
+
+  .post-preview {
+    padding: 15px;
+  }
+
+  .post-preview h3 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
 }
