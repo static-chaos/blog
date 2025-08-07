@@ -332,19 +332,19 @@ nav a.active {
 /* The Gallery of Images */
 .picture-gallery {
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+  justify-content: center; /* Center the images horizontally */
+  gap: 20px; /* Space between images */
+  flex-wrap: wrap; /* Allow images to wrap onto the next line if needed */
   margin-top: 20px;
 }
 
 /* Image Styles */
 .picture-gallery img {
-  width: 250px; /* Set width for images */
-  height: 250px; /* Set fixed height */
-  object-fit: cover; /* Maintain aspect ratio while filling the box */
+  width: 250px; /* Adjust width for the images */
+  height: 250px; /* Fixed height */
+  object-fit: cover; /* Maintain aspect ratio */
   border-radius: 8px; /* Rounded corners */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth animation */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animation */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Light shadow */
 }
 
@@ -354,12 +354,6 @@ nav a.active {
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
 
-/* Caption for the gallery section */
-#pictures p {
-  font-size: 1.2rem;
-  color: #333;
-  margin-top: 20px;
-}
 
 
 
