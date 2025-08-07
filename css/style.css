@@ -110,6 +110,8 @@ section {
   background-position: center;
   padding: 40px 20px;
   text-align: center;
+  min-height: 100vh; /* Ensures the background covers the whole screen */
+  margin-bottom: 0; /* Ensure no extra space after the section */
 }
 
 /* Adjust header color for the pictures section */
@@ -352,6 +354,7 @@ nav a.active {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
