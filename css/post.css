@@ -18,7 +18,7 @@
   flex-direction: column;
   overflow: hidden;
   transition: transform 0.3s ease; /* Smooth card scaling effect */
-   height: 400px; /* Fixed height for the card */
+  height: 400px; /* Fixed height for the card */
 }
 
 /* Link behavior inside card */
@@ -47,6 +47,9 @@
   color: #00695c;
   font-size: 1.2em;
   letter-spacing: 0.5px;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Truncate long titles */
+  white-space: nowrap;
 }
 
 /* Description inside the card */
@@ -55,7 +58,10 @@
   color: #555;
   font-size: 1em;
   line-height: 1.4;
- flex-grow: 1; /* Allow the description to grow and take up remaining space */
+  flex-grow: 1; /* Allow the description to grow and take up remaining space */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Truncate long descriptions */
+  white-space: nowrap; /* Ensure the text doesn't wrap */
 }
 
 /* Hover effect on card */
@@ -82,6 +88,10 @@
   .post-image {
     flex: 0 0 50%; /* Reduce image height on smaller devices */
   }
+
+  .post-card p {
+    font-size: 0.95em; /* Make description text smaller on mobile */
+  }
 }
 
 @media (max-width: 600px) {
@@ -91,5 +101,13 @@
 
   .post-image {
     flex: 0 0 40%; /* Reduce the image height on very small devices */
+  }
+
+  .post-card h3 {
+    font-size: 1.1em; /* Slightly smaller font size for titles on small screens */
+  }
+
+  .post-card p {
+    font-size: 0.9em; /* Smaller font for the description on very small screens */
   }
 }
