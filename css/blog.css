@@ -67,3 +67,52 @@ blockquote, .quote {
   font-size: 1.08rem;
   font-family: 'Georgia', serif;
 }
+/* 1. Flex container for sidebar + content */
+.blog-wrapper {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 2. Sidebar styling */
+.blog-sidebar {
+  position: sticky;
+  top: 2rem;                /* sticks below header */
+  flex: 0 0 200px;          /* fixed width */
+  margin-top: 3rem;         /* matches .blog-main’s top margin */
+  padding: 1rem;
+}
+
+.blog-sidebar nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-sidebar nav a {
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: var(--primary-color);
+  transition: color 0.2s;
+}
+
+.blog-sidebar nav a:hover {
+  color: var(--hover-color);
+}
+
+/* 3. Adjust blog-main within the flex layout */
+.blog-wrapper .blog-main {
+  margin: 3rem 0 0 2rem;    /* remove auto centering, add left gutter */
+  max-width: 680px;         /* narrower since sidebar eats space */
+}
+@media (max-width: 900px) {
+  .blog-wrapper {
+    display: block;
+  }
+
+  .blog-sidebar {
+    display: none;
+  }
+
+  .blog-main {
+    margin: 3rem auto 0 auto;  /* re-center on small viewports */
+  }
+}
