@@ -278,7 +278,6 @@ section {
 
 /* Style for Close Button */
 .close-btn {
-  margin-top: 20px;
   background-color: #00695c;
   color: white;
   border: none;
@@ -287,7 +286,8 @@ section {
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s;
-  align-self: center;  /* Center the close button horizontally */
+  z-index: 2;  /* Ensure the close button stays above the arrows */
+  margin: 0 10px; /* Space from arrows */
 }
 
 /* Close Button Hover */
@@ -296,22 +296,21 @@ section {
 }
 
 /* Style for Lightbox Navigation Buttons (Previous and Next) */
-.caption-container {
+.caption-container-buttons {
   display: flex;              /* Use flexbox for layout */
   flex-direction: row;        /* Arrange buttons horizontally */
-  justify-content: center;    /* Center buttons horizontally */
-  gap: 15px;                  /* Space between buttons */
+  justify-content: space-between;  /* Space between the buttons */
   align-items: center;        /* Vertically align buttons */
-  position: absolute;         /* Position buttons inside the lightbox */
+  position: relative;         /* Position buttons inside the lightbox */
+  width: 100%;                /* Full width for the button row */
   bottom: 20px;               /* Position near the bottom of the lightbox */
-  left: 0;
-  right: 0;
   padding: 0 20px;            /* Add padding from the edges */
+  box-sizing: border-box;     /* Ensures proper padding calculations */
 }
 
 /* Style for Previous and Next buttons */
 .prev-btn, .next-btn {
-  background-color: transparent; 
+  background-color: transparent;
   color: #004d40;
   border: none;
   font-size: 2rem;            /* Larger font size for arrows */
@@ -322,6 +321,7 @@ section {
   width: 40px;   /* Set width and height for round buttons */
   height: 40px;
   display: inline-block;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
 /* Hover effect for arrows */
@@ -337,6 +337,15 @@ section {
 
 .next-btn::before {
   content: '→';              /* Right arrow */
+}
+
+/* Center close button in the middle of the row */
+.caption-container-buttons {
+  justify-content: space-between; /* Align arrows to left and right */
+}
+
+.caption-container-buttons .close-btn {
+  margin: 0 auto; /* Center the close button horizontally */
 }
 
 
@@ -399,6 +408,7 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
 
 
