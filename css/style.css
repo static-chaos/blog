@@ -80,6 +80,7 @@ nav a {
   font-size: 1.1rem;
   transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
+
 /* Active Navigation Link (Highlight "Pictures" in Nav) */
 nav a.active {
   color: #f1c6b8;
@@ -381,6 +382,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
