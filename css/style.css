@@ -250,16 +250,20 @@ section {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Adjust caption layout */
 .caption-container {
   width: 100%;
   margin-top: 15px;  /* Adds space between image and caption */
   display: flex;
   flex-direction: column; /* Stack caption and button vertically */
   align-items: center;    /* Center elements horizontally */
-  justify-content: center; /* Align them at the bottom */
+  justify-content: flex-start; /* Keep it at the top */
   text-align: center;     /* Center the text */
+  position: relative;
+  padding-bottom: 20px; /* Adds space for the buttons */
 }
 
+/* Style for the story/caption text */
 .story-text {
   margin-bottom: 10px;
   font-size: 1.2rem;
@@ -283,6 +287,7 @@ section {
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s;
+  align-self: center;  /* Center the close button horizontally */
 }
 
 /* Close Button Hover */
@@ -306,17 +311,20 @@ section {
 
 /* Style for Previous and Next buttons */
 .prev-btn, .next-btn {
-  background-color: #004d40;
-  color: white;
+  background-color: transparent; 
+  color: #004d40;
   border: none;
-  padding: 10px 20px;
-  font-size: 1.5rem;         /* Larger font size for arrows */
+  font-size: 2rem;            /* Larger font size for arrows */
   cursor: pointer;
-  border-radius: 50%;        /* Make buttons round */
+  border-radius: 50%;         /* Make buttons round */
   transition: background-color 0.3s;
-  display: inline-block;     /* Keep them inline */
+  padding: 10px;
+  width: 40px;   /* Set width and height for round buttons */
+  height: 40px;
+  display: inline-block;
 }
 
+/* Hover effect for arrows */
 .prev-btn:hover, .next-btn:hover {
   background-color: #00695c;
   transform: scale(1.1);      /* Slightly increase size on hover */
@@ -391,6 +399,7 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
 
 
