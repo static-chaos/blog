@@ -91,17 +91,25 @@
       </div>
 
       <!-- Lightbox Modal -->
-      <div id="lightbox" class="lightbox">
-        <div class="lightbox-content">
-          <img id="lightbox-img" src="" alt="Full view" class="full-img">
-          <div class="caption-container">
-            <p id="story" class="story-text"></p>
-            <button class="close-btn" onclick="closeLightbox()">Close</button>
-            <button class="prev-btn" onclick="showPrevPicture()">&larr;</button> <!-- Left arrow -->
-      <button class="next-btn" onclick="showNextPicture()">&rarr;</button> <!-- Right arrow -->
-          </div>
-        </div>
-      </div>
+<div id="lightbox" class="lightbox">
+  <div class="lightbox-content">
+    <img id="lightbox-img" src="" alt="Full view" class="full-img">
+    
+    <!-- Caption below image -->
+    <p id="story" class="story-text"></p>
+    
+    <!-- Button container for Close and Navigation -->
+    <div class="button-container">
+      <!-- Close Button -->
+      <button class="close-btn" onclick="closeLightbox()">Close</button>
+      
+      <!-- Navigation Arrows (Previous and Next) -->
+      <button class="prev-btn" onclick="showPrevPicture()">←</button>
+      <button class="next-btn" onclick="showNextPicture()">→</button>
+    </div>
+  </div>
+</div>
+
     </section>
   </main>
 
@@ -109,5 +117,6 @@
   <script src="js/script.js"></script>
 </body>
 </html>
+
 
 
