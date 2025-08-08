@@ -67,11 +67,6 @@ blockquote, .quote {
   font-size: 1.08rem;
   font-family: 'Georgia', serif;
 }
-/* 1. Flex container for sidebar + content */
-.blog-wrapper {
-  display: flex;
-  align-items: flex-start;
-}
 
 /* Sidebar container: dark grey background, white text */
 .blog-sidebar {
@@ -104,10 +99,7 @@ blockquote, .quote {
 }
 
 /* Adjust blog-main within the flex layout */
-.blog-wrapper .blog-main {
-  margin: 3rem 0 0 2rem;
-  max-width: 680px;
-}
+
 
 @media (max-width: 900px) {
   .blog-wrapper {
@@ -157,6 +149,28 @@ blockquote, .quote {
   .blog-sidebar {
     display: none;
   }
+}
+/* ── Center the post and carve space for sidebar ── */
+.blog-wrapper {
+  display: block;
+  position: relative;
+  padding-left: 220px;  /* sidebar width (200px) + 20px gutter */
+}
+
+/* ── Sidebar: sticky and flush to left edge ── */
+.blog-sidebar {
+  position: sticky;
+  top: 2rem;
+  width: 200px;
+  margin: 3rem 0 0 0;
+  padding: 1rem;
+  margin-left: -220px;  /* pulls it back to the viewport’s left */
+}
+
+/* ── Blog content: perfectly centered ── */
+.blog-main {
+  margin: 3rem auto;
+  max-width: 780px;
 }
 
  
