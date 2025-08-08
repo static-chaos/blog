@@ -168,7 +168,7 @@ blockquote, .quote {
 
 /* ── Blog content: perfectly centered ── */
 .blog-main {
-  margin: 1.5rem auto 0;  /* only 1.5rem above your post */
+  margin: 0 auto;
   max-width: 780px;
 }
 
