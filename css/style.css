@@ -92,7 +92,10 @@ nav a:hover {
   color: var(--secondary-color);  /* Using variable */
   transform: scale(1.05);
 }
-
+/* Optional: If your header height is small and content is pushing up the navbar */
+header {
+  padding: 30px 0;  /* Ensure enough space for navbar to stay visible */
+}
 /* Section Styling */
 section {
   margin-bottom: 40px;
@@ -382,6 +385,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
