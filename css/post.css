@@ -18,6 +18,7 @@
   flex-direction: column;
   overflow: hidden;
   transition: transform 0.3s ease; /* Smooth card scaling effect */
+   height: 400px; /* Fixed height for the card */
 }
 
 /* Link behavior inside card */
@@ -27,6 +28,7 @@
   height: 100%;
   color: inherit;
   text-decoration: none;
+  justify-content: space-between; /* Space out the image and text */
 }
 
 /* Image inside the card */
@@ -53,7 +55,7 @@
   color: #555;
   font-size: 1em;
   line-height: 1.4;
-  flex: 0 0 auto;
+ flex-grow: 1; /* Allow the description to grow and take up remaining space */
 }
 
 /* Hover effect on card */
