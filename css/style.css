@@ -132,7 +132,9 @@ section {
   color: var(--secondary-color);  /* Using variable */
   margin-bottom: 20px;
 }
-
+#pictures p {
+  margin-top: 20px;  /* Adds space above the <p> tag */
+}
 
 /* Post Grid Styles (unchanged) */
 .post-grid {
@@ -372,6 +374,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
