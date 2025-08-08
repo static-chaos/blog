@@ -22,7 +22,6 @@ body {
   line-height: 1.6;
   margin: 0;
   padding: 0;
-  background-image: url('https://www.transparenttextures.com/patterns/solid-black-20.png');
 }
 
 /* Header Styles */
@@ -374,6 +373,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
