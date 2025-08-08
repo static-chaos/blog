@@ -122,5 +122,41 @@ blockquote, .quote {
     margin: 3rem auto 0 auto;
   }
 }
+/*──────────────────────────────────────────────
+  Restore center alignment of .blog-main
+  by padding out space for the sticky sidebar
+──────────────────────────────────────────────*/
+.blog-wrapper {
+  display: block;            /* cancel flex so .blog-main can center */
+  position: relative;
+  padding-left: 220px;       /* sidebar width (200px) + 20px gutter */
+}
+
+/* keep the sidebar sticky in its own lane */
+.blog-sidebar {
+  position: sticky;
+  top: 2rem;
+  width: 200px;              /* must match padding-left minus gutter */
+  margin: 3rem 0 0 0;        /* align its top with your blog-main */
+  padding: 1rem;
+  flex: none;                /* override any residual flex rules */
+}
+
+/* recentre your post exactly like before */
+.blog-main {
+  margin: 3rem auto;         /* auto left/right re-centers it */
+  max-width: 780px;          /* your original width */
+}
+
+/* undo the gutter on small screens */
+@media (max-width: 900px) {
+  .blog-wrapper {
+    padding-left: 0;
+  }
+
+  .blog-sidebar {
+    display: none;
+  }
+}
 
  
