@@ -322,7 +322,17 @@ section {
   display: inline-block;
   flex-shrink: 0;
 }
-
+/* This is essential for the arrow to show up */
+.prev-btn::before {
+  content: '←';
+  color: inherit;        /* Uses parent color */
+  font-size: inherit;    /* Uses parent font size */
+}
+.next-btn::before {
+  content: '→';
+  color: inherit;
+  font-size: inherit;
+}
 .prev-btn:hover, .next-btn:hover {
   background-color: #00695c;
   transform: scale(1.1);
@@ -403,6 +413,7 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
 
 
