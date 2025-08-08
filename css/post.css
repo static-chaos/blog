@@ -1,10 +1,11 @@
-..post-grid {
+.post-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust 200px as needed */
   gap: 20px;
   margin-top: 20px;
 }
-post-card {
+
+.post-card {
   aspect-ratio: 1 / 1; /* Makes each card a square */
   background-color: white;
   border-radius: 8px;
@@ -13,40 +14,55 @@ post-card {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 15px;
+  padding: 0; /* remove padding for perfect square */
   text-align: center;
+  overflow: hidden;
 }
-.post-card p {
-  color: #555;
-  font-size: 1em;
-  margin-top: 10px;
-  line-height: 1.4;
-  flex-grow: 1;
-  margin-bottom: 20px;
+
+.post-card a {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
 }
+
 .post-image {
   width: 100%;
-  height: 100px; /* Or use aspect ratio for images too */
+  aspect-ratio: 1 / 1;        /* This makes the image square */
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  border-radius: 0;
+  flex-shrink: 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid #eee;
 }
+
+.post-card h3,
+.post-card p {
+  margin: 10px 10px 0 10px;
+  flex: 0 0 auto;
+}
+.post-card p {
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 1em;
+  line-height: 1.4;
+  flex-grow: 1;
+}
+
 .post-card h3 {
   color: #00695c;
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin-top: 10px;
   letter-spacing: 0.5px;
 }
+
 @media (max-width: 768px) {
   .post-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }
-@media (max-width: 480px) {
-  .post-grid {
-    grid-template-columns: 1fr;
-  }
-}
+
 @media (max-width: 600px) {
   .post-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
