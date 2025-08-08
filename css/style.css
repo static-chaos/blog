@@ -289,6 +289,25 @@ section {
   background-color: #004d40;
 }
 
+/* Style for Lightbox Navigation Buttons */
+.prev-btn, .next-btn {
+  background-color: #004d40;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  margin-top: 20px;  /* Space between buttons */
+  margin: 5px;
+}
+
+.prev-btn:hover, .next-btn:hover {
+  background-color: #00695c;
+}
+
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .post-grid {
@@ -348,4 +367,5 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
