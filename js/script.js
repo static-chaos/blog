@@ -1,34 +1,50 @@
-// Get all picture items and lightbox elements
-const pictureItems = document.querySelectorAll('.picture-item');
-const lightbox = document.querySelector('.lightbox');
-const lightboxContent = document.querySelector('.lightbox-content');
-const fullImage = document.querySelector('.full-img');
-const storyText = document.querySelector('.story-text');
-const closeButton = document.querySelector('.close-btn');
+<script>
+    // Sticky Navigation Bar and Active Link Highlighting
+    const navLinks = document.querySelectorAll('nav a');
 
-// Handle the click event on each picture item
-pictureItems.forEach(item => {
-  item.addEventListener('click', () => {
-    const imageSrc = item.querySelector('.preview-img').src; // Get the image source
-    const story = item.querySelector('.caption').innerHTML; // Get the caption/story
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.forEach(link => link.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
 
-    // Set the image source and story in the lightbox
-    fullImage.src = imageSrc;
-    storyText.innerHTML = story;
+    const currentPage = window.location.pathname;
+    navLinks.forEach(link => {
+      if (link.href.includes(currentPage)) {
+        link.classList.add('active');
+      }
+    });
 
-    // Show the lightbox
-    lightbox.style.display = 'flex';
-  });
-});
+    // Picture Lightbox Functionality
+    const pictureItems = document.querySelectorAll('.picture-item');
+    const lightbox = document.querySelector('.lightbox');
+    const lightboxContent = document.querySelector('.lightbox-content');
+    const fullImage = document.querySelector('.full-img');
+    const storyText = document.querySelector('.story-text');
+    const closeButton = document.querySelector('.close-btn');
 
-// Close the lightbox when the close button is clicked
-closeButton.addEventListener('click', () => {
-  lightbox.style.display = 'none'; // Hide the lightbox
-});
+    pictureItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const imageSrc = item.querySelector('.preview-img').src; // Get the image source
+        const story = item.querySelector('.caption').innerHTML; // Get the caption/story
 
-// Close the lightbox if clicked outside of the content
-lightbox.addEventListener('click', (e) => {
-  if (e.target === lightbox) {
-    lightbox.style.display = 'none'; // Hide the lightbox if clicking outside content
-  }
-});
+        fullImage.src = imageSrc;
+        storyText.innerHTML = story;
+
+        lightbox.style.display = 'flex'; // Show the lightbox
+      });
+    });
+
+    closeButton.addEventListener('click', () => {
+      lightbox.style.display = 'none'; // Close the lightbox
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.style.display = 'none'; // Close if clicked outside content
+      }
+    });
+  </script>
+</body>
+</html>
