@@ -33,6 +33,7 @@ function showPicture(index) {
   lightboxStory.innerHTML = story;  // Update the caption
 
   lightbox.style.display = 'flex'; // Show the lightbox
+  updateNavigationButtons();  // Make sure buttons are visible and correctly positioned
 }
 
 // Function to show the next image
@@ -53,6 +54,13 @@ function showPrevPicture() {
     currentIndex = imagesData.length - 1;  // Loop back to the last picture
   }
   showPicture(currentIndex);  // Display the previous picture
+}
+
+// Function to handle the navigation buttons visibility and position
+function updateNavigationButtons() {
+  // Make sure navigation buttons are visible when the lightbox is open
+  prevButton.style.display = 'inline-block';
+  nextButton.style.display = 'inline-block';
 }
 
 // Add event listeners for Next and Previous buttons
