@@ -85,3 +85,18 @@ lightbox.addEventListener('click', (e) => {
     lightbox.style.display = 'none';  // Close if clicked outside content
   }
 });
+// Parallax effect for picture wall images
+window.addEventListener('scroll', function() {
+  const images = document.querySelectorAll('.preview-img');
+  const winH = window.innerHeight;
+  images.forEach((img, idx) => {
+    const rect = img.getBoundingClientRect();
+    if (rect.top < winH && rect.bottom > 0) {
+      // Parallax offset: varies slightly per image for layered look
+      const offset = (rect.top - winH/2) * (0.055 + idx * 0.005);
+      img.style.transform = `scale(1.06) translateY(${offset}px)`;
+    } else {
+      img.style.transform = "scale(1)";
+    }
+  });
+});
