@@ -124,9 +124,10 @@ section {
   background-color: #e6e6fa;  /* Lavender */
   background-image: none;     /* Ensure no background image is applied here */
   color: var(--header-text-color);  /* Keep the text color as it is */
-  padding: 20px;
+  padding: 20px 20px 40px;  /* Adjust padding for better spacing */
   text-align: center;
-  border-bottom: none;  /* No border if needed */
+  border-bottom: none;  /* No border at the bottom */
+  margin-bottom: 0;      /* Remove any margin to keep it tight */
 }
 
 #pictures h2 {
@@ -377,6 +378,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
