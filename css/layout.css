@@ -23,32 +23,35 @@ header nav {
   justify-content: center;
   align-items: center;
   min-height: 60px;
-   position: sticky;
+  position: sticky;
   top: 0;
   z-index: 99; /* stay above other content */
 }
-}
 
+/* Adjust spacing between links */
 header nav a {
   color: var(--header-text-color);
   text-decoration: none;
   padding: 10px 20px;
   font-size: 1.1rem;
   transition: background-color 0.3s, color 0.3s, transform 0.3s;
-  margin: 0 15px;
+  margin: 0 25px; /* Increased margin for more space */
 }
 
+/* Active link style */
 header nav a.active {
   color: #f1c6b8;
   font-weight: bold;
 }
 
+/* Hover effect */
 header nav a:hover {
   background-color: var(--hover-color);
   color: var(--secondary-color);
-  transform: scale(1.05);
+  transform: scale(1.05); /* Slight zoom-in effect */
 }
 
+/* Styling the header section and ensuring better spacing on smaller devices */
 section {
   margin-bottom: 40px;
   padding: 20px;
@@ -64,14 +67,15 @@ footer {
   margin-top: 3rem;
 }
 
-/* Responsive navigation adjustments */
+/* Mobile responsiveness: Adjust navigation to column layout */
 @media (max-width: 768px) {
   header nav {
     flex-direction: column;
     align-items: center;
   }
   header nav a {
-    margin: 10px 0;
+    margin: 10px 0; /* Adjust margin for mobile devices */
+    font-size: 1rem; /* Slightly reduce font size for mobile */
   }
 }
 
