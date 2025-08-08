@@ -1,0 +1,25 @@
+/* CSS Variables and Global Styles */
+:root {
+  --primary-color: #00695c;
+  --secondary-color: #333;
+  --hover-color: #f1c6b8;
+  --background-color: #fafafa;
+  --button-color: #004d40;
+  --header-text-color: white;
+}
+
+/* Reset and Base Typography */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--background-color);
+  color: var(--secondary-color);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
