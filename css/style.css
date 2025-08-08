@@ -315,12 +315,14 @@ section {
   font-size: 2rem;
   cursor: pointer;
   border-radius: 50%;
-  transition: background-color 0.3s;
-  padding: 10px;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  flex-shrink: 0;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  padding: 0;              /* No padding! */
+  width: 44px;             /* Slightly larger for better shadow */
+  height: 44px;
+  display: flex;           /* Use flex to center arrow */
+  align-items: center;     /* Vertically center */
+  justify-content: center; /* Horizontally center */
+  box-shadow: 0 0 0 rgba(0,0,0,0); /* No shadow by default */
 }
 /* This is essential for the arrow to show up */
 .prev-btn::before {
@@ -334,7 +336,8 @@ section {
   font-size: inherit;
 }
 .prev-btn:hover, .next-btn:hover {
-  background-color: #00695c;
+ background-color: #00695c;
+  box-shadow: 0 0 8px 2px rgba(0,0,0,0.20); /* Centered shadow */
   transform: scale(1.1);
 }
 
@@ -413,6 +416,7 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
 
 
