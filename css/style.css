@@ -110,7 +110,7 @@ section {
   background-color: #f1f8e9;
 }
 
-#pictures .capturesque {
+#pictures .capturesque-section {
   background-color: #e6e6fa;    
   background-size: cover;
   background-position: center;
@@ -374,6 +374,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
