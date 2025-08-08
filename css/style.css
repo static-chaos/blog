@@ -71,8 +71,10 @@ nav {
   top: 0;              /* Stick to the top of the page */
   z-index: 1000;       /* Ensure it's on top of other content */
   width: 100%;
-  /* Add min-height or ensure no parent overflow */
-  min-height: 60px; /* Ensure nav has a height to stick */
+  display: flex;       /* Flexbox to align links */
+  justify-content: center; /* Horizontally center the links */
+  align-items: center; /* Vertically center if needed */
+  min-height: 60px;
 }
 
 /* Optional: Add this to ensure the page doesn't have elements above it */
@@ -86,6 +88,7 @@ nav a {
   padding: 10px 20px;
   font-size: 1.1rem;
   transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  margin: 0 15px;  /* Space between links */
 }
 
 /* Active Navigation Link (Highlight "Pictures" in Nav) */
@@ -398,6 +401,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
