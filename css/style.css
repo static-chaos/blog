@@ -263,13 +263,19 @@ section {
   background-color: white;
   padding: 20px;
   border-radius: 10px;
-  max-width: 80%;
+   max-width: 90%; /* Increased from 80% to give more room for larger images */
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  max-height: 90vh; /* Limit height to prevent overflow */
 }
 
 .full-img {
   width: 100%;
-  max-height: 400px;
+  max-width: 90%;
+  max-height: 80vh;
   object-fit: contain;
   border-radius: 8px;
 }
@@ -354,6 +360,7 @@ nav a.active {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
