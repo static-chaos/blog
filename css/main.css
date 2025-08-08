@@ -1,0 +1,12 @@
+/* Main modular import file for your new CSS structure.
+   Use this as your primary stylesheet instead of style.css.
+   You can link this in each HTML file, or link only the needed CSS files per page.
+*/
+
+/* You can use @import if you want (not the best for production performance): */
+/*
+@import url('base.css');
+@import url('layout.css');
+@import url('posts.css');
+@import url('gallery.css');
+*/
