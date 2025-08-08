@@ -297,15 +297,14 @@ section {
 
 /* Style for Lightbox Navigation Buttons (Previous and Next) */
 .caption-container-buttons {
-  display: flex;              /* Use flexbox for layout */
-  flex-direction: row;        /* Arrange buttons horizontally */
-  justify-content: space-between;  /* Space between the buttons */
-  align-items: center;        /* Vertically align buttons */
-  position: relative;         /* Position buttons inside the lightbox */
-  width: 100%;                /* Full width for the button row */
-  bottom: 20px;               /* Position near the bottom of the lightbox */
-  padding: 0 20px;            /* Add padding from the edges */
-  box-sizing: border-box;     /* Ensures proper padding calculations */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; /* Previous left, Close center, Next right */
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 /* Style for Previous and Next buttons */
@@ -313,39 +312,35 @@ section {
   background-color: transparent;
   color: #004d40;
   border: none;
-  font-size: 2rem;            /* Larger font size for arrows */
+  font-size: 2rem;
   cursor: pointer;
-  border-radius: 50%;         /* Make buttons round */
+  border-radius: 50%;
   transition: background-color 0.3s;
   padding: 10px;
-  width: 40px;   /* Set width and height for round buttons */
+  width: 40px;
   height: 40px;
   display: inline-block;
-  flex-shrink: 0; /* Prevent buttons from shrinking */
+  flex-shrink: 0;
 }
 
-/* Hover effect for arrows */
 .prev-btn:hover, .next-btn:hover {
   background-color: #00695c;
-  transform: scale(1.1);      /* Slightly increase size on hover */
+  transform: scale(1.1);
 }
 
-/* Add arrows as content */
-.prev-btn::before {
-  content: '←';              /* Left arrow */
-}
-
-.next-btn::before {
-  content: '→';              /* Right arrow */
-}
-
-/* Center close button in the middle of the row */
-.caption-container-buttons {
-  justify-content: space-between; /* Align arrows to left and right */
-}
-
-.caption-container-buttons .close-btn {
-  margin: 0 auto; /* Center the close button horizontally */
+/* Remove margin: 0 auto from .close-btn inside .caption-container-buttons */
+/* You can keep the general .close-btn styles, but don't center it with margin here */
+.close-btn {
+  background-color: #00695c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  z-index: 2;
+  margin: 0; /* Remove auto margin so flexbox can center it */
 }
 
 
@@ -408,6 +403,7 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
 
 
