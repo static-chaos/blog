@@ -111,7 +111,7 @@ section {
 }
 
 #pictures .picture-wall {
-  background-image: #f2f2f2; 
+  background-color: #f2f2f2; 
   background-size: cover;
   background-position: center;
   padding: 40px 20px;
@@ -240,7 +240,7 @@ section {
 .caption {
   font-size: 1.1rem;
   padding: 10px;
-  color: #white;
+  color: white;
   text-align: center;
 }
 
@@ -296,7 +296,7 @@ section {
   margin-bottom: 10px;
   font-size: 1.2rem;
   color: #333;
-  background-color: rgba(255, 255, 255, 0.8)  /* Optional dark background */
+  background-color: rgba(255, 255, 255, 0.8);  /* Optional dark background */
   padding: 15px;
   border-radius: 8px;
   max-width: 90%; /* Prevent caption overflow */
@@ -372,6 +372,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
