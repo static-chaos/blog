@@ -1,0 +1,78 @@
+/* Header, Nav, Footer, General Section Styling */
+
+/* Header Styles */
+header {
+  position: relative;
+  background-color: var(--primary-color);
+  color: var(--header-text-color);
+  text-align: center;
+  padding: 60px 20px;
+  border-bottom: 3px solid var(--secondary-color);
+  background-image: linear-gradient(135deg, rgba(0, 105, 92, 0.8), rgba(0, 105, 92, 0.5)), url('https://www.transparenttextures.com/patterns/diagonal-stripes.png');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Move the nav inside header */
+header nav {
+  background-color: var(--secondary-color);
+  padding: 15px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+}
+
+header nav a {
+  color: var(--header-text-color);
+  text-decoration: none;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  margin: 0 15px;
+}
+
+header nav a.active {
+  color: #f1c6b8;
+  font-weight: bold;
+}
+
+header nav a:hover {
+  background-color: var(--hover-color);
+  color: var(--secondary-color);
+  transform: scale(1.05);
+}
+
+section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  text-align: center;
+  padding: 1.2rem 0;
+  color: #999;
+  font-size: 0.97rem;
+  margin-top: 3rem;
+}
+
+/* Responsive navigation adjustments */
+@media (max-width: 768px) {
+  header nav {
+    flex-direction: column;
+    align-items: center;
+  }
+  header nav a {
+    margin: 10px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+}
