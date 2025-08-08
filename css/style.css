@@ -84,6 +84,12 @@ nav a:hover {
   transform: scale(1.05);
 }
 
+/* Active Navigation Link (Highlight "Pictures" in Nav) */
+nav a.active {
+  color: #f1c6b8;
+  font-weight: bold;
+}
+
 /* Section Styling */
 section {
   margin-bottom: 40px;
@@ -173,13 +179,6 @@ section {
   font-size: 1.5em;
   margin-top: 10px;
   letter-spacing: 0.5px;
-}
-
-.post-card p {
-  color: #555;
-  font-size: 1em;
-  margin-top: 10px;
-  line-height: 1.4; /* More space for readability */
 }
 
 /* Picture Wall */
@@ -322,11 +321,7 @@ section {
   background-color: #004d40;
 }
 
-/* Active Navigation Link (Highlight "Pictures" in Nav) */
-nav a.active {
-  color: #f1c6b8;
-  font-weight: bold;
-}
+
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
@@ -377,6 +372,7 @@ nav a.active {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
