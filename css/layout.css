@@ -1,6 +1,5 @@
 /* Header Styles */
 header {
-  position: relative;
   background-color: var(--primary-color);
   color: var(--header-text-color);
   text-align: center;
