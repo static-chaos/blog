@@ -71,6 +71,13 @@ nav {
   top: 0;              /* Stick to the top of the page */
   z-index: 1000;       /* Ensure it's on top of other content */
   width: 100%;
+  /* Add min-height or ensure no parent overflow */
+  min-height: 60px; /* Ensure nav has a height to stick */
+}
+
+/* Optional: Add this to ensure the page doesn't have elements above it */
+body {
+  position: relative;
 }
 
 nav a {
@@ -391,6 +398,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
