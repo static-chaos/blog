@@ -292,31 +292,43 @@ section {
 
 /* Style for Lightbox Navigation Buttons (Previous and Next) */
 .caption-container {
-  display: flex; /* Use flexbox to align buttons horizontally */
-  justify-content: center; /* Align buttons to the center */
-  gap: 15px; /* Space between buttons */
-  align-items: center; /* Vertically center buttons */
+  display: flex;              /* Use flexbox for layout */
+  flex-direction: row;        /* Arrange buttons horizontally */
+  justify-content: center;    /* Center buttons horizontally */
+  gap: 15px;                  /* Space between buttons */
+  align-items: center;        /* Vertically align buttons */
+  position: absolute;         /* Position buttons inside the lightbox */
+  bottom: 20px;               /* Position near the bottom of the lightbox */
+  left: 0;
+  right: 0;
+  padding: 0 20px;            /* Add padding from the edges */
 }
 
+/* Style for Previous and Next buttons */
 .prev-btn, .next-btn {
   background-color: #004d40;
   color: white;
   border: none;
   padding: 10px 20px;
-  font-size: 1.5rem;  /* Make arrow buttons larger */
+  font-size: 1.5rem;         /* Larger font size for arrows */
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 50%;        /* Make buttons round */
   transition: background-color 0.3s;
-  display: inline-block;
+  display: inline-block;     /* Keep them inline */
 }
 
 .prev-btn:hover, .next-btn:hover {
   background-color: #00695c;
+  transform: scale(1.1);      /* Slightly increase size on hover */
 }
 
-/* Optional: Style the hover effect for the arrows */
-.prev-btn:hover, .next-btn:hover {
-  transform: scale(1.1); /* Slightly increase size on hover */
+/* Add arrows as content */
+.prev-btn::before {
+  content: '←';              /* Left arrow */
+}
+
+.next-btn::before {
+  content: '→';              /* Right arrow */
 }
 
 
@@ -379,6 +391,7 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
 
 
