@@ -272,6 +272,7 @@ section {
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Style for Close Button */
 .close-btn {
   margin-top: 20px;
   background-color: #00695c;
@@ -289,22 +290,33 @@ section {
   background-color: #004d40;
 }
 
-/* Style for Lightbox Navigation Buttons */
+/* Style for Lightbox Navigation Buttons (Previous and Next) */
+.caption-container {
+  display: flex; /* Use flexbox to align buttons horizontally */
+  justify-content: center; /* Align buttons to the center */
+  gap: 15px; /* Space between buttons */
+  align-items: center; /* Vertically center buttons */
+}
+
 .prev-btn, .next-btn {
   background-color: #004d40;
   color: white;
   border: none;
   padding: 10px 20px;
-  font-size: 1rem;
+  font-size: 1.5rem;  /* Make arrow buttons larger */
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s;
-  margin-top: 20px;  /* Space between buttons */
-  margin: 5px;
+  display: inline-block;
 }
 
 .prev-btn:hover, .next-btn:hover {
   background-color: #00695c;
+}
+
+/* Optional: Style the hover effect for the arrows */
+.prev-btn:hover, .next-btn:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
 }
 
 
@@ -367,5 +379,6 @@ section {
 .picture-gallery img:hover {
   transform: scale(1.05);  /* Slight zoom effect on hover */
 }
+
 
 
