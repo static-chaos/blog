@@ -1,3 +1,5 @@
+/* layout.css */
+
 /* Header Styles */
 header {
   background-color: var(--primary-color);
@@ -5,59 +7,52 @@ header {
   text-align: center;
   padding: 60px 20px;
   border-bottom: 3px solid var(--secondary-color);
-  background-image: linear-gradient(135deg, rgba(0, 105, 92, 0.8), rgba(0, 105, 92, 0.5)), url('https://www.transparenttextures.com/patterns/diagonal-stripes.png');
+  background-image: 
+    linear-gradient(
+      135deg,
+      rgba(0, 105, 92, 0.8),
+      rgba(0, 105, 92, 0.5)
+    ),
+    url('https://www.transparenttextures.com/patterns/diagonal-stripes.png');
   background-size: cover;
   background-position: center;
   z-index: 1; /* To stay below the sticky nav */
 }
 
-/* Move the nav inside header */
-header nav {
-  background-color: var(--secondary-color);
-  padding: 15px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 60px;
-  position: sticky;
-  top: 0;
-  z-index: 100; /* Ensure it's above the header and other content */
-  backdrop-filter: blur(10px); /* Optional: add blur effect */
-}
-
-/* Adjust spacing between links */
-header nav a {
+/* Universal nav link styling */
+nav a {
   color: var(--header-text-color);
   text-decoration: none;
   padding: 10px 20px;
   font-size: 1.1rem;
-  transition: background-color 0.3s, color 0.3s, transform 0.3s;
   margin: 0 25px; /* Increased margin for more space */
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
 
-/* Active link style */
-header nav a.active {
+nav a.active {
   color: #f1c6b8;
   font-weight: bold;
 }
 
-/* Hover effect */
-header nav a:hover {
+nav a:hover {
   background-color: var(--hover-color);
   color: var(--secondary-color);
   transform: scale(1.05); /* Slight zoom-in effect */
 }
 
-/* Styling the header section and ensuring better spacing on smaller devices */
+/* Section Styles */
 section {
   margin-bottom: 40px;
   padding: 20px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.2)
+  );
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Footer Styles */
 footer {
   text-align: center;
   padding: 1.2rem 0;
@@ -68,27 +63,32 @@ footer {
 
 /* Mobile responsiveness: Adjust navigation to column layout */
 @media (max-width: 768px) {
-  header nav {
+  .sticky-nav nav {
     flex-direction: column;
     align-items: center;
   }
-  header nav a {
+  nav a {
     margin: 10px 0; /* Adjust margin for mobile devices */
     font-size: 1rem; /* Slightly reduce font size for mobile */
   }
 }
 
+/* Mobile responsiveness: Shrink header title */
 @media (max-width: 600px) {
   header h1 {
     font-size: 1.5rem;
   }
 }
+
+/* Sticky wrapper */
 .sticky-nav {
   position: sticky;
   top: 0;
   z-index: 100;
+  margin-bottom: 20px; /* breathing room below nav */
 }
 
+/* Nav styling inside the wrapper */
 .sticky-nav nav {
   background-color: var(--secondary-color);
   padding: 15px 0;
@@ -100,5 +100,3 @@ footer {
   min-height: 60px;
   backdrop-filter: blur(10px);
 }
-
-
