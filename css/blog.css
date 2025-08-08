@@ -73,36 +73,42 @@ blockquote, .quote {
   align-items: flex-start;
 }
 
-/* 2. Sidebar styling */
+/* Sidebar container: dark grey background, white text */
 .blog-sidebar {
   position: sticky;
-  top: 2rem;                /* sticks below header */
-  flex: 0 0 200px;          /* fixed width */
-  margin-top: 3rem;         /* matches .blog-main’s top margin */
+  top: 2rem;
+  flex: 0 0 200px;
+  margin-top: 3rem;
   padding: 1rem;
+  background-color: #333;
+  border-radius: 8px;
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.4);
 }
 
+/* Vertical nav links: white text, subtle hover */
 .blog-sidebar nav {
   display: flex;
   flex-direction: column;
 }
 
 .blog-sidebar nav a {
-  margin-bottom: 1rem;
+  color: #eee;
   text-decoration: none;
-  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-weight: 500;
   transition: color 0.2s;
 }
 
 .blog-sidebar nav a:hover {
-  color: var(--hover-color);
+  color: #fff;
 }
 
-/* 3. Adjust blog-main within the flex layout */
+/* Adjust blog-main within the flex layout */
 .blog-wrapper .blog-main {
-  margin: 3rem 0 0 2rem;    /* remove auto centering, add left gutter */
-  max-width: 680px;         /* narrower since sidebar eats space */
+  margin: 3rem 0 0 2rem;
+  max-width: 680px;
 }
+
 @media (max-width: 900px) {
   .blog-wrapper {
     display: block;
@@ -113,6 +119,8 @@ blockquote, .quote {
   }
 
   .blog-main {
-    margin: 3rem auto 0 auto;  /* re-center on small viewports */
+    margin: 3rem auto 0 auto;
   }
 }
+
+ 
