@@ -160,16 +160,15 @@ blockquote, .quote {
 /* ── Sidebar: sticky and flush to left edge ── */
 .blog-sidebar {
   position: sticky;
-  top: 2rem;
+  top: 1.5rem;
   width: 200px;
-  margin: 3rem 0 0 0;
-  padding: 1rem;
+ padding: 1rem;
   margin-left: -220px;  /* pulls it back to the viewport’s left */
 }
 
 /* ── Blog content: perfectly centered ── */
 .blog-main {
-  margin: 3rem auto;
+  margin: 1.5rem auto 0;  /* only 1.5rem above your post */
   max-width: 780px;
 }
 
