@@ -64,10 +64,11 @@
   flex-grow: 0; /* No growth */
   flex-shrink: 1; /* Allow shrinking if the content is too big */
   overflow-y: auto; /* Make the description scrollable if it's too long */
-  max-height: 80px; /* Limit description height to maintain card uniformity */
+  max-height: 85px; /* Limit description height to maintain card uniformity */
   text-align: center;
   white-space: normal; /* Allow text to wrap correctly */
   text-overflow: ellipsis; /* Optional: Add ellipsis for overflow */
+  transition: all 0.3s ease;  /* Smooth transition */
 }
 
 /* Hover effect on card */
@@ -81,6 +82,44 @@
   transform: scale(1.05); /* Zoom in effect on the image */
 }
 
+/* Show the scrollbar when hovering over the description */
+.post-card p:hover {
+  overflow-y: scroll;  /* Enable scrolling on hover */
+}
+
+/* Style the scrollbar to appear only on hover */
+.post-card p::-webkit-scrollbar {
+  width: 6px; /* Narrow scrollbar */
+  opacity: 0;  /* Hidden by default */
+  transition: opacity 0.3s ease;  /* Smooth transition for opacity */
+}
+
+/* When hovering, make the scrollbar visible with 50% opacity */
+.post-card p:hover::-webkit-scrollbar {
+  opacity: 0.5;  /* 50% opacity on hover */
+}
+
+/* Style the scrollbar thumb (the draggable part) */
+.post-card p::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Light color for the thumb */
+  border-radius: 3px;
+}
+
+/* Style the scrollbar track (the empty part the thumb slides in) */
+.post-card p::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1); /* Light color for the track */
+}
+
+/* For Firefox */
+.post-card p {
+  scrollbar-width: thin; /* Thin scrollbar */
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1); /* Thumb and track colors */
+}
+
+/* When hovering, make the scrollbar visible with 50% opacity in Firefox */
+.post-card p:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.1); /* 50% opacity thumb */
+}
 /* Mobile responsiveness: Make the grid items smaller */
 @media (max-width: 768px) {
   .post-grid {
