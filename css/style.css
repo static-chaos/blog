@@ -121,9 +121,12 @@ section {
 
 /* Adjust header color for the pictures section */
 #pictures header {
-  background-color: #4e3b31;
-  background-image: none;
-  color: var(--header-text-color);  /* Using variable */
+  background-color: #e6e6fa;  /* Lavender */
+  background-image: none;     /* Ensure no background image is applied here */
+  color: var(--header-text-color);  /* Keep the text color as it is */
+  padding: 20px;
+  text-align: center;
+  border-bottom: none;  /* No border if needed */
 }
 
 #pictures h2 {
@@ -374,6 +377,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
