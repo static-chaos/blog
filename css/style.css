@@ -321,3 +321,31 @@ section {
     grid-template-columns: 1fr;
   }
 }
+
+/* Picture Gallery Section */
+#pictures {
+  padding: 20px;
+}
+
+.picture-gallery {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px; /* Adds some space between the images */
+}
+
+/* Individual Image Styling */
+.picture-gallery img {
+  width: 100%;
+  max-width: 250px;  /* Limit the size of the images */
+  height: auto;
+  border-radius: 10px;  /* Optional: to add rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Optional: add a subtle shadow */
+  object-fit: cover; /* Ensures the images look good if they are resized */
+  transition: transform 0.3s ease-in-out;
+}
+
+.picture-gallery img:hover {
+  transform: scale(1.05);  /* Slight zoom effect on hover */
+}
+
