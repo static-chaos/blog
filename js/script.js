@@ -1,20 +1,4 @@
-<script>
-    // Sticky Navigation Bar and Active Link Highlighting
-    const navLinks = document.querySelectorAll('nav a');
 
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.forEach(link => link.classList.remove('active'));
-        link.classList.add('active');
-      });
-    });
-
-    const currentPage = window.location.pathname;
-    navLinks.forEach(link => {
-      if (link.href.includes(currentPage)) {
-        link.classList.add('active');
-      }
-    });
 
     // Picture Lightbox Functionality
     const pictureItems = document.querySelectorAll('.picture-item');
