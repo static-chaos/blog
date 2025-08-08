@@ -64,9 +64,13 @@ header img {
 
 /* Navigation Bar */
 nav {
-  background-color: var(--secondary-color);  /* Using variable */
+  background-color: var(--secondary-color); /* Using variable */
   padding: 15px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: sticky;    /* Makes it sticky */
+  top: 0;              /* Stick to the top of the page */
+  z-index: 1000;       /* Ensure it's on top of other content */
+  width: 100%;
 }
 
 nav a {
@@ -76,17 +80,16 @@ nav a {
   font-size: 1.1rem;
   transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
+/* Active Navigation Link (Highlight "Pictures" in Nav) */
+nav a.active {
+  color: #f1c6b8;
+  font-weight: bold;
+}
 
 nav a:hover {
   background-color: var(--hover-color);  /* Using variable */
   color: var(--secondary-color);  /* Using variable */
   transform: scale(1.05);
-}
-
-/* Active Navigation Link (Highlight "Pictures" in Nav) */
-nav a.active {
-  color: #f1c6b8;
-  font-weight: bold;
 }
 
 /* Section Styling */
@@ -378,6 +381,7 @@ section {
   transform: scale(1.05); /* Slight zoom effect */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
+
 
 
 
