@@ -215,20 +215,14 @@
     grid-template-columns: 1fr;
   }
 }
-.capturesque-section {
-  background-color: lavender;  /* lavender bg for entire section */
-  padding: 20px;               /* padding all around including title */
-}
-#pictures,
-.capturesque-section,
-main {
+.pictures-page #pictures,
+.pictures-page .capturesque-section,
+.pictures-page main {
   background-color: lavender;
 }
-/* Lavender styling only for Capturesque page */
 .pictures-page body,
-.pictures-page main,
-.pictures-page #pictures,
-.pictures-page .capturesque-section {
-  background-color: lavender !important;
+.pictures-page main {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
