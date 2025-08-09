@@ -1,57 +1,41 @@
-/* ===== Poem Container Styling ===== */
+/* ===== General Page Setup ===== */
+body.poem-page {
+  font-family: 'Georgia', serif;
+  background-color: #fffef5;
+  color: #444;
+  margin: 0;
+  padding: 2rem;
+  box-sizing: border-box;
+  text-align: left;
+  line-height: 2;
+  overflow-x: hidden;
+}
+
+/* ===== Container for Poem ===== */
 .poem-container {
   max-width: 700px;
   margin: 5rem auto;
   padding: 3rem;
   background: #fffef5;
   box-shadow: 0 0 30px rgba(0, 105, 92, 0.1);
-  border-left: 8px solid var(--primary-color);
-  font-family: 'Georgia', serif;
-  line-height: 2;
+  border-left: 8px solid #00796b; /* Fallback for --primary-color */
   font-size: 1.2rem;
   color: #444;
-  max-height: 100%;
-  overflow: hidden;
-  transition: font-size 120ms ease;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: visible;
 }
 
-/* ===== Page Wrapper Styling ===== */
-.poem-page {
-  min-height: 80vh;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-/* ===== Two-Page / Column Layout ===== */
-.poem-columns {
-  display: flex;
-  gap: 2rem;
-}
-
-.poem-col {
-  flex: 1 1 50%;
-  overflow: hidden;
-}
-
-/* Slightly taller line height in two-page mode */
-.poem-container.two-page {
-  line-height: 2.05;
-}
-
-/* ===== Poem Title (if used) ===== */
+/* ===== Poem Title ===== */
 .poem-title {
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: var(--primary-color);
+  color: #00796b;
 }
 
-/* ===== Poem Text Styling ===== */
+/* ===== Poem Text Paragraphs ===== */
 .poem-container p {
   margin-bottom: 1.5em;
   transition: opacity 0.5s ease-in;
@@ -61,7 +45,7 @@
   opacity: 0.85;
 }
 
-/* ===== Author Signature ===== */
+/* ===== Author Block ===== */
 .poem-author {
   text-align: right;
   font-style: italic;
@@ -74,4 +58,16 @@
   font-size: 0.9em;
   font-style: italic;
   color: #555;
+}
+
+/* ===== Responsive Tweaks ===== */
+@media screen and (max-width: 768px) {
+  .poem-container {
+    padding: 2rem;
+    font-size: 1rem;
+  }
+
+  .poem-title {
+    font-size: 1.6rem;
+  }
 }
