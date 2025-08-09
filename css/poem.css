@@ -1,3 +1,4 @@
+/* ===== Poem Container Styling ===== */
 .poem-container {
   max-width: 700px;
   margin: 5rem auto;
@@ -9,8 +10,39 @@
   line-height: 2;
   font-size: 1.2rem;
   color: #444;
+  max-height: 100%;
+  overflow: hidden;
+  transition: font-size 120ms ease;
 }
 
+/* ===== Page Wrapper Styling ===== */
+.poem-page {
+  min-height: 80vh;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* ===== Two-Page / Column Layout ===== */
+.poem-columns {
+  display: flex;
+  gap: 2rem;
+}
+
+.poem-col {
+  flex: 1 1 50%;
+  overflow: hidden;
+}
+
+/* Slightly taller line height in two-page mode */
+.poem-container.two-page {
+  line-height: 2.05;
+}
+
+/* ===== Poem Title (if used) ===== */
 .poem-title {
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
@@ -19,6 +51,7 @@
   color: var(--primary-color);
 }
 
+/* ===== Poem Text Styling ===== */
 .poem-container p {
   margin-bottom: 1.5em;
   transition: opacity 0.5s ease-in;
@@ -28,54 +61,17 @@
   opacity: 0.85;
 }
 
+/* ===== Author Signature ===== */
 .poem-author {
   text-align: right;
   font-style: italic;
   margin-top: 2rem;
   color: #777;
 }
+
 .poem-sub-author {
   margin-top: 4px;
   font-size: 0.9em;
   font-style: italic;
   color: #555;
 }
-
-/* The “page” frame */
-.poem-page {
-  min-height: 80vh;         /* room to breathe; adjust as you like */
-  height: 100vh;            /* target page height */
-  display: flex;
-  align-items: center;      /* vertically center the container */
-  justify-content: center;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-/* Ensure the container never overflows the page */
-.poem-container {
-  max-height: 100%;
-  overflow: hidden;
-}
-
-/* Two-page mode (side-by-side columns) */
-.poem-columns {
-  display: flex;
-  gap: 2rem;
-}
-
-.poem-col {
-  flex: 1 1 50%;
-  overflow: hidden;         /* no scrollbars */
-}
-
-/* Optional: Slightly larger leading in two-page mode for readability */
-.poem-container.two-page {
-  line-height: 2.05;
-}
-
-/* Smooth font-size transitions */
-.poem-container {
-  transition: font-size 120ms ease;
-}
-
