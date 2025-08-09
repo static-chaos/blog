@@ -1,132 +1,84 @@
-// Select all picture items
-const pictureItems = document.querySelectorAll('.picture-item');
+// ----- Cached image set & visibility tracking -----
+const parallaxImgs = Array.from(document.querySelectorAll('.preview-img'));
+const visibleImgs = new Set();
+let ticking = false;
 
-// Select lightbox elements
-const lightbox = document.querySelector('.lightbox');
-const lightboxImage = document.querySelector('#lightbox-img');
-const lightboxStory = document.querySelector('#story');
-const closeButton = document.querySelector('.close-btn');
-const prevButton = document.querySelector('.prev-btn');
-const nextButton = document.querySelector('.next-btn');
-
-// Store the image data (src and story) for each picture
-const imagesData = [];
-let currentIndex = -1;  // To keep track of the currently displayed image
-
-// Populate the image data (src and caption)
-pictureItems.forEach((item, index) => {
-  const imageSrc = item.querySelector('.preview-img').src;
-  const story = item.querySelector('.caption').innerHTML;
-  imagesData.push({ imageSrc, story });
-
-  // Add click event listener to each picture item
-  item.addEventListener('click', () => {
-    currentIndex = index;  // Set the current image index
-    showPicture(currentIndex);  // Show the clicked image
-  });
-});
-
-// Function to display the image in the lightbox
-function showPicture(index) {
-  const { imageSrc, story } = imagesData[index];
-  lightboxImage.src = imageSrc;  // Update the lightbox image
-  lightboxStory.innerHTML = story;  // Update the caption
-
-  lightbox.style.display = 'flex'; // Show the lightbox
-  document.body.classList.add('modal-open'); // this locks scroll
-  updateNavigationButtons();  // Make sure buttons are visible and correctly positioned
-}
-
-function closeLightbox() {
-  lightbox.style.display = 'none';
-  document.body.classList.remove('modal-open');
-}
-
-// Function to show the next image
-function showNextPicture() {
-  if (currentIndex < imagesData.length - 1) {
-    currentIndex++;  // Increment index for next picture
-  } else {
-    currentIndex = 0;  // Loop back to the first picture
-  }
-  showPicture(currentIndex);  // Display the next picture
-}
-
-// Function to show the previous image
-function showPrevPicture() {
-  if (currentIndex > 0) {
-    currentIndex--;  // Decrement index for previous picture
-  } else {
-    currentIndex = imagesData.length - 1;  // Loop back to the last picture
-  }
-  showPicture(currentIndex);  // Display the previous picture
-}
-
-// Function to handle the navigation buttons visibility and position
-function updateNavigationButtons() {
-  // Make sure navigation buttons are visible when the lightbox is open
-  prevButton.style.display = 'inline-block';
-  nextButton.style.display = 'inline-block';
-}
-
-// Add event listeners for Next and Previous buttons
-prevButton.addEventListener('click', (e) => {
-  e.stopPropagation();  // Prevent the click event from closing the lightbox
-  showPrevPicture();
-});
-
-nextButton.addEventListener('click', (e) => {
-  e.stopPropagation();  // Prevent the click event from closing the lightbox
-  showNextPicture();
-});
-
-// Close lightbox functionality
-closeButton.addEventListener('click', closeLightbox);
-
-// Close lightbox when clicking outside the content
-lightbox.addEventListener('click', (e) => {
-  if (e.target === lightbox) {
-    closeLightbox();
-  }
-});
-
-// Parallax effect for picture wall images
-window.addEventListener('scroll', function() {
-  const images = document.querySelectorAll('.preview-img');
-  const winH = window.innerHeight;
-  images.forEach((img, idx) => {
-    const rect = img.getBoundingClientRect();
-    if (rect.top < winH && rect.bottom > 0) {
-      // Parallax offset: varies slightly per image for layered look
-      const offset = (rect.top - winH/2) * (0.055 + idx * 0.005);
-      img.style.transform = `scale(1.06) translateY(${offset}px)`;
-    } else {
-      img.style.transform = "scale(1)";
-    }
-  });
-});
-
-// Add random rotation to each picture-item for more natural randomness
+// ----- Picture-item random rotation -----
 document.querySelectorAll('.picture-item').forEach(item => {
   const randomRotate = (Math.random() * 16) - 8; // -8deg to +8deg
   const randomTranslateY = (Math.random() * 20) - 10; // -10px to +10px
-
   item.style.setProperty('--rot', `${randomRotate.toFixed(2)}deg`);
   item.style.setProperty('--ty', `${randomTranslateY.toFixed(2)}px`);
 });
 
+// ----- Parallax visibility observer -----
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      visibleImgs.add(entry.target);
+    } else {
+      visibleImgs.delete(entry.target);
+      entry.target.style.transform = 'scale(1)';
+    }
+  });
+}, { threshold: 0 });
 
-// Keyboard navigation
-document.addEventListener('keydown', (e) => {
-  if (lightbox.style.display === 'flex') {
-    if (e.key === 'ArrowRight') {
-      showNextPicture();
-    }
-    if (e.key === 'ArrowLeft') {
-      showPrevPicture();
-    }
-    if (e.key === 'Escape') {
-      closeLightbox();
-    }
+parallaxImgs.forEach(img => io.observe(img));
+
+// ----- Smooth parallax animation -----
+function animateParallax() {
+  const winH = window.innerHeight;
+  parallaxImgs.forEach((img, idx) => {
+    if (!visibleImgs.has(img)) return;
+    const rect = img.getBoundingClientRect();
+    const offset = (rect.top - winH / 2) * (0.055 + idx * 0.005);
+    img.style.transform = `scale(1.06) translateY(${offset}px)`;
+  });
+}
+
+function onScroll() {
+  if (!ticking) {
+    ticking = true;
+    requestAnimationFrame(() => {
+      animateParallax();
+      ticking = false;
+    });
   }
-});
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+
+// ----- Scrollbar width compensation for lightbox -----
+function getScrollbarWidth() {
+  const div = document.createElement('div');
+  div.style.cssText = 'position:absolute;top:-9999px;width:100px;height:100px;overflow:scroll;';
+  document.body.appendChild(div);
+  const width = div.offsetWidth - div.clientWidth;
+  div.remove();
+  return width;
+}
+
+function lockScroll() {
+  document.body.classList.add('modal-open');
+  document.body.style.paddingRight = `${getScrollbarWidth()}px`;
+}
+
+function unlockScroll() {
+  document.body.classList.remove('modal-open');
+  document.body.style.paddingRight = '';
+}
+
+// ----- Use lockScroll/unlockScroll in your lightbox handlers -----
+function showPicture(index) {
+  const { imageSrc, story } = imagesData[index];
+  lightboxImage.src = imageSrc;
+  lightboxStory.innerHTML = story;
+  lightbox.style.display = 'flex';
+  lockScroll();
+  updateNavigationButtons();
+}
+
+function closeLightbox() {
+  lightbox.style.display = 'none';
+  unlockScroll();
+}
