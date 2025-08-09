@@ -60,18 +60,17 @@ section.poem-page {
 
 /* ===== Author Block ===== */
 .poem-author {
-  display: inline-block;
-  text-align: right;
+  display: block;              /* full width */
+  text-align: right;           /* right align inside container */
   font-style: italic;
   margin-top: 0.4rem !important;
   margin-bottom: 0;
   color: #777;
   padding: 0;
-  max-width: 100%;
-  align-self: flex-end;
 }
 
 .poem-sub-author {
+  display: block;
   font-size: 0.9em;
   font-style: italic;
   color: #555;
