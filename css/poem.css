@@ -21,10 +21,11 @@ body.poem-page header {
 
 /* ===== Poem Container ===== */
 .poem-container {
+  position: relative;
   max-width: 700px;
   margin: 1rem auto;
   padding: 0.5rem 2.5rem 1.5rem;
-  background: #fff9f0;
+  background-color: #fff9f0; /* base cream */
   box-shadow: 0 8px 30px rgba(101, 67, 33, 0.6);
   border-left: 8px solid #00796b;
   font-size: 1.1rem;
@@ -32,15 +33,34 @@ body.poem-page header {
   white-space: normal;
   word-break: break-word;
   overflow: visible;
-  position: relative;
   animation: fadeInUp 1s ease;
+  z-index: 0;
+}
+
+/* Texture overlay with ::before */
+.poem-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/brown-paper.png');
+  background-repeat: repeat;
+  opacity: 0.15;  /* subtle texture intensity */
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 0; /* keep sharp edges */
+}
+
+/* Make sure poem-content sits above the texture */
+.poem-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* ===== Poem Stanza Paragraphs ===== */
 .poem-container p.stanza {
   white-space: pre-line; /* respects newlines in HTML */
   margin: 0 0 0.4em 0; /* minimal space below each stanza */
-  line-height: 1.3; /* line spacing inside stanza */
+  line-height: 1.3;
   padding: 0;
 }
 
@@ -51,9 +71,9 @@ body.poem-page header {
 
 /* ===== Author Block ===== */
 .poem-author {
-  text-align: right;
+  text-align: left;       /* left align under poem */
   font-style: italic;
-  margin-top: 0.2rem !important;
+  margin-top: 0.4rem !important; /* spacing above author */
   margin-bottom: 0;
   color: #777;
   padding: 0;
