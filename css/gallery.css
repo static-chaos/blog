@@ -215,3 +215,8 @@
     grid-template-columns: 1fr;
   }
 }
+.capturesque-section {
+  background-color: lavender;  /* lavender bg for entire section */
+  padding: 20px;               /* padding all around including title */
+}
+
