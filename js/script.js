@@ -110,3 +110,18 @@ document.querySelectorAll('.picture-item').forEach(item => {
   // Apply transform style
   item.style.transform = `rotate(${randomRotate.toFixed(2)}deg) translateY(${randomTranslateY.toFixed(2)}px)`;
 });
+// for key board navigation
+document.addEventListener('keydown', (e) => {
+  if (lightbox.style.display === 'flex') {
+    if (e.key === 'ArrowRight') {
+      showNextPicture();
+    }
+    if (e.key === 'ArrowLeft') {
+      showPrevPicture();
+    }
+    if (e.key === 'Escape') {
+      lightbox.style.display = 'none';
+      document.body.classList.remove('modal-open'); // We'll add this class in Step 2
+    }
+  }
+});
