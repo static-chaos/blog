@@ -33,6 +33,7 @@ function showPicture(index) {
   lightboxStory.innerHTML = story;  // Update the caption
 
   lightbox.style.display = 'flex'; // Show the lightbox
+  document.body.classList.add('modal-open'); // this locks scroll
   updateNavigationButtons();  // Make sure buttons are visible and correctly positioned
 }
 
