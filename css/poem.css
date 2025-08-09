@@ -9,25 +9,67 @@ body.poem-page {
   text-align: left;
   line-height: 1.6;
   overflow-x: hidden;
-  scroll-behavior: smooth; /* ✨ Smooth scrolling */
+  scroll-behavior: smooth;
 }
 
-/* ===== Container for Poem ===== */
+/* ===== Poem Container ===== */
 .poem-container {
   max-width: 700px;
-  margin: 3rem auto;
-  padding: 2.5rem;
+  margin: 2rem auto; /* Reduced top spacing */
+  padding: 1.5rem 2.5rem; /* Less top/bottom, ample sides */
   background: #fffef5;
-  line-height: 1.4;
   box-shadow: 0 0 30px rgba(0, 105, 92, 0.1);
   border-left: 8px solid #00796b;
   font-size: 1.1rem;
+  line-height: 1.4;
   color: #444;
   white-space: pre-wrap;
   word-break: break-word;
   overflow: visible;
   position: relative;
-  animation: fadeInUp 1s ease; /* ✨ Fade in effect on load */
+  animation: fadeInUp 1s ease;
+}
+
+/* ===== Poem Paragraphs (Stanzas) ===== */
+.poem-container p {
+  margin: 0; /* No top/bottom margin */
+  line-height: 1.5;
+}
+
+.poem-container p + p {
+  margin-top: 1.4em; /* Space between stanzas */
+}
+
+/* ===== Author Block ===== */
+.poem-author {
+  text-align: right;
+  font-style: italic;
+  margin-top: 1rem; /* Reduced top spacing */
+  color: #777;
+}
+
+.poem-sub-author {
+  margin-top: 4px;
+  font-size: 0.9em;
+  font-style: italic;
+  color: #555;
+  display: block;
+}
+
+/* ===== Poem Title ===== */
+.poem-title {
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #00796b;
+  animation: fadeInUp 0.8s ease;
+}
+
+/* ===== Paragraph Hover Effect ===== */
+.poem-container p:hover {
+  opacity: 0.85;
+  transition: opacity 0.5s ease-in;
 }
 
 /* ===== Fade In Animation ===== */
@@ -42,45 +84,10 @@ body.poem-page {
   }
 }
 
-/* ===== Poem Title ===== */
-.poem-title {
-  text-align: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #00796b;
-  animation: fadeInUp 0.8s ease;
-}
-
-/* ===== Poem Text Paragraphs ===== */
-.poem-container p {
-  margin-bottom: 0.8em;
-  transition: opacity 0.5s ease-in;
-}
-
-.poem-container p:hover {
-  opacity: 0.85;
-}
-
-/* ===== Author Block ===== */
-.poem-author {
-  text-align: right;
-  font-style: italic;
-  margin-top: 2rem;
-  color: #777;
-}
-
-.poem-sub-author {
-  margin-top: 4px;
-  font-size: 0.9em;
-  font-style: italic;
-  color: #555;
-}
-
 /* ===== Responsive Tweaks ===== */
 @media screen and (max-width: 768px) {
   .poem-container {
-    padding: 1.5rem;
+    padding: 1.2rem;
     font-size: 1rem;
   }
 
@@ -88,4 +95,3 @@ body.poem-page {
     font-size: 1.6rem;
   }
 }
-
