@@ -13,6 +13,9 @@
 /* Sidebar */
 .blog-sidebar {
   flex: 0 0 200px;
+  position: sticky; /* make sidebar sticky */
+  top: 20px;        /* distance from top before it sticks */
+  align-self: flex-start; /* ensure sticky works inside flex */
 }
 
 .blog-sidebar nav {
