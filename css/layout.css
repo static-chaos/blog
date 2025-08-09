@@ -100,7 +100,8 @@ footer {
   min-height: 60px;
   backdrop-filter: blur(10px);
 }
- @media (max-width: 768px) {
+
+@media (max-width: 768px) {
   .sidebar {
     position: fixed;
     bottom: 0;
@@ -131,14 +132,21 @@ footer {
     color: #fff;
   }
 }
+
+/* --- MOBILE FIX: Force sticky nav horizontal and centered --- */
 @media (max-width: 768px) {
   .sticky-nav nav {
-    flex-direction: row !important;   /* force horizontal */
-    justify-content: center;          /* keep centered */
-    align-items: center;              /* align vertically center */
+    flex-direction: row !important;      /* force horizontal layout */
+    justify-content: center !important;  /* center nav items */
+    align-items: center !important;      /* vertically center items */
+    flex-wrap: nowrap !important;        /* prevent wrapping */
+    padding: 5px 0 !important;           /* reduce vertical padding */
+    min-height: auto !important;         /* remove fixed height */
   }
-  
+
   .sticky-nav nav a {
-    margin: 0 10px;                   /* horizontal spacing */
+    margin: 0 10px !important;           /* horizontal spacing */
+    padding: 5px 10px !important;        /* smaller padding */
+    font-size: 1rem !important;          /* consistent font size */
   }
 }
