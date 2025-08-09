@@ -58,15 +58,16 @@ body.poem-page header {
 
 /* ===== Author Block ===== */
 .poem-author {
-  display: inline-block;
-  width: 100%;
-  max-width: 100%;
+  display: inline-block;        /* shrink width to content */
+  float: right;                 /* align right inside container */
+  clear: both;                  /* avoid float issues below */
   text-align: right;
   font-style: italic;
   margin-top: 0.4rem !important;
   margin-bottom: 0;
   color: #777;
   padding: 0;
+  max-width: 100%;
 }
 
 .poem-sub-author {
