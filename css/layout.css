@@ -131,3 +131,14 @@ footer {
     color: #fff;
   }
 }
+@media (max-width: 768px) {
+  .sticky-nav nav {
+    flex-direction: row !important;   /* force horizontal */
+    justify-content: center;          /* keep centered */
+    align-items: center;              /* align vertically center */
+  }
+  
+  .sticky-nav nav a {
+    margin: 0 10px;                   /* horizontal spacing */
+  }
+}
