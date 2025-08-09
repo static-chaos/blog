@@ -1,11 +1,20 @@
+/* ────────── Main Blog Container ────────── */
 .blog-main {
   background: #fff;
   max-width: 780px;
-  margin: 3rem auto;
+  margin: 1.5rem auto; /* reduced from 3rem to remove extra top gap */
   border-radius: 18px;
   box-shadow: 0 4px 36px rgba(60, 60, 120, 0.08);
   padding: 2.5rem 2rem;
 }
+
+/* Remove top margin on first element inside blog-main */
+.blog-main > *:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* ────────── Typography ────────── */
 article h2 {
   font-size: 1.35rem;
   font-weight: 700;
@@ -15,10 +24,15 @@ article h2 {
   letter-spacing: .5px;
   font-family: 'Montserrat', Arial, sans-serif;
 }
-article p, article ul, article li {
+
+article p,
+article ul,
+article li {
   font-size: 1.05rem;
   margin-bottom: 1.15rem;
 }
+
+/* ────────── Images ────────── */
 article img {
   width: 320px !important;
   max-width: 100%;
@@ -30,32 +44,20 @@ article img {
   background: #f8f8ff;
   display: block;
 }
-@media (max-width: 900px) {
-  .blog-main {
-    padding: 1.3rem .6rem;
-  }
-  .blog-main article img {
-    float: none;
-    margin: 0 auto 1.1rem auto;
-    display: block;
-    width: 95vw !important;
-    max-width: 350px;
-  }
-}
-@media (max-width: 600px) {
-  .blog-main article img {
-    width: 100% !important;
-    max-width: 96vw;
-  }
-}
-b, strong {
+
+/* ────────── Emphasis ────────── */
+b,
+strong {
   color: var(--primary-color);
   background: var(--hover-color);
   padding: 2px 8px;
   border-radius: 5px;
   font-weight: 700;
 }
-blockquote, .quote {
+
+/* ────────── Quotes ────────── */
+blockquote,
+.quote {
   display: block;
   background: #fffde7;
   color: #7b5e00;
@@ -68,19 +70,18 @@ blockquote, .quote {
   font-family: 'Georgia', serif;
 }
 
-/* Sidebar container: dark grey background, white text */
+/* ────────── Sidebar ────────── */
 .blog-sidebar {
   position: sticky;
-  top: 2rem;
-  flex: 0 0 200px;
-  margin-top: 3rem;
+  top: 1.5rem;
+  width: 200px;
   padding: 1rem;
+  margin-left: -220px; /* aligns it flush to viewport left */
   background-color: #333;
   border-radius: 8px;
   box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Vertical nav links: white text, subtle hover */
 .blog-sidebar nav {
   display: flex;
   flex-direction: column;
@@ -98,49 +99,14 @@ blockquote, .quote {
   color: #fff;
 }
 
-/* Adjust blog-main within the flex layout */
-
-
-@media (max-width: 900px) {
-  .blog-wrapper {
-    display: block;
-  }
-
-  .blog-sidebar {
-    display: none;
-  }
-
-  .blog-main {
-    margin: 3rem auto 0 auto;
-  }
-}
-/*──────────────────────────────────────────────
-  Restore center alignment of .blog-main
-  by padding out space for the sticky sidebar
-──────────────────────────────────────────────*/
+/* ────────── Wrapper Layout ────────── */
 .blog-wrapper {
-  display: block;            /* cancel flex so .blog-main can center */
+  display: block;
   position: relative;
-  padding-left: 220px;       /* sidebar width (200px) + 20px gutter */
+  padding-left: 220px; /* sidebar width + gutter */
 }
 
-/* keep the sidebar sticky in its own lane */
-.blog-sidebar {
-  position: sticky;
-  top: 2rem;
-  width: 200px;              /* must match padding-left minus gutter */
-  margin: 3rem 0 0 0;        /* align its top with your blog-main */
-  padding: 1rem;
-  flex: none;                /* override any residual flex rules */
-}
-
-/* recentre your post exactly like before */
-.blog-main {
-  margin: 3rem auto;         /* auto left/right re-centers it */
-  max-width: 780px;          /* your original width */
-}
-
-/* undo the gutter on small screens */
+/* ────────── Responsive ────────── */
 @media (max-width: 900px) {
   .blog-wrapper {
     padding-left: 0;
@@ -149,27 +115,24 @@ blockquote, .quote {
   .blog-sidebar {
     display: none;
   }
-}
-/* ── Center the post and carve space for sidebar ── */
-.blog-wrapper {
-  display: block;
-  position: relative;
-  padding-left: 220px;  /* sidebar width (200px) + 20px gutter */
+
+  .blog-main {
+    padding: 1.3rem .6rem;
+    margin: 1.5rem auto 0 auto;
+  }
+
+  .blog-main article img {
+    float: none;
+    margin: 0 auto 1.1rem auto;
+    display: block;
+    width: 95vw !important;
+    max-width: 350px;
+  }
 }
 
-/* ── Sidebar: sticky and flush to left edge ── */
-.blog-sidebar {
-  position: sticky;
-  top: 1.5rem;
-  width: 200px;
- padding: 1rem;
-  margin-left: -220px;  /* pulls it back to the viewport’s left */
+@media (max-width: 600px) {
+  .blog-main article img {
+    width: 100% !important;
+    max-width: 96vw;
+  }
 }
-
-/* ── Blog content: perfectly centered ── */
-.blog-main {
-  margin: 0 auto;
-  max-width: 780px;
-}
-
- 
