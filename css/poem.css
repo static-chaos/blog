@@ -16,7 +16,7 @@ body.poem-page {
 .poem-container {
   max-width: 700px;
   margin: 2rem auto; /* Reduced top spacing */
-  padding: 1.5rem 2.5rem; /* Less top/bottom, ample sides */
+  padding: 1.5rem 2.5rem;
   background: #fffef5;
   box-shadow: 0 0 30px rgba(0, 105, 92, 0.1);
   border-left: 8px solid #00796b;
@@ -32,19 +32,32 @@ body.poem-page {
 
 /* ===== Poem Paragraphs (Stanzas) ===== */
 .poem-container p {
-  margin: 0; /* No top/bottom margin */
+  margin: 0;
   line-height: 1.5;
 }
 
+/* Space between stanzas — slightly reduced */
 .poem-container p + p {
-  margin-top: 1.4em; /* Space between stanzas */
+  margin-top: 0.8em;
+}
+
+/* Remove space above the first stanza */
+.poem-container p:first-of-type {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Remove space below the last stanza */
+.poem-container p:last-of-type {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* ===== Author Block ===== */
 .poem-author {
   text-align: right;
   font-style: italic;
-  margin-top: 1rem; /* Reduced top spacing */
+  margin-top: 0.5rem; /* Reduced from 1rem */
   color: #777;
 }
 
