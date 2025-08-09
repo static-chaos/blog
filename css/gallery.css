@@ -224,4 +224,11 @@
 main {
   background-color: lavender;
 }
+/* Lavender styling only for Capturesque page */
+.pictures-page body,
+.pictures-page main,
+.pictures-page #pictures,
+.pictures-page .capturesque-section {
+  background-color: lavender !important;
+}
 
