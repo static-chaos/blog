@@ -7,23 +7,38 @@ body.poem-page {
   padding: 2rem;
   box-sizing: border-box;
   text-align: left;
-  line-height: 2;
+  line-height: 1.6;
   overflow-x: hidden;
+  scroll-behavior: smooth; /* ✨ Smooth scrolling */
 }
 
 /* ===== Container for Poem ===== */
 .poem-container {
   max-width: 700px;
-  margin: 5rem auto;
-  padding: 3rem;
+  margin: 3rem auto;
+  padding: 2.5rem;
   background: #fffef5;
   box-shadow: 0 0 30px rgba(0, 105, 92, 0.1);
-  border-left: 8px solid #00796b; /* Fallback for --primary-color */
-  font-size: 1.2rem;
+  border-left: 8px solid #00796b;
+  font-size: 1.1rem;
   color: #444;
   white-space: pre-wrap;
   word-break: break-word;
   overflow: visible;
+  position: relative;
+  animation: fadeInUp 1s ease; /* ✨ Fade in effect on load */
+}
+
+/* ===== Fade In Animation ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== Poem Title ===== */
@@ -33,11 +48,12 @@ body.poem-page {
   font-size: 2rem;
   margin-bottom: 2rem;
   color: #00796b;
+  animation: fadeInUp 0.8s ease;
 }
 
 /* ===== Poem Text Paragraphs ===== */
 .poem-container p {
-  margin-bottom: 1.5em;
+  margin-bottom: 1.2em;
   transition: opacity 0.5s ease-in;
 }
 
@@ -63,7 +79,7 @@ body.poem-page {
 /* ===== Responsive Tweaks ===== */
 @media screen and (max-width: 768px) {
   .poem-container {
-    padding: 2rem;
+    padding: 1.5rem;
     font-size: 1rem;
   }
 
