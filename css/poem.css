@@ -24,21 +24,19 @@ body.poem-page header {
   max-width: 700px;
   margin: 1rem auto;
   padding: 0.5rem 2.5rem 1.5rem;
-
   background-color: #fff9f0;
-
-  /* brown paper texture background */
   background-image: url('https://www.transparenttextures.com/patterns/brown-paper.png');
   background-repeat: repeat;
   background-position: top left;
-
   box-shadow: 0 8px 30px rgba(101, 67, 33, 0.6);
   border-left: 8px solid #00796b;
   font-size: 1.1rem;
   color: #444;
   white-space: normal;
   word-break: break-word;
-  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   animation: fadeInUp 1s ease;
   z-index: 0;
 }
@@ -58,27 +56,23 @@ body.poem-page header {
 
 /* ===== Author Block ===== */
 .poem-author {
-  display: inline-block;        /* shrink width to content */
-  float: right;                 /* align right inside container */
-  clear: both;                  /* avoid float issues below */
+  align-self: flex-end;
   text-align: right;
   font-style: italic;
   margin-top: 0.4rem !important;
   margin-bottom: 0;
   color: #777;
   padding: 0;
-  max-width: 100%;
 }
 
 .poem-sub-author {
-  margin-top: 2px;
   font-size: 0.9em;
   font-style: italic;
   color: #555;
-  display: block;
-  padding: 0;
-  margin-bottom: 0;
   text-align: right;
+  padding: 0;
+  margin-top: 2px;
+  margin-bottom: 0;
 }
 
 /* ===== Fade In Animation ===== */
