@@ -18,6 +18,7 @@ body.poem-page {
   margin: 3rem auto;
   padding: 2.5rem;
   background: #fffef5;
+  line-height: 1.4;
   box-shadow: 0 0 30px rgba(0, 105, 92, 0.1);
   border-left: 8px solid #00796b;
   font-size: 1.1rem;
@@ -53,7 +54,7 @@ body.poem-page {
 
 /* ===== Poem Text Paragraphs ===== */
 .poem-container p {
-  margin-bottom: 1.2em;
+  margin-bottom: 0.8em;
   transition: opacity 0.5s ease-in;
 }
 
@@ -87,3 +88,4 @@ body.poem-page {
     font-size: 1.6rem;
   }
 }
+
