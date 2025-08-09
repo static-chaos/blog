@@ -1,7 +1,7 @@
 /* ===== General Page Setup ===== */
 body.poem-page {
   font-family: 'Georgia', serif;
-  background-color: #fff9f0; /* subtle cream */
+  background-color: #fff9f0;
   color: #444;
   margin: 0;
   padding: 0;
@@ -21,11 +21,17 @@ body.poem-page header {
 
 /* ===== Poem Container ===== */
 .poem-container {
-  position: relative;
   max-width: 700px;
   margin: 1rem auto;
   padding: 0.5rem 2.5rem 1.5rem;
-  background-color: #fff9f0; /* base cream */
+
+  background-color: #fff9f0;
+
+  /* brown paper texture background */
+  background-image: url('https://www.transparenttextures.com/patterns/brown-paper.png');
+  background-repeat: repeat;
+  background-position: top left;
+
   box-shadow: 0 8px 30px rgba(101, 67, 33, 0.6);
   border-left: 8px solid #00796b;
   font-size: 1.1rem;
@@ -37,29 +43,10 @@ body.poem-page header {
   z-index: 0;
 }
 
-/* Texture overlay with ::before */
-.poem-container::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url('https://www.transparenttextures.com/patterns/brown-paper.png');
-  background-repeat: repeat;
-  opacity: 0.15;  /* subtle texture intensity */
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 0; /* keep sharp edges */
-}
-
-/* Make sure poem-content sits above the texture */
-.poem-content {
-  position: relative;
-  z-index: 1;
-}
-
 /* ===== Poem Stanza Paragraphs ===== */
 .poem-container p.stanza {
-  white-space: pre-line; /* respects newlines in HTML */
-  margin: 0 0 0.4em 0; /* minimal space below each stanza */
+  white-space: pre-line;
+  margin: 0 0 0.4em 0;
   line-height: 1.3;
   padding: 0;
 }
@@ -71,9 +58,12 @@ body.poem-page header {
 
 /* ===== Author Block ===== */
 .poem-author {
-  text-align: left;       /* left align under poem */
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+  text-align: right;
   font-style: italic;
-  margin-top: 0.4rem !important; /* spacing above author */
+  margin-top: 0.4rem !important;
   margin-bottom: 0;
   color: #777;
   padding: 0;
@@ -87,6 +77,7 @@ body.poem-page header {
   display: block;
   padding: 0;
   margin-bottom: 0;
+  text-align: right;
 }
 
 /* ===== Fade In Animation ===== */
