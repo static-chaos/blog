@@ -13,6 +13,11 @@
 /* Sidebar */
 .blog-sidebar {
   flex: 0 0 200px;
+  position: sticky;         /* Make it stick */
+  top: 20px;                 /* Distance from top when scrolling */
+  background: #333;          /* Grey background */
+  color: white;              /* Sidebar text color */
+  height: fit-content;       /* Only as tall as its content */
 }
 
 .blog-sidebar nav {
@@ -84,29 +89,26 @@
 
 /* Desktop-only gap fix for blog page */
 @media (min-width: 901px) {
-  /* Reduce header vertical padding */
   header {
     padding-top: 20px !important;
     padding-bottom: 10px !important;
   }
 
-  /* Reduce space below sticky nav */
   .sticky-nav {
     margin-bottom: 5px !important;
   }
 
-  /* Remove extra margin above blog content */
   .blog-main {
     margin-top: 0 !important;
   }
 }
+
 /* Hide sidebar only on mobile for blog page */
 @media (max-width: 768px) {
   .blog-sidebar {
     display: none !important;
   }
 
-  /* Reset wrapper to full width when sidebar is hidden */
   .blog-wrapper {
     padding-left: 0 !important;
   }
