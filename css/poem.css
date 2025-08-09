@@ -4,7 +4,7 @@ body.poem-page {
   background-color: #fff9f0; /* subtle cream */
   color: #444;
   margin: 0;
-  padding: 0;  /* Remove body padding to avoid extra space */
+  padding: 0;
   box-sizing: border-box;
   text-align: left;
   line-height: 1.4;
@@ -12,18 +12,25 @@ body.poem-page {
   scroll-behavior: smooth;
 }
 
+/* ===== Header Adjustments ===== */
+body.poem-page header {
+  padding: 20px 20px 10px;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
 /* ===== Poem Container ===== */
 .poem-container {
   max-width: 700px;
-  margin: 2rem auto; /* Center and vertical spacing */
-  padding: 1.5rem 2.5rem;
+  margin: 1rem auto;
+  padding: 0.5rem 2.5rem 1.5rem;
   background: #fff9f0;
-  box-shadow: 0 8px 30px rgba(101, 67, 33, 0.6); /* strong brown shadow */
+  box-shadow: 0 8px 30px rgba(101, 67, 33, 0.6);
   border-left: 8px solid #00796b;
   font-size: 1.1rem;
-  line-height: 1.3;
+  line-height: 1.3; /* keep same line height as original */
   color: #444;
-  white-space: pre-wrap;
+  white-space: normal; /* natural wrapping */
   word-break: break-word;
   overflow: visible;
   position: relative;
@@ -32,23 +39,23 @@ body.poem-page {
 
 /* ===== Poem Paragraphs (Stanzas) ===== */
 .poem-container p {
-  margin: 0; /* remove all margin */
-  padding: 0; /* remove all padding */
-  line-height: 1.3;
+  margin: 0;
+  padding: 0;
+  line-height: 1.3; /* same as container for consistent stanza lines */
 }
 
-/* Space between stanzas - very tight */
+/* Minimal space between stanzas */
 .poem-container p + p {
-  margin-top: 0.3em !important;  /* tighter space between stanzas */
+  margin-top: 0.4em !important; /* minimal but clear separation */
 }
 
-/* Remove space above the first stanza */
+/* Remove space above first stanza */
 .poem-container p:first-of-type {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
 
-/* Remove space below the last stanza */
+/* Remove space below last stanza */
 .poem-container p:last-of-type {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
@@ -74,23 +81,6 @@ body.poem-page {
   margin-bottom: 0;
 }
 
-/* ===== Poem Title ===== */
-.poem-title {
-  text-align: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
-  margin-bottom: 1.5rem; /* some space below title */
-  color: #00796b;
-  animation: fadeInUp 0.8s ease;
-  padding: 0;
-}
-
-/* ===== Paragraph Hover Effect ===== */
-.poem-container p:hover {
-  opacity: 0.85;
-  transition: opacity 0.5s ease-in;
-}
-
 /* ===== Fade In Animation ===== */
 @keyframes fadeInUp {
   from {
@@ -106,24 +96,7 @@ body.poem-page {
 /* ===== Responsive Tweaks ===== */
 @media screen and (max-width: 768px) {
   .poem-container {
-    padding: 1.2rem 1.5rem;
+    padding: 0.5rem 1.5rem 1.5rem;
     font-size: 1rem;
   }
-
-  .poem-title {
-    font-size: 1.6rem;
-  }
-}
-
-/* Remove any extra padding/margin on header and poem container on poem pages */
-body.poem-page header,
-.poem-container {
-  padding-top: 1rem !important;
-  margin-top: 0 !important;
-}
-
-/* Remove any margin or padding from main and section */
-main, section.poem-page {
-  margin: 0;
-  padding: 0;
 }
