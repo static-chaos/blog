@@ -13,11 +13,6 @@
 /* Sidebar */
 .blog-sidebar {
   flex: 0 0 200px;
-  position: sticky;
-  top: 20px;
-  height: fit-content;
-  background-color: #f0f0f0;
-  padding: 10px;
 }
 
 .blog-sidebar nav {
@@ -46,6 +41,7 @@
   margin-top: 1.5rem;
 }
 
+/* Blog Images */
 .blog-main img {
   max-width: 100%;
   height: auto;
@@ -53,55 +49,39 @@
   margin: 20px 0;
 }
 
-/* Desktop adjustments */
-@media (min-width: 901px) {
-  header {
-    padding-top: 20px !important;
-    padding-bottom: 10px !important;
+/* Mobile Layout - No Sidebar */
+@media (max-width: 900px) {
+  .blog-wrapper {
+    flex-direction: column;
+    padding: 10px;
   }
-  .sticky-nav {
-    margin-bottom: 5px !important;
-  }
-  .blog-main {
-    margin-top: 0 !important;
-  }
-}
 
-/* Mobile layout - hide sidebar & full-width content */
-@media (max-width: 768px) {
   .blog-sidebar {
     display: none !important;
   }
-  .blog-wrapper {
-    flex-direction: column !important;
-    padding: 10px;
-  }
+
   .blog-main {
+    margin-top: 0;
     width: 100% !important;
-    margin: 0 !important;
-  }
-  footer {
-    width: 100% !important;
-    margin: 20px 0 0 0 !important;
-    text-align: center !important;
-    background: #f8f8f8;
-    border-top: 1px solid #ddd;
   }
 }
 
-/* Footer - universal fix for both desktop & mobile */
-footer {
+/* Desktop adjustments - ensure content not hugging sidebar */
+@media (min-width: 901px) {
+  .blog-main {
+    margin-left: 10px; /* small gap from sidebar */
+  }
+}
+
+/* Footer fix for both desktop and mobile */
+.blog-wrapper + footer {
+  flex-basis: 100%;
   width: 100% !important;
-  margin: 2rem auto 0 auto !important;
-  text-align: center !important;
+  clear: both;
+  display: block;
+  margin: 2rem auto 0 auto;
+  text-align: center;
   padding: 1rem 0;
   background: #f8f8f8;
   border-top: 1px solid #ddd;
-  clear: both;
-  display: block !important;
-  flex-shrink: 0;
-}
-
-.blog-wrapper + footer {
-  flex: none !important;
 }
