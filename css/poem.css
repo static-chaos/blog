@@ -108,3 +108,33 @@ body.poem-page {
     font-size: 1.6rem;
   }
 }
+
+/* FINAL SPACING FIXES FOR POEM PAGE */
+
+/* Remove top space from first stanza */
+.poem-container p:first-of-type {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Tighter spacing between stanzas */
+.poem-container p + p {
+  margin-top: 0.6em !important;  /* You can tweak this (0.5em = even tighter) */
+}
+
+/* Remove space below last stanza */
+.poem-container p:last-of-type {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Reduce space before author */
+.poem-author {
+  margin-top: 0.3rem !important; /* Down from 1rem or 0.5rem */
+}
+
+/* Reduce header space for poem page */
+body.poem-page header {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
