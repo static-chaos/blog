@@ -100,3 +100,26 @@
     margin-top: 0 !important;
   }
 }
+/* Hide sidebar only on mobile for blog page */
+@media (max-width: 768px) {
+  .blog-sidebar {
+    display: none !important;
+  }
+
+  /* Reset wrapper to full width when sidebar is hidden */
+  .blog-wrapper {
+    padding-left: 0 !important;
+  }
+}
+
+/* Footer fix for blog page */
+.blog-wrapper + footer {
+  display: block;
+  clear: both;
+  width: 100%;
+  margin: 2rem auto 0 auto;
+  text-align: center;
+  padding: 1rem 0;
+  background: #f8f8f8;
+  border-top: 1px solid #ddd;
+}
