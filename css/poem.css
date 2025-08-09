@@ -7,7 +7,7 @@ body.poem-page {
   padding: 2rem;
   box-sizing: border-box;
   text-align: left;
-  line-height: 1.6;
+  line-height: 1.1 !important; /* very tight */
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
@@ -15,13 +15,13 @@ body.poem-page {
 /* ===== Poem Container ===== */
 .poem-container {
   max-width: 700px;
-  margin: 0 auto; /* Removed top margin to reduce space above */
-  padding: 1.5rem 2.5rem;
+  margin: 0 auto !important; /* No top margin */
+  padding: 1rem 2rem !important; /* Reduced padding */
   background: #fffef5;
-  box-shadow: 0 0 30px rgba(139, 69, 19, 0.2); /* subtle brown shadow */
+  box-shadow: 0 4px 15px rgba(101, 67, 33, 0.15); /* subtle brownish shadow */
   border-left: 8px solid #00796b;
   font-size: 1.1rem;
-  line-height: 1.4;
+  line-height: 1.1 !important;
   color: #444;
   white-space: pre-wrap;
   word-break: break-word;
@@ -32,13 +32,14 @@ body.poem-page {
 
 /* ===== Poem Paragraphs (Stanzas) ===== */
 .poem-container p {
-  margin: 0;
-  line-height: 1.2; /* Reduced line height inside stanzas */
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.1 !important; /* very tight */
 }
 
-/* Space between stanzas */
+/* Space between stanzas — almost none */
 .poem-container p + p {
-  margin-top: 0.3em !important; /* Reduced spacing between stanzas */
+  margin-top: 0.1em !important;
 }
 
 /* Remove space above the first stanza */
@@ -53,16 +54,26 @@ body.poem-page {
   padding-bottom: 0 !important;
 }
 
+/* Remove space between lines broken by <br> */
+.poem-container p br {
+  display: block;
+  content: "";
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  height: 0.2em !important; /* super tight line break */
+}
+
 /* ===== Author Block ===== */
 .poem-author {
   text-align: right;
   font-style: italic;
-  margin-top: 0.1rem !important; /* Tight space before author */
+  margin-top: 0.1rem !important; /* almost no gap */
   color: #777;
 }
 
 .poem-sub-author {
-  margin-top: 4px;
+  margin-top: 0.05rem !important;
   font-size: 0.9em;
   font-style: italic;
   color: #555;
@@ -100,7 +111,7 @@ body.poem-page {
 /* ===== Responsive Tweaks ===== */
 @media screen and (max-width: 768px) {
   .poem-container {
-    padding: 1.2rem;
+    padding: 1rem !important;
     font-size: 1rem;
   }
 
@@ -109,14 +120,8 @@ body.poem-page {
   }
 }
 
-/* Reduce header padding */
+/* Reduce header padding for poem page */
 body.poem-page header {
   padding-top: 1rem !important;
   padding-bottom: 1rem !important;
-}
-
-/* Reduce top margin on poem container */
-.poem-container {
-  margin-top: 0 !important;
-  padding-top: 1rem !important;
 }
