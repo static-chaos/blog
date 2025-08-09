@@ -34,3 +34,10 @@
   margin-top: 2rem;
   color: #777;
 }
+.poem-sub-author {
+  margin-top: 4px;
+  font-size: 0.9em;
+  font-style: italic;
+  color: #555;
+}
+
