@@ -1,111 +1,18 @@
-/* Desktop-only gap fix for blog page */
-@media (min-width: 901px) {
-  .blog-wrapper header {
-    padding-top: 20px;
-    padding-bottom: 10px;
-  }
+/* blog.css */
 
-  .blog-wrapper .sticky-nav {
-    margin-bottom: 5px;
-  }
-
-  .blog-main {
-    margin-top: 0; /* no extra gap above the blog content */
-  }
+/* Blog Wrapper */
+.blog-wrapper {
+  display: flex;
+  flex-direction: row;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  gap: 20px;
 }
 
-/* ────────── Blog Page Header Overrides ────────── */
-.blog-wrapper header {
-  padding-top: 30px;   /* reduce from 60px */
-  padding-bottom: 15px; /* reduce bottom gap */
-}
-
-.blog-wrapper .sticky-nav {
-  margin-bottom: 10px; /* reduce breathing room under nav */
-}
-
-/* Ensure first element in blog-main isn't pushing content down */
-.blog-main > *:first-child {
-  margin-top: 0;
-  padding-top: 0;
-}
-
-/* ────────── Main Blog Container ────────── */
-.blog-main {
-  background: #fff;
-  max-width: 780px;
-  margin: 1.5rem auto; /* reduced top margin */
-  border-radius: 18px;
-  box-shadow: 0 4px 36px rgba(60, 60, 120, 0.08);
-  padding: 2.5rem 2rem;
-}
-
-/* ────────── Typography ────────── */
-article h2 {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-top: 2.2rem;
-  margin-bottom: 0.9rem;
-  letter-spacing: .5px;
-  font-family: 'Montserrat', Arial, sans-serif;
-}
-
-article p,
-article ul,
-article li {
-  font-size: 1.05rem;
-  margin-bottom: 1.15rem;
-}
-
-/* ────────── Images ────────── */
-article img {
-  width: 320px !important;
-  max-width: 100%;
-  height: auto !important;
-  float: right;
-  margin: 0 0 1.2rem 2rem;
-  box-shadow: 0 2px 18px rgba(60, 120, 120, 0.12);
-  border-radius: 14px;
-  background: #f8f8ff;
-  display: block;
-}
-
-/* ────────── Emphasis ────────── */
-b,
-strong {
-  color: var(--primary-color);
-  background: var(--hover-color);
-  padding: 2px 8px;
-  border-radius: 5px;
-  font-weight: 700;
-}
-
-/* ────────── Quotes ────────── */
-blockquote,
-.quote {
-  display: block;
-  background: #fffde7;
-  color: #7b5e00;
-  font-style: italic;
-  border-left: 6px solid var(--hover-color);
-  margin: 1.2rem 0;
-  padding: 0.8rem 1.2rem;
-  border-radius: 7px;
-  font-size: 1.08rem;
-  font-family: 'Georgia', serif;
-}
-
-/* ────────── Sidebar ────────── */
+/* Sidebar */
 .blog-sidebar {
-  position: sticky;
-  top: 1.5rem;
-  width: 200px;
-  padding: 1rem;
-  margin-left: -220px; /* aligns it flush to viewport left */
-  background-color: #333;
-  border-radius: 8px;
-  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.4);
+  flex: 0 0 200px;
 }
 
 .blog-sidebar nav {
@@ -114,51 +21,82 @@ blockquote,
 }
 
 .blog-sidebar nav a {
-  color: #eee;
+  padding: 10px;
+  color: var(--secondary-color);
   text-decoration: none;
-  margin-bottom: 1rem;
-  font-weight: 500;
-  transition: color 0.2s;
+  border-bottom: 1px solid #ddd;
 }
 
 .blog-sidebar nav a:hover {
-  color: #fff;
+  background-color: var(--hover-color);
+  color: white;
 }
 
-/* ────────── Wrapper Layout ────────── */
-.blog-wrapper {
+/* Main Blog Content */
+.blog-main {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
+}
+
+/* Blog Images */
+.blog-main img {
+  max-width: 100%;
+  height: auto;
   display: block;
-  position: relative;
-  padding-left: 220px; /* sidebar width + gutter */
+  margin: 20px 0;
 }
 
-/* ────────── Responsive ────────── */
+/* Mobile Layout */
 @media (max-width: 900px) {
   .blog-wrapper {
-    padding-left: 0;
+    flex-direction: column;
+    padding: 10px;
   }
 
   .blog-sidebar {
-    display: none;
+    flex: none;
+    margin-bottom: 20px;
+  }
+
+  .blog-sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .blog-sidebar nav a {
+    border-bottom: none;
+    border-right: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  .blog-sidebar nav a:last-child {
+    border-right: none;
   }
 
   .blog-main {
-    padding: 1.3rem .6rem;
-    margin: 1.5rem auto 0 auto;
-  }
-
-  .blog-main article img {
-    float: none;
-    margin: 0 auto 1.1rem auto;
-    display: block;
-    width: 95vw !important;
-    max-width: 350px;
+    margin-top: 0;
   }
 }
 
-@media (max-width: 600px) {
-  .blog-main article img {
-    width: 100% !important;
-    max-width: 96vw;
+/* Desktop-only gap fix for blog page */
+@media (min-width: 901px) {
+  /* Reduce header vertical padding */
+  header {
+    padding-top: 20px !important;
+    padding-bottom: 10px !important;
+  }
+
+  /* Reduce space below sticky nav */
+  .sticky-nav {
+    margin-bottom: 5px !important;
+  }
+
+  /* Remove extra margin above blog content */
+  .blog-main {
+    margin-top: 0 !important;
   }
 }
