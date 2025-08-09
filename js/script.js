@@ -100,3 +100,13 @@ window.addEventListener('scroll', function() {
     }
   });
 });
+// Add random rotation to each picture-item for more natural randomness
+document.querySelectorAll('.picture-item').forEach(item => {
+  // Random rotation between -8deg and +8deg
+  const randomRotate = (Math.random() * 16) - 8; // -8 to +8 degrees
+  // Optional: small random vertical shift between -10px and +10px
+  const randomTranslateY = (Math.random() * 20) - 10; // -10 to +10 px
+
+  // Apply transform style
+  item.style.transform = `rotate(${randomRotate.toFixed(2)}deg) translateY(${randomTranslateY.toFixed(2)}px)`;
+});
