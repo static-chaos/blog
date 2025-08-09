@@ -219,4 +219,9 @@
   background-color: lavender;  /* lavender bg for entire section */
   padding: 20px;               /* padding all around including title */
 }
+#pictures,
+.capturesque-section,
+main {
+  background-color: lavender;
+}
 
