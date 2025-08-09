@@ -88,3 +88,32 @@
   background: #f8f8f8;
   border-top: 1px solid #ddd;
 }
+/* ---------- Restore sticky sidebar (desktop) ---------- */
+/* Put this at the very end of blog.css so it wins in the cascade */
+
+.blog-wrapper {
+  align-items: flex-start;     /* ensure children align to top in flex layout */
+  overflow: visible !important;/* prevent ancestor clipping of sticky */
+}
+
+@media (min-width: 769px) {
+  .blog-wrapper .blog-sidebar {
+    position: -webkit-sticky;  /* Safari */
+    position: sticky;
+    top: 20px;                 /* adjust if header overlaps */
+    align-self: flex-start;    /* important inside flex */
+    width: 200px;              /* keep the intended width */
+    box-sizing: border-box;
+    z-index: 50;               /* stay above content while scrolling */
+    /* optional visual restore (remove if you already have these) */
+    background: #333;
+    color: #fff;
+    padding: 1rem;
+  }
+
+  /* ensure links are readable on the sidebar */
+  .blog-wrapper .blog-sidebar nav a {
+    color: #fff;
+  }
+}
+
