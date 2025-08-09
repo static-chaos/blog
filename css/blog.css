@@ -4,18 +4,26 @@
 .blog-wrapper {
   display: flex;
   flex-direction: row;
+  align-items: flex-start; /* ensure children align to top */
   max-width: 1200px;
   margin: auto;
   padding: 20px;
   gap: 20px;
+  overflow: visible; /* prevent ancestor from clipping sticky */
 }
 
 /* Sidebar */
 .blog-sidebar {
   flex: 0 0 200px;
-  position: sticky; /* make sidebar sticky */
-  top: 20px;        /* distance from top before it sticks */
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 20px; /* distance from top before it sticks */
   align-self: flex-start; /* ensure sticky works inside flex */
+  background: #333; /* keeps background visible while scrolling */
+  color: #fff;
+  padding: 1rem;
+  box-sizing: border-box;
+  z-index: 50; /* stay above main content */
 }
 
 .blog-sidebar nav {
@@ -25,9 +33,9 @@
 
 .blog-sidebar nav a {
   padding: 10px;
-  color: var(--secondary-color);
+  color: #fff; /* readable on dark background */
   text-decoration: none;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #444;
 }
 
 .blog-sidebar nav a:hover {
@@ -44,7 +52,6 @@
   margin-top: 1.5rem;
 }
 
-/* Blog Images */
 .blog-main img {
   max-width: 100%;
   height: auto;
@@ -52,7 +59,7 @@
   margin: 20px 0;
 }
 
-/* Mobile Layout - No Sidebar */
+/* Mobile Layout */
 @media (max-width: 900px) {
   .blog-wrapper {
     flex-direction: column;
@@ -69,14 +76,14 @@
   }
 }
 
-/* Desktop adjustments - ensure content not hugging sidebar */
+/* Desktop gap between sidebar and content */
 @media (min-width: 901px) {
   .blog-main {
-    margin-left: 10px; /* small gap from sidebar */
+    margin-left: 10px;
   }
 }
 
-/* Footer fix for both desktop and mobile */
+/* Footer */
 .blog-wrapper + footer {
   flex-basis: 100%;
   width: 100% !important;
@@ -88,32 +95,3 @@
   background: #f8f8f8;
   border-top: 1px solid #ddd;
 }
-/* ---------- Restore sticky sidebar (desktop) ---------- */
-/* Put this at the very end of blog.css so it wins in the cascade */
-
-.blog-wrapper {
-  align-items: flex-start;     /* ensure children align to top in flex layout */
-  overflow: visible !important;/* prevent ancestor clipping of sticky */
-}
-
-@media (min-width: 769px) {
-  .blog-wrapper .blog-sidebar {
-    position: -webkit-sticky;  /* Safari */
-    position: sticky;
-    top: 20px;                 /* adjust if header overlaps */
-    align-self: flex-start;    /* important inside flex */
-    width: 200px;              /* keep the intended width */
-    box-sizing: border-box;
-    z-index: 50;               /* stay above content while scrolling */
-    /* optional visual restore (remove if you already have these) */
-    background: #333;
-    color: #fff;
-    padding: 1rem;
-  }
-
-  /* ensure links are readable on the sidebar */
-  .blog-wrapper .blog-sidebar nav a {
-    color: #fff;
-  }
-}
-
