@@ -4,7 +4,7 @@ body.poem-page {
   background-color: #fffef5;
   color: #444;
   margin: 0;
-  padding: 2rem;
+  padding: 0; /* Removed padding to eliminate outside white border */
   box-sizing: border-box;
   text-align: left;
   line-height: 1.6;
@@ -15,8 +15,8 @@ body.poem-page {
 /* ===== Poem Container ===== */
 .poem-container {
   max-width: 700px;
-  margin: 2rem auto; /* Reduced top spacing */
-  padding: 1.5rem 2.5rem;
+  margin: 1rem auto; /* Reduced vertical margin */
+  padding: 1rem 2.5rem; /* Slightly tighter padding */
   background: #fffef5;
   box-shadow: 0 0 30px rgba(0, 105, 92, 0.1);
   border-left: 8px solid #00796b;
@@ -33,12 +33,13 @@ body.poem-page {
 /* ===== Poem Paragraphs (Stanzas) ===== */
 .poem-container p {
   margin: 0;
+  padding: 0;
   line-height: 1.5;
 }
 
-/* Space between stanzas — slightly reduced */
+/* Space between stanzas */
 .poem-container p + p {
-  margin-top: 0.8em;
+  margin-top: 0.5em; /* Tightened space between stanzas */
 }
 
 /* Remove space above the first stanza */
@@ -57,7 +58,7 @@ body.poem-page {
 .poem-author {
   text-align: right;
   font-style: italic;
-  margin-top: 0.5rem; /* Reduced from 1rem */
+  margin-top: 0.2rem; /* Tightened margin before author */
   color: #777;
 }
 
@@ -109,44 +110,8 @@ body.poem-page {
   }
 }
 
-/* === FINAL SPACING FIX — Cleaned Version === */
-
-/* Remove white outer padding on body */
-body.poem-page {
-  padding: 0 !important;
-}
-
-/* Reduce header padding */
+/* ===== Header Padding Adjustments ===== */
 body.poem-page header {
-  padding: 1rem 1rem !important;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
 }
-
-/* Tighten poem container spacing */
-.poem-container {
-  margin: 1rem auto !important;
-  padding: 1rem 2rem !important;
-}
-
-/* Tighter spacing between stanzas */
-.poem-container p {
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 1.5;
-}
-
-.poem-container p + p {
-  margin-top: 0.5em !important;
-}
-
-/* Author block spacing */
-.poem-author {
-  margin-top: 0.2rem !important;
-}
-
-/* OPTIONAL: Remove extra space after last stanza */
-.poem-container p:last-of-type {
-  margin-bottom: 0 !important;
-}
-
-
-
