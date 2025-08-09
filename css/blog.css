@@ -1,17 +1,27 @@
+/* ────────── Blog Page Header Overrides ────────── */
+.blog-wrapper header {
+  padding-top: 30px;   /* reduce from 60px */
+  padding-bottom: 15px; /* reduce bottom gap */
+}
+
+.blog-wrapper .sticky-nav {
+  margin-bottom: 10px; /* reduce breathing room under nav */
+}
+
+/* Ensure first element in blog-main isn't pushing content down */
+.blog-main > *:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 /* ────────── Main Blog Container ────────── */
 .blog-main {
   background: #fff;
   max-width: 780px;
-  margin: 1.5rem auto; /* reduced from 3rem to remove extra top gap */
+  margin: 1.5rem auto; /* reduced top margin */
   border-radius: 18px;
   box-shadow: 0 4px 36px rgba(60, 60, 120, 0.08);
   padding: 2.5rem 2rem;
-}
-
-/* Remove top margin on first element inside blog-main */
-.blog-main > *:first-child {
-  margin-top: 0;
-  padding-top: 0;
 }
 
 /* ────────── Typography ────────── */
