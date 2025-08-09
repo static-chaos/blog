@@ -1,10 +1,19 @@
+// ----- Lightbox DOM elements -----
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightbox-img');
+const lightboxStory = document.getElementById('story');
+const closeButton = document.querySelector('.close-btn');
+const prevButton = document.querySelector('.prev-btn');
+const nextButton = document.querySelector('.next-btn');
+
 // ----- Cached image set & visibility tracking -----
 const parallaxImgs = Array.from(document.querySelectorAll('.preview-img'));
+const pictureItems = document.querySelectorAll('.picture-item');
 const visibleImgs = new Set();
 let ticking = false;
 
 // ----- Picture-item random rotation -----
-document.querySelectorAll('.picture-item').forEach(item => {
+pictureItems.forEach(item => {
   const randomRotate = (Math.random() * 16) - 8; // -8deg to +8deg
   const randomTranslateY = (Math.random() * 20) - 10; // -10px to +10px
   item.style.setProperty('--rot', `${randomRotate.toFixed(2)}deg`);
@@ -68,7 +77,21 @@ function unlockScroll() {
   document.body.style.paddingRight = '';
 }
 
-// ----- Use lockScroll/unlockScroll in your lightbox handlers -----
+// ----- Lightbox image data and interaction -----
+const imagesData = [];
+let currentIndex = -1;
+
+pictureItems.forEach((item, index) => {
+  const imageSrc = item.querySelector('.preview-img').src;
+  const story = item.querySelector('.caption').innerHTML;
+  imagesData.push({ imageSrc, story });
+
+  item.addEventListener('click', () => {
+    currentIndex = index;
+    showPicture(currentIndex);
+  });
+});
+
 function showPicture(index) {
   const { imageSrc, story } = imagesData[index];
   lightboxImage.src = imageSrc;
@@ -82,3 +105,46 @@ function closeLightbox() {
   lightbox.style.display = 'none';
   unlockScroll();
 }
+
+function showNextPicture() {
+  currentIndex = (currentIndex + 1) % imagesData.length;
+  showPicture(currentIndex);
+}
+
+function showPrevPicture() {
+  currentIndex = (currentIndex - 1 + imagesData.length) % imagesData.length;
+  showPicture(currentIndex);
+}
+
+function updateNavigationButtons() {
+  prevButton.style.display = 'inline-block';
+  nextButton.style.display = 'inline-block';
+}
+
+// ----- Lightbox controls -----
+prevButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+  showPrevPicture();
+});
+
+nextButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+  showNextPicture();
+});
+
+closeButton.addEventListener('click', closeLightbox);
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) {
+    closeLightbox();
+  }
+});
+
+// ----- Keyboard navigation -----
+document.addEventListener('keydown', (e) => {
+  if (lightbox.style.display === 'flex') {
+    if (e.key === 'ArrowRight') showNextPicture();
+    if (e.key === 'ArrowLeft') showPrevPicture();
+    if (e.key === 'Escape') closeLightbox();
+  }
+});
