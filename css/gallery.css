@@ -239,4 +239,7 @@
   padding: 0 !important;
   background-color: lavender !important;
 }
+body.modal-open {
+  overflow: hidden;
+}
 
