@@ -1,3 +1,19 @@
+/* Desktop-only gap fix for blog page */
+@media (min-width: 901px) {
+  .blog-wrapper header {
+    padding-top: 20px;
+    padding-bottom: 10px;
+  }
+
+  .blog-wrapper .sticky-nav {
+    margin-bottom: 5px;
+  }
+
+  .blog-main {
+    margin-top: 0; /* no extra gap above the blog content */
+  }
+}
+
 /* ────────── Blog Page Header Overrides ────────── */
 .blog-wrapper header {
   padding-top: 30px;   /* reduce from 60px */
