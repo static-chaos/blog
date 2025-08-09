@@ -109,64 +109,44 @@ body.poem-page {
   }
 }
 
-/* FINAL SPACING FIXES FOR POEM PAGE */
+/* === FINAL SPACING FIX — Cleaned Version === */
 
-/* Remove top space from first stanza */
-.poem-container p:first-of-type {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
+/* Remove white outer padding on body */
+body.poem-page {
+  padding: 0 !important;
+}
+
+/* Reduce header padding */
+body.poem-page header {
+  padding: 1rem 1rem !important;
+}
+
+/* Tighten poem container spacing */
+.poem-container {
+  margin: 1rem auto !important;
+  padding: 1rem 2rem !important;
 }
 
 /* Tighter spacing between stanzas */
-.poem-container p + p {
-  margin-top: 0.6em !important;  /* You can tweak this (0.5em = even tighter) */
+.poem-container p {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.5;
 }
 
-/* Remove space below last stanza */
-.poem-container p:last-of-type {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Reduce space before author */
-.poem-author {
-  margin-top: 0.3rem !important; /* Down from 1rem or 0.5rem */
-}
-
-/* Reduce header space for poem page */
-body.poem-page header {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
-}
-/* — Ultimate Spacing Cleanup for Poem Page — */
-
-/* 1. Remove space above first stanza */
-.poem-container p:first-of-type {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-/* 2. Tighter space between stanzas */
 .poem-container p + p {
   margin-top: 0.5em !important;
 }
 
-/* 3. Remove space below last stanza */
-.poem-container p:last-of-type {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* 4. Reduce space before author */
+/* Author block spacing */
 .poem-author {
   margin-top: 0.2rem !important;
 }
 
-/* 5. Reduce header/container space on poem page */
-body.poem-page header,
-.poem-container {
-  padding-top: 1rem !important;
-  margin-top: 0 !important;
+/* OPTIONAL: Remove extra space after last stanza */
+.poem-container p:last-of-type {
+  margin-bottom: 0 !important;
 }
+
 
 
