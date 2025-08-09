@@ -27,17 +27,16 @@
   transform-origin: center;
 }
 
-.picture-item:nth-child(odd) {
-  transform: rotate(-3deg) translateY(10px);
-}
-
-.picture-item:nth-child(even) {
-  transform: rotate(5deg) translateY(-10px);
+.picture-item {
+  --rot: 0deg;
+  --ty: 0px;
+  transform: rotate(var(--rot)) translateY(var(--ty));
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
 }
 
 .picture-item:hover {
-  transform: translateY(-15px) scale(1.05);
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
+  transform: rotate(var(--rot)) translateY(calc(var(--ty) - 15px)) scale(1.07);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.35);
 }
 
 .preview-img {
