@@ -82,7 +82,8 @@ closeButton.addEventListener('click', () => {
 // Close lightbox when clicking outside the content
 lightbox.addEventListener('click', (e) => {
   if (e.target === lightbox) {
-    lightbox.style.display = 'none';  // Close if clicked outside content
+    lightbox.style.display = 'none'; 
+   document.body.classList.remove('modal-open'); // Close if clicked outside content
   }
 });
 // Parallax effect for picture wall images
