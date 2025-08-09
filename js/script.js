@@ -37,6 +37,11 @@ function showPicture(index) {
   updateNavigationButtons();  // Make sure buttons are visible and correctly positioned
 }
 
+function closeLightbox() {
+  lightbox.style.display = 'none';
+  document.body.classList.remove('modal-open');
+}
+
 // Function to show the next image
 function showNextPicture() {
   if (currentIndex < imagesData.length - 1) {
@@ -76,17 +81,15 @@ nextButton.addEventListener('click', (e) => {
 });
 
 // Close lightbox functionality
-closeButton.addEventListener('click', () => {
-  lightbox.style.display = 'none';  // Close the lightbox
-});
+closeButton.addEventListener('click', closeLightbox);
 
 // Close lightbox when clicking outside the content
 lightbox.addEventListener('click', (e) => {
   if (e.target === lightbox) {
-    lightbox.style.display = 'none'; 
-   document.body.classList.remove('modal-open'); // Close if clicked outside content
+    closeLightbox();
   }
 });
+
 // Parallax effect for picture wall images
 window.addEventListener('scroll', function() {
   const images = document.querySelectorAll('.preview-img');
@@ -102,6 +105,7 @@ window.addEventListener('scroll', function() {
     }
   });
 });
+
 // Add random rotation to each picture-item for more natural randomness
 document.querySelectorAll('.picture-item').forEach(item => {
   // Random rotation between -8deg and +8deg
@@ -112,7 +116,8 @@ document.querySelectorAll('.picture-item').forEach(item => {
   // Apply transform style
   item.style.transform = `rotate(${randomRotate.toFixed(2)}deg) translateY(${randomTranslateY.toFixed(2)}px)`;
 });
-// for key board navigation
+
+// Keyboard navigation
 document.addEventListener('keydown', (e) => {
   if (lightbox.style.display === 'flex') {
     if (e.key === 'ArrowRight') {
@@ -122,9 +127,7 @@ document.addEventListener('keydown', (e) => {
       showPrevPicture();
     }
     if (e.key === 'Escape') {
-      lightbox.style.display = 'none';
-      document.body.classList.remove('modal-open'); // We'll add this class in Step 2
+      closeLightbox();
     }
   }
 });
-
