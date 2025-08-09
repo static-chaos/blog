@@ -13,11 +13,11 @@
 /* Sidebar */
 .blog-sidebar {
   flex: 0 0 200px;
-  position: sticky;         /* Make it stick */
-  top: 20px;                 /* Distance from top when scrolling */
-  background: #333;          /* Grey background */
-  color: white;              /* Sidebar text color */
-  height: fit-content;       /* Only as tall as its content */
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  background-color: #f0f0f0;
+  padding: 10px;
 }
 
 .blog-sidebar nav {
@@ -46,7 +46,6 @@
   margin-top: 1.5rem;
 }
 
-/* Blog Images */
 .blog-main img {
   max-width: 100%;
   height: auto;
@@ -54,74 +53,55 @@
   margin: 20px 0;
 }
 
-/* Mobile Layout */
-@media (max-width: 900px) {
-  .blog-wrapper {
-    flex-direction: column;
-    padding: 10px;
-  }
-
-  .blog-sidebar {
-    flex: none;
-    margin-bottom: 20px;
-  }
-
-  .blog-sidebar nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .blog-sidebar nav a {
-    border-bottom: none;
-    border-right: 1px solid #ddd;
-    padding: 8px;
-  }
-
-  .blog-sidebar nav a:last-child {
-    border-right: none;
-  }
-
-  .blog-main {
-    margin-top: 0;
-  }
-}
-
-/* Desktop-only gap fix for blog page */
+/* Desktop adjustments */
 @media (min-width: 901px) {
   header {
     padding-top: 20px !important;
     padding-bottom: 10px !important;
   }
-
   .sticky-nav {
     margin-bottom: 5px !important;
   }
-
   .blog-main {
     margin-top: 0 !important;
   }
 }
 
-/* Hide sidebar only on mobile for blog page */
+/* Mobile layout - hide sidebar & full-width content */
 @media (max-width: 768px) {
   .blog-sidebar {
     display: none !important;
   }
-
   .blog-wrapper {
-    padding-left: 0 !important;
+    flex-direction: column !important;
+    padding: 10px;
+  }
+  .blog-main {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  footer {
+    width: 100% !important;
+    margin: 20px 0 0 0 !important;
+    text-align: center !important;
+    background: #f8f8f8;
+    border-top: 1px solid #ddd;
   }
 }
 
-/* Footer fix for blog page */
-.blog-wrapper + footer {
-  display: block;
-  clear: both;
-  width: 100%;
-  margin: 2rem auto 0 auto;
-  text-align: center;
+/* Footer - universal fix for both desktop & mobile */
+footer {
+  width: 100% !important;
+  margin: 2rem auto 0 auto !important;
+  text-align: center !important;
   padding: 1rem 0;
   background: #f8f8f8;
   border-top: 1px solid #ddd;
+  clear: both;
+  display: block !important;
+  flex-shrink: 0;
+}
+
+.blog-wrapper + footer {
+  flex: none !important;
 }
