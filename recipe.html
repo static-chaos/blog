@@ -1,31 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Blackboard</title>
- <link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/recipes.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe List</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <!-- Base + Layout -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <!-- Blackboard Styles -->
+  <link rel="stylesheet" href="css/recipes.css">
+
+  <!-- Google Font for Chalk Effect -->
+  <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="blackboard">
-  <h1>Today's Recipes</h1>
-  <div class="recipe-list">
-    <div class="recipe-item">Classic Margherita Pizza</div>
-    <div class="recipe-item">Spaghetti Carbonara</div>
-    <div class="recipe-item">Chocolate Chip Cookies</div>
-    <div class="recipe-item">Lemon Garlic Roast Chicken</div>
-    <div class="recipe-item">Blueberry Muffins</div>
-    <div class="recipe-item">Veggie Stir Fry</div>
-    <div class="recipe-item">Beef Tacos</div>
-    <div class="recipe-item">Banana Pancakes</div>
+  <!-- Header -->
+  <header>
+    <h1>Our Delicious Recipes</h1>
+  </header>
+
+  <!-- Sticky Nav -->
+  <div class="sticky-nav">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="recipes.html" class="active">Recipes</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
   </div>
-</div>
+
+  <!-- Blackboard Section -->
+  <main class="blackboard">
+    <div class="blackboard-content">
+      <div class="column">
+        <ul>
+          <li>Chocolate Fudge Cake</li>
+          <li>Spaghetti Aglio e Olio</li>
+          <li>Classic Pancakes</li>
+          <li>Caesar Salad</li>
+          <li>Tomato Basil Soup</li>
+        </ul>
+      </div>
+      <div class="column">
+        <ul>
+          <li>Beef Stroganoff</li>
+          <li>Grilled Salmon</li>
+          <li>Banana Bread</li>
+          <li>Vegetable Stir-Fry</li>
+          <li>Apple Pie</li>
+        </ul>
+      </div>
+    </div>
+  </main>
 
 </body>
 </html>
-
