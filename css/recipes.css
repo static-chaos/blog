@@ -1,60 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recipe List</title>
+body {
+  background-color: #f4f4f4;
+  font-family: 'Gloria Hallelujah', cursive;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px;
+}
 
-  <!-- Base + Layout -->
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
+.blackboard {
+  position: relative;
+  background-color: #0a0a0a; /* deep black */
+  border: 20px solid #5d4037;
+  border-radius: 8px;
+  padding: 40px 40px 40px 80px; /* extra left padding for home button */
+  width: 950px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  color: white;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.2);
+  overflow: hidden;
+}
 
-  <!-- Blackboard Styles -->
-  <link rel="stylesheet" href="css/recipes.css">
+.home-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-block;
+  padding: 10px 14px;
+  border: 3px solid white;
+  border-radius: 50%;
+  background-color: transparent; /* transparent inside so text shows */
+  color: white;
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.2;
+  box-shadow:
+    0 0 5px white;
+  transition: background-color 0.3s, color 0.3s;
+  user-select: none;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  <!-- Google Font for Chalk Effect -->
-  <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
-</head>
-<body>
+.home-button:hover,
+.home-button:focus {
+  background-color: white;
+  color: #0a0a0a;
+  box-shadow:
+    0 0 12px white;
+}
 
-  <!-- Header -->
-  <header>
-    <h1>Our Delicious Recipes</h1>
-  </header>
+.blackboard h1 {
+  font-size: 1.5rem; /* smaller, closer to list */
+  text-align: center;
+  margin-bottom: 30px;
+  color: #fff;
+}
 
-  <!-- Sticky Nav -->
-  <div class="sticky-nav">
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="recipes.html" class="active">Recipes</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-    </nav>
-  </div>
+.recipe-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 60px;
+}
 
-  <!-- Blackboard Section -->
-  <main class="blackboard">
-    <div class="blackboard-content">
-      <div class="column">
-        <ul>
-          <li>Chocolate Fudge Cake</li>
-          <li>Spaghetti Aglio e Olio</li>
-          <li>Classic Pancakes</li>
-          <li>Caesar Salad</li>
-          <li>Tomato Basil Soup</li>
-        </ul>
-      </div>
-      <div class="column">
-        <ul>
-          <li>Beef Stroganoff</li>
-          <li>Grilled Salmon</li>
-          <li>Banana Bread</li>
-          <li>Vegetable Stir-Fry</li>
-          <li>Apple Pie</li>
-        </ul>
-      </div>
-    </div>
-  </main>
+.recipe-item {
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s, transform 0.2s;
+}
 
-</body>
-</html>
+.recipe-item:hover {
+  color: #ffeb3b;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .recipe-list {
+    grid-template-columns: 1fr;
+  }
+  .blackboard {
+    width: 90%;
+    padding: 20px 20px 20px 60px; /* keep room for home */
+  }
+  .home-button {
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+}
