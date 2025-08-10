@@ -20,17 +20,19 @@ body {
   color: var(--chalk-white);
   display: flex;
   justify-content: center;
-  align-items: center; /* Center vertically */
-  height: 100vh; /* Full screen height */
+  align-items: start; /* ❗️ was center, now allows top margin */
+  min-height: 100vh; /* allow content and margin to fill screen */
+  padding: 40px 0; /* 💡 adds top & bottom breathing room */
+  box-sizing: border-box;
+  overflow-y: auto;
 }
+
 
 /* 🖼️ Blackboard Container */
 .blackboard {
   position: relative;
   width: min(1100px, 94vw);
-  max-height: calc(100vh - 80px); /* Gives space for top and bottom */
-  min-height: calc(100vh - 80px);
-  margin: 40px 0; /* Adds vertical spacing */
+  max-height: 100%;
   border: 20px solid var(--chalkboard-frame);
   border-radius: 10px;
   background:
@@ -44,7 +46,9 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
+  height: auto;
 }
+
 
 /* 🔧 Optional: Hide scrollbars on WebKit */
 .blackboard::-webkit-scrollbar {
@@ -197,5 +201,6 @@ body {
     left: 15px;
   }
 }
+
 
 
