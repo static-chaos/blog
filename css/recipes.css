@@ -22,7 +22,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 32px 0; /* 👈 adds equal space top & bottom */
+  padding: 20px 0; /* 👈 adds equal space top & bottom */
   box-sizing: border-box;
   overflow: hidden; /* 👈 prevents scroll unless board overflows */
 }
@@ -200,6 +200,7 @@ body {
     left: 15px;
   }
 }
+
 
 
 
