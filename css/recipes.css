@@ -20,18 +20,16 @@ body {
   color: var(--chalk-white);
   display: flex;
   justify-content: center;
-  padding: 40px;
-  min-height: 100vh;
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full screen height */
 }
 
 /* 🖼️ Blackboard Container */
 .blackboard {
   position: relative;
   width: min(1100px, 94vw);
-
-  /* ✨ Dynamic board height: fills viewport but adapts to content */
+  height: 94vh; /* Fixed height with small padding room */
   max-height: 94vh;
-  min-height: auto;
   border: 20px solid var(--chalkboard-frame);
   border-radius: 10px;
   background: 
@@ -42,10 +40,13 @@ body {
     0 20px 60px rgba(0, 0, 0, 0.7),
     inset 0 0 80px rgba(255,255,255,0.03);
   padding: 40px 60px;
-  overflow: auto;
+  overflow: auto; /* Only scrolls if content overflows */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-/* 🌫️ Smudge Overlay (replaces grain) */
+/* 🌫️ Smudge Overlay */
 .blackboard::before {
   content: '';
   position: absolute;
@@ -174,7 +175,7 @@ body {
   .blackboard {
     width: 90%;
     padding: 30px 40px;
-    max-height: 94vh;
+    height: 94vh;
   }
   .recipe-list {
     grid-template-columns: 1fr;
