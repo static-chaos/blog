@@ -22,7 +22,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 20px 0; /* 👈 adds equal space top & bottom */
+  padding: 10px 0; /* 👈 adds equal space top & bottom */
   box-sizing: border-box;
   overflow: hidden; /* 👈 prevents scroll unless board overflows */
 }
@@ -183,7 +183,8 @@ body {
  .blackboard {
   width: 90%;
   padding: 30px 40px;
-  max-height: calc(100vh - 2 * 24px); /* if body padding is 24px */
+ max-height: calc(100vh - 2 * 10px); /* matches body’s 10px vertical padding */
+
 }
 
   .recipe-list {
@@ -200,6 +201,7 @@ body {
     left: 15px;
   }
 }
+
 
 
 
