@@ -20,7 +20,6 @@ body {
   color: var(--chalk-white);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
   padding: 40px;
   min-height: 100vh;
 }
@@ -29,8 +28,10 @@ body {
 .blackboard {
   position: relative;
   width: min(1100px, 94vw);
-  /* NEW: make the board fill the viewport height (accounting for body padding) */
-  min-height: clamp(520px, calc(100dvh - 80px), 1100px); /* CHANGED */
+
+  /* ✨ Dynamic board height: fills viewport but adapts to content */
+  max-height: 94vh;
+  min-height: auto;
   border: 20px solid var(--chalkboard-frame);
   border-radius: 10px;
   background: 
@@ -41,28 +42,26 @@ body {
     0 20px 60px rgba(0, 0, 0, 0.7),
     inset 0 0 80px rgba(255,255,255,0.03);
   padding: 40px 60px;
-  overflow: hidden;
+  overflow: auto;
 }
 
-/* ✨ Organic Dust and Speckle — REPLACED to remove grain */
+/* 🌫️ Smudge Overlay (replaces grain) */
 .blackboard::before {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  /* Removed tiny dot patterns; using broad, smooth smudges instead */
-  opacity: 0.22; /* CHANGED: stronger but smooth */
+  opacity: 0.22;
   background:
     radial-gradient(540px 300px at 50% 42%, rgba(255,255,255,0.065), transparent 70%),
     radial-gradient(420px 240px at 30% 58%, rgba(255,255,255,0.05), transparent 72%),
     radial-gradient(460px 260px at 70% 62%, rgba(255,255,255,0.045), transparent 74%),
     radial-gradient(640px 360px at 50% 74%, rgba(255,255,255,0.03), transparent 78%);
   mix-blend-mode: soft-light;
-  /* Removed background-size/repeat that caused tiling/grain */
 }
 
-/* 🖍️ Scribble Overlay (kept) */
+/* 🖍️ Scribble Overlay */
 .scribble-overlay {
   position: absolute;
   inset: 0;
@@ -158,14 +157,13 @@ body {
 .recipe-item:nth-child(3n) { color: var(--chalk-blue); }
 .recipe-item:nth-child(5n) { color: var(--chalk-green); }
 
-/* 🌫️ Individual Dust Layer — REPLACED to avoid dotty grain */
+/* 🌫️ Dust Layer — simplified halo style */
 .recipe-item::after {
   content: '';
   position: absolute;
   inset: 0 0 0 10px;
   pointer-events: none;
-  /* Removed tiny dotted pattern; using a soft halo instead */
-  opacity: 0.12; /* CHANGED */
+  opacity: 0.12;
   background:
     radial-gradient(140px 100px at 0% 50%, rgba(255,255,255,0.18), transparent 70%);
   mix-blend-mode: screen;
@@ -176,8 +174,7 @@ body {
   .blackboard {
     width: 90%;
     padding: 30px 40px;
-    /* Ensure good mobile height even with dynamic browser chrome */
-    min-height: calc(100dvh - 80px); /* CHANGED */
+    max-height: 94vh;
   }
   .recipe-list {
     grid-template-columns: 1fr;
