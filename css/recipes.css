@@ -28,11 +28,12 @@ body {
 .blackboard {
   position: relative;
   width: min(1100px, 94vw);
-  height: 94vh; /* Fixed height with small padding room */
   max-height: 94vh;
+  height: fit-content;
+  min-height: 94vh;
   border: 20px solid var(--chalkboard-frame);
   border-radius: 10px;
-  background: 
+  background:
     radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 50%),
     radial-gradient(100% 140% at 20% 80%, rgba(255,255,255,0.035) 0%, transparent 55%),
     linear-gradient(180deg, var(--chalkboard-green-deep), var(--chalkboard-green-soft));
@@ -40,10 +41,17 @@ body {
     0 20px 60px rgba(0, 0, 0, 0.7),
     inset 0 0 80px rgba(255,255,255,0.03);
   padding: 40px 60px;
-  overflow: auto; /* Only scrolls if content overflows */
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  scrollbar-width: none; /* Optional for Firefox */
+}
+
+/* Remove scrollbar in WebKit browsers */
+.blackboard::-webkit-scrollbar {
+  display: none;
 }
 
 /* 🌫️ Smudge Overlay */
@@ -191,3 +199,4 @@ body {
     left: 15px;
   }
 }
+
