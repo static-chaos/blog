@@ -1,72 +1,60 @@
-body {
-  background-color: #f4f4f4;
-  font-family: 'Gloria Hallelujah', cursive;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding: 40px;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe List</title>
 
-.blackboard {
-  position: relative;
-  background-color: #0a0a0a; /* deep black */
-  border: 20px solid #5d4037;
-  border-radius: 8px;
-  padding: 40px;
-  width: 950px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.5);
-  background-image:
-    radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(rgba(255,255,255,0.015), rgba(255,255,255,0.015));
-  background-size: 10px 10px, 100% 100%;
-  color: white;
-  text-shadow: 1px 1px 2px rgba(255,255,255,0.2);
-  overflow: hidden;
-}
+  <!-- Base + Layout -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
 
-.blackboard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
-  opacity: 0.07; /* chalk dust effect */
-  pointer-events: none;
-}
+  <!-- Blackboard Styles -->
+  <link rel="stylesheet" href="css/recipes.css">
 
-.blackboard h1 {
-  text-align: center;
-  font-size: 3rem;
-  margin-bottom: 30px;
-  color: #fff;
-}
+  <!-- Google Font for Chalk Effect -->
+  <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+</head>
+<body>
 
-.recipe-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 60px;
-}
+  <!-- Header -->
+  <header>
+    <h1>Our Delicious Recipes</h1>
+  </header>
 
-.recipe-item {
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: color 0.3s, transform 0.2s;
-}
+  <!-- Sticky Nav -->
+  <div class="sticky-nav">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="recipes.html" class="active">Recipes</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
 
-.recipe-item:hover {
-  color: #ffeb3b;
-  transform: scale(1.05);
-}
+  <!-- Blackboard Section -->
+  <main class="blackboard">
+    <div class="blackboard-content">
+      <div class="column">
+        <ul>
+          <li>Chocolate Fudge Cake</li>
+          <li>Spaghetti Aglio e Olio</li>
+          <li>Classic Pancakes</li>
+          <li>Caesar Salad</li>
+          <li>Tomato Basil Soup</li>
+        </ul>
+      </div>
+      <div class="column">
+        <ul>
+          <li>Beef Stroganoff</li>
+          <li>Grilled Salmon</li>
+          <li>Banana Bread</li>
+          <li>Vegetable Stir-Fry</li>
+          <li>Apple Pie</li>
+        </ul>
+      </div>
+    </div>
+  </main>
 
-@media (max-width: 768px) {
-  .recipe-list {
-    grid-template-columns: 1fr;
-  }
-  .blackboard {
-    width: 90%;
-    padding: 20px;
-  }
-}
+</body>
+</html>
