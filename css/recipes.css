@@ -20,11 +20,13 @@ body {
   color: var(--chalk-white);
   display: flex;
   justify-content: center;
-  align-items: start; /* ❗️ was center, now allows top margin */
-  min-height: 100vh; /* allow content and margin to fill screen */
-  padding: 40px 0; /* 💡 adds top & bottom breathing room */
+  align-items: center;
+  min-height: 100vh;
+  padding: 60px 0; /* 👈 adds equal space top & bottom */
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow: hidden; /* 👈 prevents scroll unless board overflows */
+}
+
 }
 
 
@@ -32,7 +34,7 @@ body {
 .blackboard {
   position: relative;
   width: min(1100px, 94vw);
-  max-height: 100%;
+  height: 100%; /* 👈 fills available vertical space */
   border: 20px solid var(--chalkboard-frame);
   border-radius: 10px;
   background:
@@ -46,11 +48,9 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
-  height: auto;
 }
 
-
-/* 🔧 Optional: Hide scrollbars on WebKit */
+/* WebKit scrollbar hide */
 .blackboard::-webkit-scrollbar {
   display: none;
 }
@@ -201,6 +201,7 @@ body {
     left: 15px;
   }
 }
+
 
 
 
