@@ -28,9 +28,9 @@ body {
 .blackboard {
   position: relative;
   width: min(1100px, 94vw);
-  max-height: 94vh;
-  height: fit-content;
-  min-height: 94vh;
+  max-height: calc(100vh - 80px); /* Gives space for top and bottom */
+  min-height: calc(100vh - 80px);
+  margin: 40px 0; /* Adds vertical spacing */
   border: 20px solid var(--chalkboard-frame);
   border-radius: 10px;
   background:
@@ -43,16 +43,14 @@ body {
   padding: 40px 60px;
   overflow-y: auto;
   overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  scrollbar-width: none; /* Optional for Firefox */
+  scrollbar-width: none;
 }
 
-/* Remove scrollbar in WebKit browsers */
+/* 🔧 Optional: Hide scrollbars on WebKit */
 .blackboard::-webkit-scrollbar {
   display: none;
 }
+
 
 /* 🌫️ Smudge Overlay */
 .blackboard::before {
@@ -199,4 +197,5 @@ body {
     left: 15px;
   }
 }
+
 
