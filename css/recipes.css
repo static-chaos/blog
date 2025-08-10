@@ -27,8 +27,6 @@ body {
   overflow: hidden; /* 👈 prevents scroll unless board overflows */
 }
 
-}
-
 
 /* 🖼️ Blackboard Container */
 .blackboard {
@@ -201,6 +199,7 @@ body {
     left: 15px;
   }
 }
+
 
 
 
