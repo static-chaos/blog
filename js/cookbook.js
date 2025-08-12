@@ -44,6 +44,8 @@ if (recipeIndex === -1) {
 const recipe = recipes[recipeIndex];
 const spreads = buildSpreadsForRecipe(recipe);
 let currentSpreadIndex = 0;
+ console.log('Initial spread:', spreads[currentSpreadIndex]);
+     
 renderSpread(container, spreads[currentSpreadIndex]);
 
 
