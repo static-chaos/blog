@@ -1,61 +1,102 @@
-// Select the page spreads and navigation buttons
-const spreads = document.querySelectorAll('.page-spread');
-const nextBtn = document.getElementById('nextBtn');
-const prevBtn = document.getElementById('prevBtn');
+// cookbook.js
 
-// Initializing variables for navigation
-let currentIndex = 0;
-let isAnimating = false;
+// Load the cookbook data from the JSON file
+fetch('data/cookbook.json')
+  .then(response => response.json())
+  .then(data => {
+    const recipeList = data.recipes;
+    const recipeContainer = document.querySelector('.book-content');
+    let currentRecipeIndex = 0;
+    
+    // Function to generate and display a recipe spread
+    function displayRecipe(recipeIndex) {
+      const recipe = recipeList[recipeIndex];
+      recipeContainer.innerHTML = ''; // Clear the container
 
-// Function to update the spread and handle animation
-function updateSpread(nextIndex, direction) {
-  // Preventing animation if already animating or out of bounds
-  if (isAnimating || nextIndex < 0 || nextIndex >= spreads.length) return;
-  isAnimating = true;
+      const pages = generatePages(recipe);
+      pages.forEach((pageContent, index) => {
+        const page = document.createElement('div');
+        page.classList.add('page-spread');
+        page.classList.add(index === 0 ? 'active' : 'inactive');
+        page.innerHTML = pageContent;
+        recipeContainer.appendChild(page);
+      });
 
-  const current = spreads[currentIndex];
-  const next = spreads[nextIndex];
+      updateNav();
+    }
 
-  // Set up animations for next/prev page transitions
-  current.classList.add(direction === 'next' ? 'slide-out-left' : 'slide-out-right');
-  next.classList.add('page-spread', 'active', direction === 'next' ? 'slide-in-right' : 'slide-in-left');
+    // Function to generate the pages based on recipe content
+    function generatePages(recipe) {
+      const content = `
+        <div class="page left-page">
+          <h1 class="recipe-title">${recipe.name}</h1>
+          <img src="${recipe.image}" alt="${recipe.name}" class="recipe-image">
+          <h2>Ingredients</h2>
+          <ul class="ingredients">
+            ${recipe.ingredients.map(ingredient => `
+              <li>
+                <input type="checkbox" id="${ingredient}">
+                <label for="${ingredient}">${ingredient}</label>
+              </li>`).join('')}
+          </ul>
+        </div>
+        <div class="page right-page">
+          <h2>Instructions</h2>
+          <ol class="instructions">
+            ${recipe.instructions.map(step => `<li>${step}</li>`).join('')}
+          </ol>
+        </div>
+      `;
+      // Split content into separate pages if it overflows
+      const pages = [];
+      const pageLimit = 1500; // Approx character limit for each page
+      let currentPage = '';
+      let totalLength = 0;
 
-  // Reset animation after the transition completes
-  setTimeout(() => {
-    current.classList.remove('active', 'slide-out-left', 'slide-out-right');
-    next.classList.remove('slide-in-left', 'slide-in-right');
-    currentIndex = nextIndex;
-    isAnimating = false;
-    updateNav();
-  }, 600); // Duration to match animation timing
-}
+      // Split content into pages based on character limit
+      while (totalLength < content.length) {
+        let nextContent = content.slice(totalLength, totalLength + pageLimit);
+        currentPage += nextContent;
+        totalLength += nextContent.length;
 
-// Function to update the navigation buttons based on the current page index
-function updateNav() {
-  prevBtn.disabled = currentIndex === 0;
-  nextBtn.disabled = currentIndex === spreads.length - 1;
-}
+        if (currentPage.length >= pageLimit) {
+          pages.push(currentPage);
+          currentPage = '';
+        }
+      }
 
-// Add event listeners to the next/prev buttons
-nextBtn.addEventListener('click', () => {
-  updateSpread(currentIndex + 1, 'next');
-});
+      if (currentPage) {
+        pages.push(currentPage); // Push remaining content to a final page
+      }
 
-prevBtn.addEventListener('click', () => {
-  updateSpread(currentIndex - 1, 'prev');
-});
+      return pages;
+    }
 
-// Function to go back to the recipe list page
-function goBack() {
-  window.location.href = 'recipe.html'; // Adjust the path if needed
-}
+    // Navigation buttons for flipping pages
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-// Set up initial spread states
-spreads.forEach((spread, i) => {
-  spread.style.zIndex = spreads.length - i; // Stack higher index below
-});
-spreads[0].classList.add('active');
-updateNav();
+    prevBtn.addEventListener('click', () => {
+      if (currentRecipeIndex > 0) {
+        currentRecipeIndex--;
+        displayRecipe(currentRecipeIndex);
+      }
+    });
 
-// Optional: Add event listener for the back button
-document.getElementById('backBtn').addEventListener('click', goBack);
+    nextBtn.addEventListener('click', () => {
+      if (currentRecipeIndex < recipeList.length - 1) {
+        currentRecipeIndex++;
+        displayRecipe(currentRecipeIndex);
+      }
+    });
+
+    // Initial load of the first recipe
+    displayRecipe(currentRecipeIndex);
+
+    // Update the navigation buttons state
+    function updateNav() {
+      prevBtn.disabled = currentRecipeIndex === 0;
+      nextBtn.disabled = currentRecipeIndex === recipeList.length - 1;
+    }
+  })
+  .catch(error => console.error('Error loading recipe data:', error));
