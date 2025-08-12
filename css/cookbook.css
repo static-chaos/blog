@@ -91,13 +91,13 @@ body {
 
 /* Left page crease shadow */
 .left-page {
-  box-shadow: inset -8px 0 12px rgba(0, 0, 0, 0.07);
+  box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
   border-radius: 0 0 0 8px;
 }
 
 /* Right page crease shadow */
 .right-page {
-  box-shadow: inset 8px 0 12px rgba(0, 0, 0, 0.07);
+  box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
   border-radius: 0 0 8px 0;
 }
 
