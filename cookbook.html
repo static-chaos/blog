@@ -16,11 +16,11 @@
     </div>
   </div>
 
-  <script src="recipes.js"></script> <!-- External JS file handling data -->
+  <script src="cookbook.js"></script> <!-- External JS file handling data -->
   <script>
     // Function to load recipes dynamically from JSON
     function loadRecipes() {
-      fetch('recipes.json') // This assumes your recipes data is stored in recipes.json
+      fetch('data/cookbook.json') // This assumes your recipes data is stored in recipes.json
         .then(response => response.json()) 
         .then(data => {
           const recipeListContainer = document.querySelector('.recipe-list');
