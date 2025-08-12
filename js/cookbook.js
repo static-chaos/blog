@@ -1,40 +1,26 @@
 /****************************************************
- * js/cookbook.js — Two-Page Spreads, Single Recipe
+ * js/cookbook.js — No Images, Auto Pagination, No Scroll
  ****************************************************/
-
-const INGREDIENTS_PER_PAGE = 8;
-const STEPS_PER_PAGE = 5;
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.recipe-book .book-content');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
-  if (!container) return console.error('Missing .recipe-book .book-content element');
-
   fetch('data/cookbook.json')
-    .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json();
-    })
+    .then(r => r.json())
     .then(data => {
       const recipes = Array.isArray(data?.recipes) ? data.recipes : [];
       if (recipes.length === 0) {
-        container.innerHTML = `<p style="color:#c00">No recipes found in data/cookbook.json</p>`;
+        container.innerHTML = `<p style="color:#c00">No recipes found</p>`;
         return;
       }
 
-      // --- Choose recipe based on URL hash, fallback to first ---
-      const slugFromHash = window.location.hash.slice(1);
-      const toSlug = s => String(s)
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-]/g, '');
-
+      const slugFromHash = window.location.hash.slice(1).toLowerCase();
+      const toSlug = s => String(s).toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
       let recipeIndex = slugFromHash
         ? recipes.findIndex(r => toSlug(r.name) === slugFromHash)
-        : -1;
+        : 0;
       if (recipeIndex === -1) recipeIndex = 0;
 
       const recipe = recipes[recipeIndex];
@@ -43,143 +29,137 @@ document.addEventListener('DOMContentLoaded', () => {
 
       renderSpread(container, spreads[currentSpreadIndex]);
 
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          if (currentSpreadIndex > 0) {
-            currentSpreadIndex--;
-            renderSpread(container, spreads[currentSpreadIndex]);
-          }
-        });
-      }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          if (currentSpreadIndex < spreads.length - 1) {
-            currentSpreadIndex++;
-            renderSpread(container, spreads[currentSpreadIndex]);
-          }
-        });
-      }
+      prevBtn.addEventListener('click', () => {
+        if (currentSpreadIndex > 0) {
+          currentSpreadIndex--;
+          renderSpread(container, spreads[currentSpreadIndex]);
+        }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (currentSpreadIndex < spreads.length - 1) {
+          currentSpreadIndex++;
+          renderSpread(container, spreads[currentSpreadIndex]);
+        }
+      });
     })
     .catch(err => {
-      console.error('Failed to load cookbook JSON:', err);
-      container.innerHTML = `<p style="color:#c00">Failed to load data/cookbook.json</p>`;
+      console.error(err);
+      container.innerHTML = `<p style="color:#c00">Error loading recipes</p>`;
     });
 });
 
-/* -------------------- Build spreads per recipe -------------------- */
-
+/* ---------- Pagination logic ---------- */
 function buildSpreadsForRecipe(recipe) {
   const pages = generatePages(recipe);
   return pairPagesIntoSpreads(pages);
 }
 
-/**
- * New generator with:
- * - Continuous flow (no clipping, no scroll required)
- * - Section headings once per page
- * - Continuous numbering for instructions across pages
- */
 function generatePages(recipe) {
   const pages = [];
-
   const name = recipe?.name ?? 'Untitled Recipe';
   const description = recipe?.description ?? '';
-  const imageUrl = recipe?.image ?? '';
 
-  const ingObjs = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
-  const ingredients = [...ingObjs.map(formatIngredient)];
+  const ingredients = Array.isArray(recipe?.ingredients)
+    ? recipe.ingredients.map(formatIngredient)
+    : [];
   const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
-
   const notes = Array.isArray(recipe?.extra_notes)
     ? [...recipe.extra_notes]
-    : recipe?.extra_notes
-    ? [recipe.extra_notes]
-    : [];
+    : recipe?.extra_notes ? [recipe.extra_notes] : [];
 
-  // 1) First page — title/desc/image + first chunk of ingredients and/or steps
-  {
-    let html = `
-      <header class="page-header">
-        <h2 class="recipe-title">${escapeHtml(name)}</h2>
-        ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
-      </header>
-      ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}"></figure>` : ''}
-    `;
+  const totalSteps = steps.length;
+  let stepCounter = 1;
 
-    const ingSlice = ingredients.splice(0, INGREDIENTS_PER_PAGE);
-    if (ingSlice.length) {
-      html += `
-        <div class="ingredients">
-          <h3 class="section-title">Ingredients</h3>
-          <ul class="ingredient-list">
-            ${ingSlice.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
-          </ul>
-        </div>`;
-    }
+  // Create a hidden measurer
+  const measurer = document.createElement('div');
+  measurer.style.cssText = `
+    position:absolute;visibility:hidden;pointer-events:none;
+    width:450px;height:auto;padding:2em 3em;box-sizing:border-box;
+    font-family:'Playfair Display', serif;font-size:1.1em;line-height:1.5;
+  `;
+  document.body.appendChild(measurer);
 
-    // First page steps slice
-    const stepSlice = steps.splice(0, STEPS_PER_PAGE);
-    if (stepSlice.length) {
-      html += renderInstructionsBlockWithStart(stepSlice, 1); // start numbering at 1
-    }
-
-    pages.push(wrapPage(html));
+  function flushPage(blocks) {
+    pages.push(`<section class="page">${blocks.join('')}</section>`);
   }
 
-  // 2) Keep adding pages until both arrays are empty
-  let stepStart = 1 + 0; // we don't know how many were on first page yet
-  // We'll recompute based on what we already used (the first slice above)
-  // Easiest way: count how many steps remain vs original length
-  // But we already consumed stepSlice; so compute start index now:
-  stepStart = 1 + (0); // placeholder, we'll increment below as we place slices
-  let stepsPlacedSoFar = 0;
+  // First page: title + optional description
+  let blocks = [];
+  measurer.innerHTML = '';
+  measurer.innerHTML += `<header class="page-header">
+    <h2 class="recipe-title">${escapeHtml(name)}</h2>
+    ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
+  </header>`;
 
-  // We already placed some steps on page 1; increase stepsPlacedSoFar accordingly
-  // Since we don't have the exact slice length here, recalc from recipe length:
-  // Not available directly; simpler fix: keep a local tracker.
-  // Refactor: we track slices explicitly.
+  let usedHeight = measurer.offsetHeight;
 
-  // To get exact count, we can derive it:
-  // totalSteps = (recipe?.instructions || []).length
-  const totalSteps = Array.isArray(recipe?.instructions) ? recipe.instructions.length : 0;
-  const remainingSteps = steps.length;
-  stepsPlacedSoFar = totalSteps - remainingSteps;
-  stepStart = stepsPlacedSoFar + 1;
+  const pageInnerHeight = 600; // container height in px
+  const paddingY = 2 * 32; // 2em top & bottom (~32px each)
+  const maxContentHeight = pageInnerHeight - paddingY;
 
-  while (ingredients.length || steps.length) {
-    let html = '';
-
-    const ingSlice = ingredients.splice(0, INGREDIENTS_PER_PAGE);
-    if (ingSlice.length) {
-      html += `
-        <div class="ingredients">
-          <h3 class="section-title">Ingredients</h3>
-          <ul class="ingredient-list">
-            ${ingSlice.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
-          </ul>
-        </div>`;
+  // Add ingredients and steps dynamically
+  const addBlock = html => {
+    measurer.innerHTML += html;
+    if (measurer.offsetHeight <= maxContentHeight) {
+      blocks.push(html);
+      usedHeight = measurer.offsetHeight;
+      return true;
+    } else {
+      measurer.innerHTML = measurer.innerHTML.slice(0, -(html.length));
+      return false;
     }
+  };
 
-    const stepSlice = steps.splice(0, STEPS_PER_PAGE);
-    if (stepSlice.length) {
-      html += renderInstructionsBlockWithStart(stepSlice, stepStart);
-      stepsPlacedSoFar += stepSlice.length;
-      stepStart = stepsPlacedSoFar + 1;
+  const addListItems = (items, type) => {
+    let listOpen = type === 'ol'
+      ? `<ol class="step-list" start="${stepCounter}">`
+      : `<ul class="ingredient-list">`;
+    let currentList = listOpen;
+    for (let i = 0; i < items.length; ) {
+      const itemHtml = `<li>${escapeHtml(items[i])}</li>`;
+      if (addBlock(currentList + itemHtml + (type==='ol'?'</ol>':'</ul>'))) {
+        currentList += itemHtml;
+        i++;
+        if (type === 'ol') stepCounter++;
+      } else {
+        // close off and flush
+        currentList += type==='ol' ? '</ol>' : '</ul>';
+        blocks.push(currentList);
+        flushPage(blocks);
+        blocks = [];
+        measurer.innerHTML = '';
+        usedHeight = 0;
+        // reopen list for remaining items
+        currentList = listOpen;
+      }
     }
-
-    // Edge case: if nothing was added (shouldn't happen), add a blank
-    if (!ingSlice.length && !stepSlice.length) {
-      html += `<div class="blank-content"></div>`;
+    if (currentList !== listOpen) {
+      currentList += type==='ol' ? '</ol>' : '</ul>';
+      blocks.push(currentList);
     }
+  };
 
-    pages.push(wrapPage(html));
+  // Ingredients
+  if (ingredients.length) {
+    blocks.push(`<h3 class="section-title">Ingredients</h3>`);
+    addListItems(ingredients, 'ul');
   }
 
-  // 3) Notes after everything
-  while (notes.length > 0) {
-    pages.push(renderNotes(notes.splice(0, STEPS_PER_PAGE)));
+  // Instructions
+  if (steps.length) {
+    blocks.push(`<h3 class="section-title">Instructions</h3>`);
+    addListItems(steps, 'ol');
   }
 
+  // Notes
+  if (notes.length) {
+    blocks.push(`<h3 class="section-title">Notes</h3>`);
+    addListItems(notes, 'ul');
+  }
+
+  flushPage(blocks);
+
+  document.body.removeChild(measurer);
   return pages;
 }
 
@@ -194,77 +174,25 @@ function pairPagesIntoSpreads(pages) {
   return spreads;
 }
 
-/* -------------------- Render helpers -------------------- */
-
-function renderInstructionsBlockWithStart(steps, startIndex) {
-  // Uses the HTML5 start attribute to continue numbering across pages
-  return `
-    <div class="instructions">
-      <h3 class="section-title">Instructions</h3>
-      <ol class="step-list" start="${startIndex}">
-        ${steps.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
-      </ol>
-    </div>
-  `;
-}
-
-// Keeping your original helpers for compatibility (not used by the new generator for steps)
-function renderNotes(notes) {
-  if (!notes || notes.length === 0) return renderBlankPage();
-  return `
-    <section class="page">
-      <h3 class="section-title">Notes</h3>
-      <ul class="notes">
-        ${notes.map(n => `<li>${escapeHtml(n)}</li>`).join('')}
-      </ul>
-    </section>
-  `;
-}
-
-function renderBlankPage() {
-  return `<section class="page blank"><div class="blank-content"></div></section>`;
-}
-
-/* -------------------- DOM render -------------------- */
-
 function renderSpread(container, spread) {
-  container.innerHTML = `
-    <div class="page-spread active">
-      ${spread.left || ''}
-      ${spread.right || ''}
-    </div>
-  `;
-
-  const spreadEl = container.querySelector('.page-spread');
-  if (!spreadEl) return;
-
-  const pages = spreadEl.querySelectorAll('.page');
+  container.innerHTML = `<div class="page-spread active">
+    ${spread.left || ''}
+    ${spread.right || ''}
+  </div>`;
+  const pages = container.querySelectorAll('.page');
   if (pages[0]) pages[0].classList.add('left-page');
   if (pages[1]) pages[1].classList.add('right-page');
 }
-
-/* -------------------- Utilities -------------------- */
 
 function formatIngredient(obj) {
   if (!obj) return '';
   const item = obj.item != null ? String(obj.item) : '';
   const qty = obj.quantity != null ? String(obj.quantity) : '';
-  if (item && qty) return `${item} — ${qty}`;
-  return item || qty || '';
+  return item && qty ? `${item} — ${qty}` : item || qty || '';
 }
-
 function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-function escapeAttr(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;');
-}
-
-function wrapPage(inner) {
-  return `<section class="page">${inner}</section>`;
+function renderBlankPage() {
+  return `<section class="page blank"><div class="blank-content"></div></section>`;
 }
