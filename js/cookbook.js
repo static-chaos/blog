@@ -1,75 +1,64 @@
 /****************************************************
- * cookbook.js — Two-Page Spread Builder with JSON
+ * js/cookbook.js — Two-Page Spreads, Single Recipe
  ****************************************************/
 
-// Tunables: adjust after testing your fixed page height
+// Adjust to match your chosen fixed page height
 const INGREDIENTS_PER_PAGE = 8;
 const STEPS_PER_PAGE = 5;
 
-/**
- * Entry point — fetch the JSON and render spreads
- */
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('data/cookbook.json')
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    })
-    .then(recipeData => {
-      // If your JSON has multiple recipes, pick the first:
-      // const recipe = recipeData[0];
-      const recipe = recipeData; 
-      initCookbook(recipe);
-    })
-    .catch(err => {
-      console.error('Error loading recipe JSON:', err);
-      const leftEl = document.getElementById('leftPage');
-      if (leftEl) {
-        leftEl.innerHTML = `<p style="color:red;">Failed to load recipe data.</p>`;
-      }
-    });
-});
-
-/**
- * Initialize UI and navigation for a recipe
- */
-function initCookbook(recipe) {
-  const spreads = generateSpreads(recipe);
-  let currentSpread = 0;
-
-  const leftEl = document.getElementById('leftPage');
-  const rightEl = document.getElementById('rightPage');
-
-  function renderSpread(index) {
-    const spread = spreads[index];
-    if (leftEl) leftEl.innerHTML = spread.left;
-    if (rightEl) rightEl.innerHTML = spread.right;
-  }
-
-  renderSpread(currentSpread);
-
+  const container = document.querySelector('.recipe-book .book-content');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
-  if (prevBtn && nextBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (currentSpread > 0) {
-        currentSpread--;
-        renderSpread(currentSpread);
-      }
-    });
-    nextBtn.addEventListener('click', () => {
-      if (currentSpread < spreads.length - 1) {
-        currentSpread++;
-        renderSpread(currentSpread);
-      }
-    });
-  }
-}
+  if (!container) return console.error('Missing .recipe-book .book-content element');
 
-/* -------------------- Paging Core -------------------- */
+  fetch('data/cookbook.json')
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
+    .then(data => {
+      const recipes = Array.isArray(data?.recipes) ? data.recipes : [];
+      if (recipes.length === 0) {
+        container.innerHTML = `<p style="color:#c00">No recipes found in data/cookbook.json</p>`;
+        return;
+      }
 
-function generateSpreads(recipe) {
+      // Load only the first recipe
+      const recipe = recipes[0];
+      const spreads = buildSpreadsForRecipe(recipe);
+      let currentSpreadIndex = 0;
+
+      renderSpread(container, spreads[currentSpreadIndex]);
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (currentSpreadIndex > 0) {
+            currentSpreadIndex--;
+            renderSpread(container, spreads[currentSpreadIndex]);
+          }
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (currentSpreadIndex < spreads.length - 1) {
+            currentSpreadIndex++;
+            renderSpread(container, spreads[currentSpreadIndex]);
+          }
+        });
+      }
+    })
+    .catch(err => {
+      console.error('Failed to load cookbook JSON:', err);
+      container.innerHTML = `<p style="color:#c00">Failed to load data/cookbook.json</p>`;
+    });
+});
+
+/* -------------------- Build spreads per recipe -------------------- */
+
+function buildSpreadsForRecipe(recipe) {
   const pages = generatePages(recipe);
   return pairPagesIntoSpreads(pages);
 }
@@ -77,35 +66,38 @@ function generateSpreads(recipe) {
 function generatePages(recipe) {
   const pages = [];
 
-  const title = recipe?.title ?? 'Untitled Recipe';
+  const name = recipe?.name ?? 'Untitled Recipe';
+  const description = recipe?.description ?? '';
   const imageUrl = recipe?.image ?? '';
-  const ing = Array.isArray(recipe?.ingredients) ? [...recipe.ingredients] : [];
+
+  const ingObjs = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
+  const ingredients = ingObjs.map(formatIngredient);
   const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
-  const notes = Array.isArray(recipe?.notes)
-    ? [...recipe.notes]
-    : recipe?.notes
-    ? [recipe.notes]
+  const notes = Array.isArray(recipe?.extra_notes)
+    ? [...recipe.extra_notes]
+    : recipe?.extra_notes
+    ? [recipe.extra_notes]
     : [];
 
-  // Page 1
-  const page1Ingredients = ing.splice(0, INGREDIENTS_PER_PAGE);
-  pages.push(renderTitleImageIngredients(title, imageUrl, page1Ingredients));
+  // Page 1: Title + description + image + some ingredients
+  const page1Ingredients = ingredients.splice(0, INGREDIENTS_PER_PAGE);
+  pages.push(renderTitleImageIngredients(name, description, imageUrl, page1Ingredients));
 
-  // Page 2
+  // Page 2: remaining ingredients + start of instructions OR just start instructions
   const startSteps = steps.splice(0, STEPS_PER_PAGE);
-  if (ing.length > 0) {
-    const page2Ingredients = ing.splice(0, INGREDIENTS_PER_PAGE);
+  if (ingredients.length > 0) {
+    const page2Ingredients = ingredients.splice(0, INGREDIENTS_PER_PAGE);
     pages.push(renderIngredientsAndInstructions(page2Ingredients, startSteps));
   } else {
     pages.push(renderInstructions(startSteps));
   }
 
-  // Page 3+
+  // Page 3+: continue instructions
   while (steps.length > 0) {
     pages.push(renderInstructions(steps.splice(0, STEPS_PER_PAGE)));
   }
 
-  // Notes pages
+  // Notes pages (optional)
   while (notes.length > 0) {
     pages.push(renderNotes(notes.splice(0, STEPS_PER_PAGE)));
   }
@@ -124,13 +116,14 @@ function pairPagesIntoSpreads(pages) {
   return spreads;
 }
 
-/* -------------------- Render Helpers -------------------- */
+/* -------------------- Render helpers -------------------- */
 
-function renderTitleImageIngredients(title, imageUrl, ingredients) {
+function renderTitleImageIngredients(title, description, imageUrl, ingredients) {
   return `
     <section class="page">
       <header class="page-header">
-        <h1 class="recipe-title">${escapeHtml(title)}</h1>
+        <h2 class="recipe-title">${escapeHtml(title)}</h2>
+        ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
       </header>
       ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(title)}"></figure>` : ''}
       ${renderIngredientsBlock(ingredients)}
@@ -209,11 +202,35 @@ function renderBlankPage() {
   return `<section class="page blank"><div class="blank-content"></div></section>`;
 }
 
-/* -------------------- Utils -------------------- */
+/* -------------------- DOM render -------------------- */
+
+function renderSpread(container, spread) {
+  container.innerHTML = `
+    <div class="spread">
+      ${spread.left}
+      ${spread.right}
+    </div>
+  `;
+}
+
+/* -------------------- Utilities -------------------- */
+
+function formatIngredient(obj) {
+  if (!obj) return '';
+  const item = obj.item != null ? String(obj.item) : '';
+  const qty = obj.quantity != null ? String(obj.quantity) : '';
+  if (item && qty) return `${item} — ${qty}`;
+  return item || qty || '';
+}
 
 function escapeHtml(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 function escapeAttr(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;');
 }
