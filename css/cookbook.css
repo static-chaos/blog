@@ -75,7 +75,7 @@ body {
   box-sizing: border-box;
   background-color: #fffdfa;
   box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.05), inset -2px 0 4px rgba(0, 0, 0, 0.05);
-  overflow-y: auto;
+  overflow-y: hidden;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
   border-radius: 0 0 8px 0;
