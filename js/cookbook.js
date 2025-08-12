@@ -2,7 +2,6 @@
  * js/cookbook.js — Two-Page Spreads, Single Recipe
  ****************************************************/
 
-// These act as rough budgets — actual flow continues onto more pages if needed
 const INGREDIENTS_PER_PAGE = 8;
 const STEPS_PER_PAGE = 5;
 
@@ -75,10 +74,10 @@ function buildSpreadsForRecipe(recipe) {
 }
 
 /**
- * Unified flow generator:
- * - Starts with title/description/image on the first page.
- * - Adds ingredients, then instructions, continuing until both lists are done.
- * - Section headings appear only once per section per page.
+ * New generator with:
+ * - Continuous flow (no clipping, no scroll required)
+ * - Section headings once per page
+ * - Continuous numbering for instructions across pages
  */
 function generatePages(recipe) {
   const pages = [];
@@ -90,88 +89,93 @@ function generatePages(recipe) {
   const ingObjs = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
   const ingredients = [...ingObjs.map(formatIngredient)];
   const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
+
   const notes = Array.isArray(recipe?.extra_notes)
     ? [...recipe.extra_notes]
     : recipe?.extra_notes
     ? [recipe.extra_notes]
     : [];
 
-  // Page builder: place ingredients then steps until done
-  let firstPageHtml = `
-    <header class="page-header">
-      <h2 class="recipe-title">${escapeHtml(name)}</h2>
-      ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
-    </header>
-    ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}"></figure>` : ''}
-  `;
+  // 1) First page — title/desc/image + first chunk of ingredients and/or steps
+  {
+    let html = `
+      <header class="page-header">
+        <h2 class="recipe-title">${escapeHtml(name)}</h2>
+        ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
+      </header>
+      ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(name)}"></figure>` : ''}
+    `;
 
-  let pageIngredients = [];
-  let pageSteps = [];
-
-  while (ingredients.length && pageIngredients.length < INGREDIENTS_PER_PAGE) {
-    pageIngredients.push(ingredients.shift());
-  }
-  if (pageIngredients.length) {
-    firstPageHtml += `
-      <div class="ingredients">
-        <h3 class="section-title">Ingredients</h3>
-        <ul class="ingredient-list">
-          ${pageIngredients.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
-        </ul>
-      </div>`;
-  }
-
-  while (steps.length && pageSteps.length < STEPS_PER_PAGE) {
-    pageSteps.push(steps.shift());
-  }
-  if (pageSteps.length) {
-    firstPageHtml += `
-      <div class="instructions">
-        <h3 class="section-title">Instructions</h3>
-        <ol class="step-list">
-          ${pageSteps.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
-        </ol>
-      </div>`;
-  }
-
-  pages.push(wrapPage(firstPageHtml));
-
-  // Remaining pages — keep flowing ingredients and/or steps
-  while (ingredients.length || steps.length) {
-    let html = '';
-    let ingThisPage = [];
-    let stepsThisPage = [];
-
-    while (ingredients.length && ingThisPage.length < INGREDIENTS_PER_PAGE) {
-      ingThisPage.push(ingredients.shift());
-    }
-    if (ingThisPage.length) {
+    const ingSlice = ingredients.splice(0, INGREDIENTS_PER_PAGE);
+    if (ingSlice.length) {
       html += `
         <div class="ingredients">
           <h3 class="section-title">Ingredients</h3>
           <ul class="ingredient-list">
-            ${ingThisPage.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
+            ${ingSlice.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
           </ul>
         </div>`;
     }
 
-    while (steps.length && stepsThisPage.length < STEPS_PER_PAGE) {
-      stepsThisPage.push(steps.shift());
-    }
-    if (stepsThisPage.length) {
-      html += `
-        <div class="instructions">
-          <h3 class="section-title">Instructions</h3>
-          <ol class="step-list">
-            ${stepsThisPage.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
-          </ol>
-        </div>`;
+    // First page steps slice
+    const stepSlice = steps.splice(0, STEPS_PER_PAGE);
+    if (stepSlice.length) {
+      html += renderInstructionsBlockWithStart(stepSlice, 1); // start numbering at 1
     }
 
     pages.push(wrapPage(html));
   }
 
-  // Notes at the end
+  // 2) Keep adding pages until both arrays are empty
+  let stepStart = 1 + 0; // we don't know how many were on first page yet
+  // We'll recompute based on what we already used (the first slice above)
+  // Easiest way: count how many steps remain vs original length
+  // But we already consumed stepSlice; so compute start index now:
+  stepStart = 1 + (0); // placeholder, we'll increment below as we place slices
+  let stepsPlacedSoFar = 0;
+
+  // We already placed some steps on page 1; increase stepsPlacedSoFar accordingly
+  // Since we don't have the exact slice length here, recalc from recipe length:
+  // Not available directly; simpler fix: keep a local tracker.
+  // Refactor: we track slices explicitly.
+
+  // To get exact count, we can derive it:
+  // totalSteps = (recipe?.instructions || []).length
+  const totalSteps = Array.isArray(recipe?.instructions) ? recipe.instructions.length : 0;
+  const remainingSteps = steps.length;
+  stepsPlacedSoFar = totalSteps - remainingSteps;
+  stepStart = stepsPlacedSoFar + 1;
+
+  while (ingredients.length || steps.length) {
+    let html = '';
+
+    const ingSlice = ingredients.splice(0, INGREDIENTS_PER_PAGE);
+    if (ingSlice.length) {
+      html += `
+        <div class="ingredients">
+          <h3 class="section-title">Ingredients</h3>
+          <ul class="ingredient-list">
+            ${ingSlice.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
+          </ul>
+        </div>`;
+    }
+
+    const stepSlice = steps.splice(0, STEPS_PER_PAGE);
+    if (stepSlice.length) {
+      html += renderInstructionsBlockWithStart(stepSlice, stepStart);
+      stepsPlacedSoFar += stepSlice.length;
+      stepStart = stepsPlacedSoFar + 1;
+    }
+
+    // Edge case: if nothing was added (shouldn't happen), add a blank
+    if (!ingSlice.length && !stepSlice.length) {
+      html += `<div class="blank-content"></div>`;
+    }
+
+    pages.push(wrapPage(html));
+  }
+
+  // 3) Notes after everything
   while (notes.length > 0) {
     pages.push(renderNotes(notes.splice(0, STEPS_PER_PAGE)));
   }
@@ -192,6 +196,19 @@ function pairPagesIntoSpreads(pages) {
 
 /* -------------------- Render helpers -------------------- */
 
+function renderInstructionsBlockWithStart(steps, startIndex) {
+  // Uses the HTML5 start attribute to continue numbering across pages
+  return `
+    <div class="instructions">
+      <h3 class="section-title">Instructions</h3>
+      <ol class="step-list" start="${startIndex}">
+        ${steps.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
+      </ol>
+    </div>
+  `;
+}
+
+// Keeping your original helpers for compatibility (not used by the new generator for steps)
 function renderNotes(notes) {
   if (!notes || notes.length === 0) return renderBlankPage();
   return `
@@ -211,7 +228,6 @@ function renderBlankPage() {
 /* -------------------- DOM render -------------------- */
 
 function renderSpread(container, spread) {
-  // Ensure visibility with active class
   container.innerHTML = `
     <div class="page-spread active">
       ${spread.left || ''}
@@ -220,10 +236,7 @@ function renderSpread(container, spread) {
   `;
 
   const spreadEl = container.querySelector('.page-spread');
-  if (!spreadEl) {
-    console.error('No .page-spread rendered');
-    return;
-  }
+  if (!spreadEl) return;
 
   const pages = spreadEl.querySelectorAll('.page');
   if (pages[0]) pages[0].classList.add('left-page');
