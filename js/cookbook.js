@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const spreads = buildSpreadsForRecipe(recipe);
       let currentSpreadIndex = 0;
 
-      console.log('Initial spread:', spreads[currentSpreadIndex]);
+      console.log('Initial spread object:', spreads[currentSpreadIndex]);
 
       renderSpread(container, spreads[currentSpreadIndex]);
 
@@ -87,7 +87,7 @@ function generatePages(recipe) {
   const description = recipe?.description ?? '';
   const imageUrl = recipe?.image ?? '';
 
-  // --- CLONE ARRAYS so splice() won't destroy source data ---
+  // Clone arrays so splice() does not mutate source data
   const ingObjs = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
   const ingredients = [...ingObjs.map(formatIngredient)];
 
@@ -227,17 +227,37 @@ function renderBlankPage() {
 /* -------------------- DOM render -------------------- */
 
 function renderSpread(container, spread) {
-  const leftHtml  = spread.left.replace('class="page"', 'class="page left-page"');
-  const rightHtml = spread.right.replace('class="page"', 'class="page right-page"');
-
-  console.log('Rendering spread:', { leftHtml, rightHtml });
-
+  // Insert raw pages first (no fragile string replacement)
   container.innerHTML = `
     <div class="page-spread">
-      ${leftHtml}
-      ${rightHtml}
+      ${spread.left || ''}
+      ${spread.right || ''}
     </div>
   `;
+
+  // Add left/right classes to the first two .page elements
+  const spreadEl = container.querySelector('.page-spread');
+  if (!spreadEl) {
+    console.error('No .page-spread rendered');
+    return;
+  }
+
+  const pages = spreadEl.querySelectorAll('.page');
+  if (pages[0]) pages[0].classList.add('left-page');
+  if (pages[1]) pages[1].classList.add('right-page');
+
+  // Debug visibility checks
+  if (!pages.length) {
+    console.warn('No .page elements found inside .page-spread. left/right was:', {
+      left: spread.left,
+      right: spread.right
+    });
+  } else {
+    console.log('Rendered pages:', {
+      leftInnerText: pages[0]?.innerText?.slice(0, 120),
+      rightInnerText: pages[1]?.innerText?.slice(0, 120)
+    });
+  }
 }
 
 /* -------------------- Utilities -------------------- */
