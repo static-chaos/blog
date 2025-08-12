@@ -1,119 +1,180 @@
-// cookbook.js
+// step1-book-paging.js
 
-// Load the cookbook data from the JSON file
-fetch('data/cookbook.json')
-  .then(response => response.json())
-  .then(data => {
-    const recipeList = data.recipes;
-    const recipeContainer = document.querySelector('.book-content');
-    let currentRecipeIndex = 0;
+// Tunables: pick counts that fit your fixed page height.
+export const INGREDIENTS_PER_PAGE = 8;
+export const STEPS_PER_PAGE = 5;
 
-    // Check for a fragment identifier in the URL and load the corresponding recipe
-    function getRecipeFromURL() {
-      const urlFragment = window.location.hash.replace('#', '');
-      if (urlFragment) {
-        const recipeIndex = recipeList.findIndex(recipe => recipe.name.toLowerCase().replace(/\s+/g, '-') === urlFragment);
-        if (recipeIndex !== -1) {
-          return recipeIndex;
-        }
-      }
-      return 0; // Default to the first recipe if no valid fragment is found
-    }
+/**
+ * Public: build two-page spreads for a recipe.
+ * Returns: [{ left: "<html>", right: "<html>" }, ...]
+ */
+export function generateSpreads(recipe) {
+  const pages = generatePages(recipe);
+  return pairPagesIntoSpreads(pages);
+}
 
-    currentRecipeIndex = getRecipeFromURL();
+/**
+ * Build sequential single-page HTML chunks in logical order:
+ * 1) Title + image + some/all ingredients
+ * 2) Remaining ingredients (if any) + start of instructions
+ * 3+) Continue instructions
+ * 4+) Optional notes at the end
+ */
+export function generatePages(recipe) {
+  const pages = [];
 
-    // Function to generate and display a recipe spread (pages)
-    function displayRecipe(recipeIndex) {
-      const recipe = recipeList[recipeIndex];
-      recipeContainer.innerHTML = ''; // Clear the container
+  const title = recipe?.title ?? "Untitled Recipe";
+  const imageUrl = recipe?.image ?? "";
+  const ing = Array.isArray(recipe?.ingredients) ? [...recipe.ingredients] : [];
+  const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
+  const notes = Array.isArray(recipe?.notes)
+    ? [...recipe.notes]
+    : recipe?.notes
+    ? [recipe.notes]
+    : [];
 
-      const pages = generatePages(recipe);
-      pages.forEach((pageContent, index) => {
-        const page = document.createElement('div');
-        page.classList.add('page-spread');
-        page.classList.add(index === 0 ? 'active' : 'inactive');
-        page.innerHTML = pageContent;
-        recipeContainer.appendChild(page);
-      });
+  // Page 1: Title + image + initial ingredients
+  const page1Ingredients = ing.splice(0, INGREDIENTS_PER_PAGE);
+  pages.push(renderTitleImageIngredients(title, imageUrl, page1Ingredients));
 
-      updateNav();
-    }
+  // Page 2: remaining ingredients + start instructions OR just start instructions
+  const startSteps = steps.splice(0, STEPS_PER_PAGE);
+  if (ing.length > 0) {
+    const page2Ingredients = ing.splice(0, INGREDIENTS_PER_PAGE);
+    pages.push(renderIngredientsAndInstructions(page2Ingredients, startSteps));
+  } else {
+    pages.push(renderInstructions(startSteps));
+  }
 
-    // Function to generate the pages based on recipe content
-    function generatePages(recipe) {
-      const content = `
-        <div class="page left-page">
-          <h1 class="recipe-title">${recipe.name}</h1>
-          <img src="${recipe.image}" alt="${recipe.name}" class="recipe-image">
-          <h2>Ingredients</h2>
-          <ul class="ingredients">
-            ${recipe.ingredients.map(ingredient => `
-              <li>
-                <input type="checkbox" id="${ingredient.item}">
-                <label for="${ingredient.item}">${ingredient.item} - ${ingredient.quantity}</label>
-              </li>`).join('')}
-          </ul>
-        </div>
-        <div class="page right-page">
-          <h2>Instructions</h2>
-          <ol class="instructions">
-            ${recipe.instructions.map(step => `<li>${step}</li>`).join('')}
-          </ol>
-        </div>
-      `;
+  // Page 3+: continue instructions
+  while (steps.length > 0) {
+    pages.push(renderInstructions(steps.splice(0, STEPS_PER_PAGE)));
+  }
 
-      // Split content into pages if needed
-      const pages = [];
-      const pageLimit = 1500; // Approx character limit for each page
-      let currentPage = '';
-      let totalLength = 0;
+  // Optional notes at the end (use STEPS_PER_PAGE as a rough per-page count)
+  while (notes.length > 0) {
+    pages.push(renderNotes(notes.splice(0, STEPS_PER_PAGE)));
+  }
 
-      while (totalLength < content.length) {
-        let nextContent = content.slice(totalLength, totalLength + pageLimit);
-        currentPage += nextContent;
-        totalLength += nextContent.length;
+  return pages;
+}
 
-        if (currentPage.length >= pageLimit) {
-          pages.push(currentPage);
-          currentPage = '';
-        }
-      }
-
-      if (currentPage) {
-        pages.push(currentPage); // Push the final page
-      }
-
-      return pages;
-    }
-
-    // Navigation buttons for flipping pages
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    prevBtn.addEventListener('click', () => {
-      if (currentRecipeIndex > 0) {
-        currentRecipeIndex--;
-        displayRecipe(currentRecipeIndex);
-        window.location.hash = recipeList[currentRecipeIndex].name.toLowerCase().replace(/\s+/g, '-');
-      }
+/**
+ * Pair single pages into two-page spreads.
+ * If odd number of pages, last right page is blank.
+ */
+export function pairPagesIntoSpreads(pages) {
+  const spreads = [];
+  for (let i = 0; i < pages.length; i += 2) {
+    spreads.push({
+      left: pages[i],
+      right: pages[i + 1] || renderBlankPage(),
     });
+  }
+  return spreads;
+}
 
-    nextBtn.addEventListener('click', () => {
-      if (currentRecipeIndex < recipeList.length - 1) {
-        currentRecipeIndex++;
-        displayRecipe(currentRecipeIndex);
-        window.location.hash = recipeList[currentRecipeIndex].name.toLowerCase().replace(/\s+/g, '-');
-      }
-    });
+/* -------------------- Render helpers: return valid single-page HTML strings -------------------- */
 
-    // Update navigation buttons based on current recipe index
-    function updateNav() {
-      prevBtn.disabled = currentRecipeIndex === 0;
-      nextBtn.disabled = currentRecipeIndex === recipeList.length - 1;
-    }
+function renderTitleImageIngredients(title, imageUrl, ingredients) {
+  return `
+    <section class="page">
+      <header class="page-header">
+        <h1 class="recipe-title">${escapeHtml(title)}</h1>
+      </header>
+      ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(title)}"/></figure>` : ""}
+      ${renderIngredientsBlock(ingredients)}
+    </section>
+  `;
+}
 
-    // Initial load of the recipe based on URL or default first recipe
-    displayRecipe(currentRecipeIndex);
+function renderIngredientsAndInstructions(ingredients, steps) {
+  return `
+    <section class="page">
+      ${renderIngredientsBlock(ingredients)}
+      ${renderInstructionsBlock(steps)}
+    </section>
+  `;
+}
 
-  })
-  .catch(error => console.error('Error loading recipe data:', error));
+function renderInstructions(steps) {
+  return `
+    <section class="page">
+      ${renderInstructionsBlock(steps)}
+    </section>
+  `;
+}
+
+function renderNotes(notes) {
+  if (!notes || notes.length === 0) {
+    return renderBlankPage();
+  }
+  return `
+    <section class="page">
+      <h3 class="section-title">Notes</h3>
+      <ul class="notes">
+        ${notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}
+      </ul>
+    </section>
+  `;
+}
+
+function renderIngredientsBlock(ingredients) {
+  if (!ingredients || ingredients.length === 0) {
+    return `
+      <div class="ingredients">
+        <h3 class="section-title">Ingredients</h3>
+        <p class="empty">No ingredients listed.</p>
+      </div>
+    `;
+  }
+  return `
+    <div class="ingredients">
+      <h3 class="section-title">Ingredients</h3>
+      <ul class="ingredient-list">
+        ${ingredients.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}
+      </ul>
+    </div>
+  `;
+}
+
+function renderInstructionsBlock(steps) {
+  if (!steps || steps.length === 0) {
+    return `
+      <div class="instructions">
+        <h3 class="section-title">Instructions</h3>
+        <p class="empty">Continue to the next page.</p>
+      </div>
+    `;
+  }
+  return `
+    <div class="instructions">
+      <h3 class="section-title">Instructions</h3>
+      <ol class="step-list">
+        ${steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}
+      </ol>
+    </div>
+  `;
+}
+
+function renderBlankPage() {
+  return `
+    <section class="page blank">
+      <div class="blank-content"></div>
+    </section>
+  `;
+}
+
+/* -------------------- Utilities -------------------- */
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+function escapeAttr(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;");
+}
