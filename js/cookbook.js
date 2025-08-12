@@ -2,7 +2,6 @@
  * js/cookbook.js — Two-Page Spreads, Single Recipe
  ****************************************************/
 
-// Adjust to match your chosen fixed page height
 const INGREDIENTS_PER_PAGE = 8;
 const STEPS_PER_PAGE = 5;
 
@@ -26,26 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // --- Choose recipe based on URL hash, fallback to first ---
-      const slugFromHash = window.location.hash.slice(1); // after the '#'
+      const slugFromHash = window.location.hash.slice(1);
       const toSlug = s => String(s)
         .toLowerCase()
         .trim()
-        .replace(/\s+/g, '-')       // spaces → dash
-        .replace(/[^a-z0-9-]/g, ''); // strip symbols
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
 
-      let recipeIndex = -1;
-      if (slugFromHash) {
-        recipeIndex = recipes.findIndex(r => toSlug(r.name) === slugFromHash);
-      }
-      if (recipeIndex === -1) {
-        recipeIndex = 0; // fallback if no hash or not found
-      }
+      let recipeIndex = slugFromHash
+        ? recipes.findIndex(r => toSlug(r.name) === slugFromHash)
+        : -1;
+
+      if (recipeIndex === -1) recipeIndex = 0;
 
       const recipe = recipes[recipeIndex];
       const spreads = buildSpreadsForRecipe(recipe);
       let currentSpreadIndex = 0;
-
-      console.log('Initial spread object:', spreads[currentSpreadIndex]);
 
       renderSpread(container, spreads[currentSpreadIndex]);
 
@@ -87,13 +82,10 @@ function generatePages(recipe) {
   const description = recipe?.description ?? '';
   const imageUrl = recipe?.image ?? '';
 
-  // Clone arrays so splice() does not mutate source data
   const ingObjs = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
   const ingredients = [...ingObjs.map(formatIngredient)];
 
-  const steps = Array.isArray(recipe?.instructions)
-    ? [...recipe.instructions]
-    : [];
+  const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
 
   const notes = Array.isArray(recipe?.extra_notes)
     ? [...recipe.extra_notes]
@@ -101,11 +93,9 @@ function generatePages(recipe) {
     ? [recipe.extra_notes]
     : [];
 
-  // Page 1: Title + description + image + some ingredients
   const page1Ingredients = ingredients.splice(0, INGREDIENTS_PER_PAGE);
   pages.push(renderTitleImageIngredients(name, description, imageUrl, page1Ingredients));
 
-  // Page 2: remaining ingredients + start of instructions OR just start instructions
   const startSteps = steps.splice(0, STEPS_PER_PAGE);
   if (ingredients.length > 0) {
     const page2Ingredients = ingredients.splice(0, INGREDIENTS_PER_PAGE);
@@ -114,12 +104,10 @@ function generatePages(recipe) {
     pages.push(renderInstructions(startSteps));
   }
 
-  // Page 3+: continue instructions
   while (steps.length > 0) {
     pages.push(renderInstructions(steps.splice(0, STEPS_PER_PAGE)));
   }
 
-  // Notes pages (optional)
   while (notes.length > 0) {
     pages.push(renderNotes(notes.splice(0, STEPS_PER_PAGE)));
   }
@@ -227,15 +215,14 @@ function renderBlankPage() {
 /* -------------------- DOM render -------------------- */
 
 function renderSpread(container, spread) {
-  // Insert raw pages first (no fragile string replacement)
+  // ✅ FIX: add `active` so CSS shows it
   container.innerHTML = `
-    <div class="page-spread">
+    <div class="page-spread active">
       ${spread.left || ''}
       ${spread.right || ''}
     </div>
   `;
 
-  // Add left/right classes to the first two .page elements
   const spreadEl = container.querySelector('.page-spread');
   if (!spreadEl) {
     console.error('No .page-spread rendered');
@@ -246,16 +233,10 @@ function renderSpread(container, spread) {
   if (pages[0]) pages[0].classList.add('left-page');
   if (pages[1]) pages[1].classList.add('right-page');
 
-  // Debug visibility checks
   if (!pages.length) {
-    console.warn('No .page elements found inside .page-spread. left/right was:', {
+    console.warn('No .page elements found inside .page-spread.', {
       left: spread.left,
       right: spread.right
-    });
-  } else {
-    console.log('Rendered pages:', {
-      leftInnerText: pages[0]?.innerText?.slice(0, 120),
-      rightInnerText: pages[1]?.innerText?.slice(0, 120)
     });
   }
 }
