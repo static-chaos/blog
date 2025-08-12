@@ -19,7 +19,7 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   background: #f7f3ed;
   border-radius: 0 0 12px 12px;
-  overflow: hidden;
+  overflow: hidden; /* outer mask remains */
 }
 
 /* Corner clips to simulate book edges */
@@ -42,7 +42,7 @@ body {
   width: 100%;
   height: 100%;
   perspective: 1500px;
-  overflow: hidden;
+  overflow: hidden; /* spread transitions cleanly, no clipping inside pages because JS paginates */
 }
 
 /* Each page spread */
@@ -74,19 +74,13 @@ body {
   padding: 2em 3em;
   box-sizing: border-box;
   background-color: #fffdfa;
-  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.05), inset -2px 0 4px rgba(0, 0, 0, 0.05);
-  overflow-y: hidden;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
   border-radius: 0 0 8px 0;
   font-size: 1.1em;
   color: #4a463f;
   user-select: none;
   position: relative;
-}
-
-.page::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  overflow: hidden; /* ← keeps page visually bounded; JS ensures content fits, so no scrollbars needed */
 }
 
 /* Left page crease shadow */
@@ -113,16 +107,7 @@ body {
   user-select: text;
 }
 
-/* Recipe image styling */
-.recipe-image {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1em auto 2em auto;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  user-select: none;
-}
+/* Removed all .recipe-image / figure styles */
 
 /* Headings for Ingredients and Instructions */
 h2 {
@@ -132,23 +117,31 @@ h2 {
   padding-bottom: 0.4em;
   user-select: text;
 }
+.section-title {
+  font-size: 1.4em;
+  margin: 0.8em 0 0.6em;
+  border-bottom: 1.5px dashed #bbb;
+  padding-bottom: 0.3em;
+  user-select: text;
+}
 
 /* Ingredients and Instructions lists */
 .ingredients ul,
-.instructions ol {
+.instructions ol,
+.notes ul {
   padding-left: 0;
   margin: 0;
 }
 
 .ingredients li,
-.instructions li {
+.instructions li,
+.notes li {
   font-size: 1.1em;
   line-height: 1.6;
   margin-bottom: 0.6em;
   user-select: text;
 }
 
-/* Remove default list style but keep numbering for ol */
 .ingredients ul {
   list-style: none;
 }
@@ -213,63 +206,24 @@ h2 {
 
 /* Page Animation Keyframes */
 @keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
 }
 @keyframes slideOutLeft {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-100%); }
 }
 @keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-100%); }
+  to { opacity: 1; transform: translateX(0); }
 }
 @keyframes slideOutRight {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(100%);
-  }
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
 }
 
 /* Animation classes */
-.slide-in-right {
-  animation: slideInRight 0.6s ease forwards;
-  z-index: 10;
-}
-
-.slide-out-left {
-  animation: slideOutLeft 0.6s ease forwards;
-  z-index: 15;
-}
-
-.slide-in-left {
-  animation: slideInLeft 0.6s ease forwards;
-  z-index: 10;
-}
-
-.slide-out-right {
-  animation: slideOutRight 0.6s ease forwards;
-  z-index: 15;
-}
+.slide-in-right { animation: slideInRight 0.6s ease forwards; z-index: 10; }
+.slide-out-left { animation: slideOutLeft 0.6s ease forwards; z-index: 15; }
+.slide-in-left { animation: slideInLeft 0.6s ease forwards; z-index: 10; }
+.slide-out-right { animation: slideOutRight 0.6s ease forwards; z-index: 15; }
