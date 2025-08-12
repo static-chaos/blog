@@ -7,8 +7,9 @@ fetch('data/cookbook.json')
     const recipeList = data.recipes;
     const recipeContainer = document.querySelector('.book-content');
     let currentRecipeIndex = 0;
-    
-    // Function to generate and display a recipe spread
+    let currentPageIndex = 0;
+
+    // Function to generate and display a recipe spread (pages)
     function displayRecipe(recipeIndex) {
       const recipe = recipeList[recipeIndex];
       recipeContainer.innerHTML = ''; // Clear the container
@@ -47,13 +48,13 @@ fetch('data/cookbook.json')
           </ol>
         </div>
       `;
-      // Split content into separate pages if it overflows
+
+      // Split content into pages if needed
       const pages = [];
       const pageLimit = 1500; // Approx character limit for each page
       let currentPage = '';
       let totalLength = 0;
 
-      // Split content into pages based on character limit
       while (totalLength < content.length) {
         let nextContent = content.slice(totalLength, totalLength + pageLimit);
         currentPage += nextContent;
@@ -66,7 +67,7 @@ fetch('data/cookbook.json')
       }
 
       if (currentPage) {
-        pages.push(currentPage); // Push remaining content to a final page
+        pages.push(currentPage); // Push the final page
       }
 
       return pages;
@@ -77,26 +78,45 @@ fetch('data/cookbook.json')
     const nextBtn = document.getElementById('nextBtn');
 
     prevBtn.addEventListener('click', () => {
-      if (currentRecipeIndex > 0) {
-        currentRecipeIndex--;
-        displayRecipe(currentRecipeIndex);
+      if (currentPageIndex > 0) {
+        currentPageIndex--;
+        displayPage(currentPageIndex);
       }
     });
 
     nextBtn.addEventListener('click', () => {
-      if (currentRecipeIndex < recipeList.length - 1) {
-        currentRecipeIndex++;
-        displayRecipe(currentRecipeIndex);
+      if (currentPageIndex < getCurrentRecipePages().length - 1) {
+        currentPageIndex++;
+        displayPage(currentPageIndex);
       }
     });
+
+    function displayPage(pageIndex) {
+      const pages = getCurrentRecipePages();
+      const currentPage = pages[pageIndex];
+
+      recipeContainer.innerHTML = '';
+      const pageElement = document.createElement('div');
+      pageElement.classList.add('page-spread');
+      pageElement.innerHTML = currentPage;
+
+      recipeContainer.appendChild(pageElement);
+      updateNav();
+    }
+
+    // Fetch the current recipe pages
+    function getCurrentRecipePages() {
+      return generatePages(recipeList[currentRecipeIndex]);
+    }
+
+    // Update navigation buttons
+    function updateNav() {
+      prevBtn.disabled = currentPageIndex === 0;
+      nextBtn.disabled = currentPageIndex === getCurrentRecipePages().length - 1;
+    }
 
     // Initial load of the first recipe
     displayRecipe(currentRecipeIndex);
 
-    // Update the navigation buttons state
-    function updateNav() {
-      prevBtn.disabled = currentRecipeIndex === 0;
-      nextBtn.disabled = currentRecipeIndex === recipeList.length - 1;
-    }
   })
   .catch(error => console.error('Error loading recipe data:', error));
