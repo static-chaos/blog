@@ -11,58 +11,22 @@
   <div class="blackboard">
     <a href="index.html" class="home-button" aria-label="Home">Home</a>
     <h1>Recipes</h1>
-    <div class="recipe-list">
-      <!-- Recipes will be loaded here dynamically -->
+
+    <!-- Book container -->
+    <div class="recipe-book">
+      <span></span> <!-- Decorative spine/clip -->
+      <div class="book-content">
+        <!-- Pages will be injected here by cookbook.js -->
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="nav-buttons">
+        <button id="prevBtn">Previous</button>
+        <button id="nextBtn">Next</button>
+      </div>
     </div>
   </div>
 
-  <script src="cookbook.js"></script> <!-- External JS file handling data -->
-  <script>
-    // Function to load recipes dynamically from JSON
-    function loadRecipes() {
-      fetch('data/cookbook.json') // This assumes your recipes data is stored in recipes.json
-        .then(response => response.json()) 
-        .then(data => {
-          const recipeListContainer = document.querySelector('.recipe-list');
-          data.recipes.forEach(recipe => {
-            const recipeItem = document.createElement('div');
-            recipeItem.classList.add('recipe-item');
-
-            // Check if recipe is under development
-            if (recipe.description === "Page Under Development") {
-              recipeItem.innerHTML = `
-                <h2>${recipe.name}</h2>
-                <p>${recipe.description}</p>
-                <img src="images/${recipe.image}" alt="${recipe.name}" />
-              `;
-            } else {
-              // If recipe is complete, display ingredients, instructions, etc.
-              recipeItem.innerHTML = `
-                <h2>${recipe.name}</h2>
-                <p>${recipe.description}</p>
-                <img src="images/${recipe.image}" alt="${recipe.name}" />
-                <h3>Ingredients:</h3>
-                <ul>
-                  ${recipe.ingredients.map(ingredient => `<li>${ingredient.item}: ${ingredient.quantity}</li>`).join('')}
-                </ul>
-                <h3>Instructions:</h3>
-                <ol>
-                  ${recipe.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
-                </ol>
-                <h3>Extra Notes:</h3>
-                <ul>
-                  ${recipe.extra_notes.map(note => `<li>${note}</li>`).join('')}
-                </ul>
-              `;
-            }
-            recipeListContainer.appendChild(recipeItem);
-          });
-        })
-        .catch(error => console.error('Error loading recipes:', error));
-    }
-
-    // Call function to load recipes when the page loads
-    window.onload = loadRecipes;
-  </script>
+  <script src="cookbook.js"></script>
 </body>
 </html>
