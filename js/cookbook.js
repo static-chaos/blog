@@ -25,29 +25,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-     // --- Choose recipe based on URL hash, fallback to first ---
-const slugFromHash = window.location.hash.slice(1); // after the '#'
-const toSlug = s => String(s)
-  .toLowerCase()
-  .trim()
-  .replace(/\s+/g, '-')       // spaces → dash
-  .replace(/[^a-z0-9-]/g, ''); // strip symbols
+      // --- Choose recipe based on URL hash, fallback to first ---
+      const slugFromHash = window.location.hash.slice(1); // after the '#'
+      const toSlug = s => String(s)
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')       // spaces → dash
+        .replace(/[^a-z0-9-]/g, ''); // strip symbols
 
-let recipeIndex = -1;
-if (slugFromHash) {
-  recipeIndex = recipes.findIndex(r => toSlug(r.name) === slugFromHash);
-}
-if (recipeIndex === -1) {
-  recipeIndex = 0; // fallback if no hash or not found
-}
+      let recipeIndex = -1;
+      if (slugFromHash) {
+        recipeIndex = recipes.findIndex(r => toSlug(r.name) === slugFromHash);
+      }
+      if (recipeIndex === -1) {
+        recipeIndex = 0; // fallback if no hash or not found
+      }
 
-const recipe = recipes[recipeIndex];
-const spreads = buildSpreadsForRecipe(recipe);
-let currentSpreadIndex = 0;
- console.log('Initial spread:', spreads[currentSpreadIndex]);
-     
-renderSpread(container, spreads[currentSpreadIndex]);
+      const recipe = recipes[recipeIndex];
+      const spreads = buildSpreadsForRecipe(recipe);
+      let currentSpreadIndex = 0;
 
+      console.log('Initial spread:', spreads[currentSpreadIndex]);
+
+      renderSpread(container, spreads[currentSpreadIndex]);
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
@@ -87,9 +87,14 @@ function generatePages(recipe) {
   const description = recipe?.description ?? '';
   const imageUrl = recipe?.image ?? '';
 
+  // --- CLONE ARRAYS so splice() won't destroy source data ---
   const ingObjs = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
-  const ingredients = ingObjs.map(formatIngredient);
-  const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
+  const ingredients = [...ingObjs.map(formatIngredient)];
+
+  const steps = Array.isArray(recipe?.instructions)
+    ? [...recipe.instructions]
+    : [];
+
   const notes = Array.isArray(recipe?.extra_notes)
     ? [...recipe.extra_notes]
     : recipe?.extra_notes
@@ -222,13 +227,10 @@ function renderBlankPage() {
 /* -------------------- DOM render -------------------- */
 
 function renderSpread(container, spread) {
-  const leftHtml  = spread.left.includes('class="page"')
-    ? spread.left.replace('class="page"', 'class="page left-page"')
-    : `<section class="page left-page">${spread.left}</section>`;
+  const leftHtml  = spread.left.replace('class="page"', 'class="page left-page"');
+  const rightHtml = spread.right.replace('class="page"', 'class="page right-page"');
 
-  const rightHtml = spread.right.includes('class="page"')
-    ? spread.right.replace('class="page"', 'class="page right-page"')
-    : `<section class="page right-page">${spread.right}</section>`;
+  console.log('Rendering spread:', { leftHtml, rightHtml });
 
   container.innerHTML = `
     <div class="page-spread">
@@ -237,7 +239,6 @@ function renderSpread(container, spread) {
     </div>
   `;
 }
-
 
 /* -------------------- Utilities -------------------- */
 
