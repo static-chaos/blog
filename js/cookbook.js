@@ -25,10 +25,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Load only the first recipe
-      const recipe = recipes[0];
-      const spreads = buildSpreadsForRecipe(recipe);
-      let currentSpreadIndex = 0;
+     // --- Choose recipe based on URL hash, fallback to first ---
+const slugFromHash = window.location.hash.slice(1); // after the '#'
+const toSlug = s => String(s)
+  .toLowerCase()
+  .trim()
+  .replace(/\s+/g, '-')       // spaces → dash
+  .replace(/[^a-z0-9-]/g, ''); // strip symbols
+
+let recipeIndex = -1;
+if (slugFromHash) {
+  recipeIndex = recipes.findIndex(r => toSlug(r.name) === slugFromHash);
+}
+if (recipeIndex === -1) {
+  recipeIndex = 0; // fallback if no hash or not found
+}
+
+const recipe = recipes[recipeIndex];
+const spreads = buildSpreadsForRecipe(recipe);
+let currentSpreadIndex = 0;
+renderSpread(container, spreads[currentSpreadIndex]);
+
 
       renderSpread(container, spreads[currentSpreadIndex]);
 
