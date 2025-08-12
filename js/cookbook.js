@@ -47,8 +47,6 @@ let currentSpreadIndex = 0;
 renderSpread(container, spreads[currentSpreadIndex]);
 
 
-      renderSpread(container, spreads[currentSpreadIndex]);
-
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
           if (currentSpreadIndex > 0) {
