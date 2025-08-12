@@ -1,53 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Cookbook</title>
-    <link rel="stylesheet" href="css/cookbook.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookbook</title>
+  <link rel="stylesheet" href="css/cookbook.css">
+  <script src="js/cookbook.js" defer></script>
 </head>
-
 <body>
-    <!-- Recipe Book Container -->
-    <div class="recipe-book">
-        <span></span>
-        <div class="book-content">
-            <!-- Recipe Pages (spreads) -->
-            <div class="page-spread">
-                <div class="page left-page">
-                    <div class="recipe-title">Recipe 1</div>
-                    <h2>Ingredients</h2>
-                    <ul class="ingredients">
-                        <li><label><input type="checkbox"> Ingredient 1</label></li>
-                        <li><label><input type="checkbox"> Ingredient 2</label></li>
-                        <!-- More ingredients here -->
-                    </ul>
-                </div>
-                <div class="page right-page">
-                    <h2>Instructions</h2>
-                    <ol class="instructions">
-                        <li>Step 1</li>
-                        <li>Step 2</li>
-                        <!-- More instructions here -->
-                    </ol>
-                </div>
-            </div>
-
-            <!-- Add more pages here as needed -->
-
-        </div>
-        <!-- Navigation (Back Button and Pagination) -->
-        <div class="nav-buttons">
-            <button id="backBtn" onclick="window.location.href = 'recipe.html';">Back to Recipes</button>
-            <div>
-                <button id="prevBtn" disabled>Prev</button>
-                <button id="nextBtn">Next</button>
-            </div>
-        </div>
+  <div class="recipe-book">
+    <div class="book-content">
+      <!-- Pages will be inserted dynamically -->
     </div>
+  </div>
 
-    <script src="js/cookbook.js"></script>
+  <div class="nav-buttons">
+    <button id="backBtn" onclick="window.location.href='recipe.html'">Back to Recipe List</button>
+    <button id="nextBtn" disabled>Next</button>
+    <button id="prevBtn" disabled>Prev</button>
+  </div>
+
+  <script>
+    // Fetch JSON data and render the cookbook
+    fetch('data/cookbook.json')
+      .then(response => response.json())
+      .then(data => {
+        const bookContent = document.querySelector('.book-content');
+        const recipes = data.recipes;
+        let pagesHtml = '';
+
+        recipes.forEach(recipe => {
+          pagesHtml += generateRecipePages(recipe);
+        });
+
+        bookContent.innerHTML = pagesHtml;
+      })
+      .catch(error => console.error('Error loading cookbook data:', error));
+
+    // Function to generate pages for a single recipe
+    function generateRecipePages(recipe) {
+      const pages = [];
+      const ingredientsList = recipe.ingredients.map(ingredient => `<li>${ingredient.quantity} - ${ingredient.item}</li>`).join('');
+      const instructionsList = recipe.instructions.map(instruction => `<li>${instruction}</li>`).join('');
+      const extraNotes = recipe.extra_notes.map(note => `<p>${note}</p>`).join('');
+
+      // Break the content into multiple pages if necessary
+      const content = `
+        <div class="page-spread">
+          <div class="page left-page">
+            <h2>${recipe.name}</h2>
+            <img src="images/${recipe.image}" alt="${recipe.name}" class="recipe-image">
+            <h2>Ingredients</h2>
+            <ul class="ingredients">${ingredientsList}</ul>
+          </div>
+          <div class="page right-page">
+            <h2>Instructions</h2>
+            <ol class="instructions">${instructionsList}</ol>
+            ${extraNotes ? `<h2>Extra Notes</h2><div class="extra-notes">${extraNotes}</div>` : ''}
+          </div>
+        </div>
+      `;
+
+      pages.push(content);
+
+      // If the recipe has more content, break it into multiple pages
+      const pageLimit = 1; // You can adjust this based on how much content fits per page
+      const pageCount = Math.ceil(recipe.instructions.length / pageLimit);
+
+      // Create additional pages as needed
+      for (let i = 1; i < pageCount; i++) {
+        pages.push(content); // Duplicate the content if it overflows
+      }
+
+      return pages.join('');
+    }
+  </script>
 </body>
-
 </html>
