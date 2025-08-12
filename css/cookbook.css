@@ -32,9 +32,7 @@ body {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  box-shadow:
-    inset -6px -6px 6px #d0c9ba,
-    6px 6px 12px rgba(0,0,0,0.1);
+  box-shadow: inset -6px -6px 6px #d0c9ba, 6px 6px 12px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
@@ -76,9 +74,7 @@ body {
   padding: 2em 3em;
   box-sizing: border-box;
   background-color: #fffdfa;
-  box-shadow:
-    inset 2px 0 4px rgba(0,0,0,0.05),
-    inset -2px 0 4px rgba(0,0,0,0.05);
+  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.05), inset -2px 0 4px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
@@ -95,13 +91,13 @@ body {
 
 /* Left page crease shadow */
 .left-page {
-  box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
+  box-shadow: inset -8px 0 12px rgba(0, 0, 0, 0.07);
   border-radius: 0 0 0 8px;
 }
 
 /* Right page crease shadow */
 .right-page {
-  box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
+  box-shadow: inset 8px 0 12px rgba(0, 0, 0, 0.07);
   border-radius: 0 0 8px 0;
 }
 
@@ -124,7 +120,7 @@ body {
   display: block;
   margin: 1em auto 2em auto;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   user-select: none;
 }
 
