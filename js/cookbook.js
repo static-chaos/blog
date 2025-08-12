@@ -222,13 +222,18 @@ function renderBlankPage() {
 /* -------------------- DOM render -------------------- */
 
 function renderSpread(container, spread) {
+  // Add proper classes for CSS layout
+  const leftHtml  = spread.left.replace('class="page"', 'class="page left-page"');
+  const rightHtml = spread.right.replace('class="page"', 'class="page right-page"');
+
   container.innerHTML = `
-    <div class="spread">
-      ${spread.left}
-      ${spread.right}
+    <div class="page-spread">
+      ${leftHtml}
+      ${rightHtml}
     </div>
   `;
 }
+
 
 /* -------------------- Utilities -------------------- */
 
