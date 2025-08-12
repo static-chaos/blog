@@ -2,6 +2,8 @@
  * js/cookbook.js — Two-Page Spreads, Single Recipe
  ****************************************************/
 
+// You can keep these as conceptual limits for roughly how much to place per page.
+// Actual layout now flows without clipping; these act as "budget" counters.
 const INGREDIENTS_PER_PAGE = 8;
 const STEPS_PER_PAGE = 5;
 
@@ -75,6 +77,13 @@ function buildSpreadsForRecipe(recipe) {
   return pairPagesIntoSpreads(pages);
 }
 
+/**
+ * Unified flow generator:
+ * - Starts with title/description/image on the first page.
+ * - Fills remaining space with ingredients first, then instructions.
+ * - Subsequent pages continue placing remaining ingredients and instructions in order,
+ *   so nothing is clipped and no internal scrolling is required.
+ */
 function generatePages(recipe) {
   const pages = [];
 
@@ -84,7 +93,6 @@ function generatePages(recipe) {
 
   const ingObjs = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
   const ingredients = [...ingObjs.map(formatIngredient)];
-
   const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
 
   const notes = Array.isArray(recipe?.extra_notes)
@@ -93,21 +101,47 @@ function generatePages(recipe) {
     ? [recipe.extra_notes]
     : [];
 
-  const page1Ingredients = ingredients.splice(0, INGREDIENTS_PER_PAGE);
-  pages.push(renderTitleImageIngredients(name, description, imageUrl, page1Ingredients));
+  // First page: header + image, then content
+  let first = renderTitleImageHeader(name, description, imageUrl); // { html, countIngs, countSteps }
+  // Fill with ingredients up to budget
+  while (ingredients.length && first.countIngs < INGREDIENTS_PER_PAGE) {
+    first.html += renderIngredientItem(ingredients.shift());
+    first.countIngs++;
+  }
+  // Then fill remaining "budget" with steps
+  while (steps.length && first.countSteps < STEPS_PER_PAGE) {
+    first.html += renderInstructionItem(steps.shift());
+    first.countSteps++;
+  }
+  pages.push(wrapPage(first.html));
 
-  const startSteps = steps.splice(0, STEPS_PER_PAGE);
-  if (ingredients.length > 0) {
-    const page2Ingredients = ingredients.splice(0, INGREDIENTS_PER_PAGE);
-    pages.push(renderIngredientsAndInstructions(page2Ingredients, startSteps));
-  } else {
-    pages.push(renderInstructions(startSteps));
+  // Subsequent pages: continue mixing remaining ingredients and steps
+  while (ingredients.length || steps.length) {
+    let page = { html: '', countIngs: 0, countSteps: 0 };
+
+    while (ingredients.length && page.countIngs < INGREDIENTS_PER_PAGE) {
+      page.html += renderIngredientItem(ingredients.shift());
+      page.countIngs++;
+    }
+    while (steps.length && page.countSteps < STEPS_PER_PAGE) {
+      page.html += renderInstructionItem(steps.shift());
+      page.countSteps++;
+    }
+
+    // If one list is empty but there is still room and the other has items, keep filling.
+    while (ingredients.length && (page.countIngs + page.countSteps) < (INGREDIENTS_PER_PAGE + STEPS_PER_PAGE)) {
+      page.html += renderIngredientItem(ingredients.shift());
+      page.countIngs++;
+    }
+    while (steps.length && (page.countIngs + page.countSteps) < (INGREDIENTS_PER_PAGE + STEPS_PER_PAGE)) {
+      page.html += renderInstructionItem(steps.shift());
+      page.countSteps++;
+    }
+
+    pages.push(wrapPage(page.html));
   }
 
-  while (steps.length > 0) {
-    pages.push(renderInstructions(steps.splice(0, STEPS_PER_PAGE)));
-  }
-
+  // Notes at the end (optional)
   while (notes.length > 0) {
     pages.push(renderNotes(notes.splice(0, STEPS_PER_PAGE)));
   }
@@ -138,6 +172,40 @@ function renderTitleImageIngredients(title, description, imageUrl, ingredients) 
       ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(title)}"></figure>` : ''}
       ${renderIngredientsBlock(ingredients)}
     </section>
+  `;
+}
+
+// New: header builder for unified flow
+function renderTitleImageHeader(title, description, imageUrl) {
+  const html = `
+    <header class="page-header">
+      <h2 class="recipe-title">${escapeHtml(title)}</h2>
+      ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
+    </header>
+    ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(title)}"></figure>` : ''}
+  `;
+  return { html, countIngs: 0, countSteps: 0 };
+}
+
+// New: atomic item renderers for unified flow
+function renderIngredientItem(text) {
+  return `
+    <div class="ingredients">
+      <h3 class="section-title">Ingredients</h3>
+      <ul class="ingredient-list">
+        <li>${escapeHtml(text)}</li>
+      </ul>
+    </div>
+  `;
+}
+function renderInstructionItem(step) {
+  return `
+    <div class="instructions">
+      <h3 class="section-title">Instructions</h3>
+      <ol class="step-list">
+        <li>${escapeHtml(step)}</li>
+      </ol>
+    </div>
   `;
 }
 
@@ -215,7 +283,7 @@ function renderBlankPage() {
 /* -------------------- DOM render -------------------- */
 
 function renderSpread(container, spread) {
-  // ✅ FIX: add `active` so CSS shows it
+  // Ensure visibility with active class
   container.innerHTML = `
     <div class="page-spread active">
       ${spread.left || ''}
@@ -261,4 +329,9 @@ function escapeAttr(str) {
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;');
+}
+
+// Helper to wrap arbitrary inner HTML into a page
+function wrapPage(inner) {
+  return `<section class="page">${inner}</section>`;
 }
