@@ -1,30 +1,84 @@
-// step1-book-paging.js
+/****************************************************
+ * cookbook.js — Two-Page Spread Builder with JSON
+ ****************************************************/
 
-// Tunables: pick counts that fit your fixed page height.
-export const INGREDIENTS_PER_PAGE = 8;
-export const STEPS_PER_PAGE = 5;
+// Tunables: adjust after testing your fixed page height
+const INGREDIENTS_PER_PAGE = 8;
+const STEPS_PER_PAGE = 5;
 
 /**
- * Public: build two-page spreads for a recipe.
- * Returns: [{ left: "<html>", right: "<html>" }, ...]
+ * Entry point — fetch the JSON and render spreads
  */
-export function generateSpreads(recipe) {
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('data/cookbook.json')
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(recipeData => {
+      // If your JSON has multiple recipes, pick the first:
+      // const recipe = recipeData[0];
+      const recipe = recipeData; 
+      initCookbook(recipe);
+    })
+    .catch(err => {
+      console.error('Error loading recipe JSON:', err);
+      const leftEl = document.getElementById('leftPage');
+      if (leftEl) {
+        leftEl.innerHTML = `<p style="color:red;">Failed to load recipe data.</p>`;
+      }
+    });
+});
+
+/**
+ * Initialize UI and navigation for a recipe
+ */
+function initCookbook(recipe) {
+  const spreads = generateSpreads(recipe);
+  let currentSpread = 0;
+
+  const leftEl = document.getElementById('leftPage');
+  const rightEl = document.getElementById('rightPage');
+
+  function renderSpread(index) {
+    const spread = spreads[index];
+    if (leftEl) leftEl.innerHTML = spread.left;
+    if (rightEl) rightEl.innerHTML = spread.right;
+  }
+
+  renderSpread(currentSpread);
+
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  if (prevBtn && nextBtn) {
+    prevBtn.addEventListener('click', () => {
+      if (currentSpread > 0) {
+        currentSpread--;
+        renderSpread(currentSpread);
+      }
+    });
+    nextBtn.addEventListener('click', () => {
+      if (currentSpread < spreads.length - 1) {
+        currentSpread++;
+        renderSpread(currentSpread);
+      }
+    });
+  }
+}
+
+/* -------------------- Paging Core -------------------- */
+
+function generateSpreads(recipe) {
   const pages = generatePages(recipe);
   return pairPagesIntoSpreads(pages);
 }
 
-/**
- * Build sequential single-page HTML chunks in logical order:
- * 1) Title + image + some/all ingredients
- * 2) Remaining ingredients (if any) + start of instructions
- * 3+) Continue instructions
- * 4+) Optional notes at the end
- */
-export function generatePages(recipe) {
+function generatePages(recipe) {
   const pages = [];
 
-  const title = recipe?.title ?? "Untitled Recipe";
-  const imageUrl = recipe?.image ?? "";
+  const title = recipe?.title ?? 'Untitled Recipe';
+  const imageUrl = recipe?.image ?? '';
   const ing = Array.isArray(recipe?.ingredients) ? [...recipe.ingredients] : [];
   const steps = Array.isArray(recipe?.instructions) ? [...recipe.instructions] : [];
   const notes = Array.isArray(recipe?.notes)
@@ -33,11 +87,11 @@ export function generatePages(recipe) {
     ? [recipe.notes]
     : [];
 
-  // Page 1: Title + image + initial ingredients
+  // Page 1
   const page1Ingredients = ing.splice(0, INGREDIENTS_PER_PAGE);
   pages.push(renderTitleImageIngredients(title, imageUrl, page1Ingredients));
 
-  // Page 2: remaining ingredients + start instructions OR just start instructions
+  // Page 2
   const startSteps = steps.splice(0, STEPS_PER_PAGE);
   if (ing.length > 0) {
     const page2Ingredients = ing.splice(0, INGREDIENTS_PER_PAGE);
@@ -46,12 +100,12 @@ export function generatePages(recipe) {
     pages.push(renderInstructions(startSteps));
   }
 
-  // Page 3+: continue instructions
+  // Page 3+
   while (steps.length > 0) {
     pages.push(renderInstructions(steps.splice(0, STEPS_PER_PAGE)));
   }
 
-  // Optional notes at the end (use STEPS_PER_PAGE as a rough per-page count)
+  // Notes pages
   while (notes.length > 0) {
     pages.push(renderNotes(notes.splice(0, STEPS_PER_PAGE)));
   }
@@ -59,11 +113,7 @@ export function generatePages(recipe) {
   return pages;
 }
 
-/**
- * Pair single pages into two-page spreads.
- * If odd number of pages, last right page is blank.
- */
-export function pairPagesIntoSpreads(pages) {
+function pairPagesIntoSpreads(pages) {
   const spreads = [];
   for (let i = 0; i < pages.length; i += 2) {
     spreads.push({
@@ -74,7 +124,7 @@ export function pairPagesIntoSpreads(pages) {
   return spreads;
 }
 
-/* -------------------- Render helpers: return valid single-page HTML strings -------------------- */
+/* -------------------- Render Helpers -------------------- */
 
 function renderTitleImageIngredients(title, imageUrl, ingredients) {
   return `
@@ -82,7 +132,7 @@ function renderTitleImageIngredients(title, imageUrl, ingredients) {
       <header class="page-header">
         <h1 class="recipe-title">${escapeHtml(title)}</h1>
       </header>
-      ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(title)}"/></figure>` : ""}
+      ${imageUrl ? `<figure class="recipe-figure"><img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(title)}"></figure>` : ''}
       ${renderIngredientsBlock(ingredients)}
     </section>
   `;
@@ -106,14 +156,12 @@ function renderInstructions(steps) {
 }
 
 function renderNotes(notes) {
-  if (!notes || notes.length === 0) {
-    return renderBlankPage();
-  }
+  if (!notes || notes.length === 0) return renderBlankPage();
   return `
     <section class="page">
       <h3 class="section-title">Notes</h3>
       <ul class="notes">
-        ${notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}
+        ${notes.map(n => `<li>${escapeHtml(n)}</li>`).join('')}
       </ul>
     </section>
   `;
@@ -132,7 +180,7 @@ function renderIngredientsBlock(ingredients) {
     <div class="ingredients">
       <h3 class="section-title">Ingredients</h3>
       <ul class="ingredient-list">
-        ${ingredients.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}
+        ${ingredients.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
       </ul>
     </div>
   `;
@@ -151,30 +199,21 @@ function renderInstructionsBlock(steps) {
     <div class="instructions">
       <h3 class="section-title">Instructions</h3>
       <ol class="step-list">
-        ${steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}
+        ${steps.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
       </ol>
     </div>
   `;
 }
 
 function renderBlankPage() {
-  return `
-    <section class="page blank">
-      <div class="blank-content"></div>
-    </section>
-  `;
+  return `<section class="page blank"><div class="blank-content"></div></section>`;
 }
 
-/* -------------------- Utilities -------------------- */
+/* -------------------- Utils -------------------- */
 
 function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 function escapeAttr(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;");
+  return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
