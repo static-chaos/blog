@@ -55,15 +55,9 @@ function buildSpreadsForRecipe(recipe) {
 }
 
 function generatePages(recipe) {
-  // ✅ Clear old content and reset trackers to prevent duplication
-  book.innerHTML = "";
-  blocks = [];
-  stepCounter = 1;
-
   const pages = [];
   const name = recipe?.name ?? 'Untitled Recipe';
   const description = recipe?.description ?? '';
-
 
   const ingredients = Array.isArray(recipe?.ingredients)
     ? recipe.ingredients.map(formatIngredient)
@@ -116,53 +110,54 @@ function generatePages(recipe) {
     }
   };
 
- const addListItems = (items, type, sectionTitle = '') => {
-  let firstPage = true; // track if still on first page of this list
-  let listOpen = type === 'ol'
-    ? `<ol class="step-list" start="${stepCounter}">`
-    : `<ul class="ingredient-list">`;
-  let currentList = listOpen;
+  const addListItems = (items, type, sectionTitle = '') => {
+    let firstPage = true; // track if still on first page of this list
+    let listOpen = type === 'ol'
+      ? `<ol class="step-list" start="${stepCounter}">`
+      : `<ul class="ingredient-list">`;
+    let currentList = listOpen;
 
-  for (let i = 0; i < items.length;) {
-    const itemHtml = `<li>${escapeHtml(items[i])}</li>`;
-    const testBlock = (firstPage ? sectionTitle : '') +
-                      currentList + itemHtml +
-                      (type==='ol' ? '</ol>' : '</ul>');
+    for (let i = 0; i < items.length;) {
+      const itemHtml = `<li>${escapeHtml(items[i])}</li>`;
+      const testBlock = (firstPage ? sectionTitle : '') +
+                        currentList + itemHtml +
+                        (type==='ol' ? '</ol>' : '</ul>');
 
-    if (addBlock(testBlock)) {
-      currentList += itemHtml;
-      i++;
-      if (type === 'ol') stepCounter++;
-    } else {
+      if (addBlock(testBlock)) {
+        currentList += itemHtml;
+        i++;
+        if (type === 'ol') stepCounter++;
+      } else {
+        currentList += type==='ol' ? '</ol>' : '</ul>';
+        blocks.push(firstPage ? sectionTitle + currentList : currentList);
+        flushPage(blocks);
+
+        blocks = [];
+        measurer.innerHTML = '';
+        currentList = listOpen;
+        firstPage = false;
+        continue; // ✅ prevents re-adding the same overflowing item twice
+      }
+    }
+
+    if (currentList !== listOpen) {
       currentList += type==='ol' ? '</ol>' : '</ul>';
       blocks.push(firstPage ? sectionTitle + currentList : currentList);
-      flushPage(blocks);
-
-      blocks = [];
-      measurer.innerHTML = '';
-      currentList = listOpen;
-      firstPage = false;
     }
-  }
-
-  if (currentList !== listOpen) {
-    currentList += type==='ol' ? '</ol>' : '</ul>';
-    blocks.push(firstPage ? sectionTitle + currentList : currentList);
-  }
-};
+  };
 
   // Ingredients
- if (ingredients.length) {
-  addListItems(ingredients, 'ul', `<h3 class="section-title">Ingredients</h3>`);
-}
+  if (ingredients.length) {
+    addListItems(ingredients, 'ul', `<h3 class="section-title">Ingredients</h3>`);
+  }
 
-if (steps.length) {
-  addListItems(steps, 'ol', `<h3 class="section-title">Instructions</h3>`);
-}
+  if (steps.length) {
+    addListItems(steps, 'ol', `<h3 class="section-title">Instructions</h3>`);
+  }
 
-if (notes.length) {
-  addListItems(notes, 'ul', `<h3 class="section-title">Notes</h3>`);
-}
+  if (notes.length) {
+    addListItems(notes, 'ul', `<h3 class="section-title">Notes</h3>`);
+  }
 
   flushPage(blocks);
 
