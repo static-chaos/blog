@@ -102,7 +102,7 @@ function generatePages(recipe) {
   let stepCounter = 1;
   const allPages = [];
 
-  // HEADER PAGE (always first, no duplication)
+  // HEADER PAGE (always first)
   (function flushHeader() {
     const headerHtml = `<header class="page-header">
       <h2 class="recipe-title">${escapeHtml(name)}</h2>
@@ -120,21 +120,17 @@ function generatePages(recipe) {
     let blocks = [];
     let usedHeight = 0;
 
-    // Build opener & closer
     function openTag() {
-      const tag = isOrdered
+      return isOrdered
         ? `<h3 class="section-title">${sectionTitle}</h3>
            <ol class="step-list" start="${stepCounter}">`
         : `<h3 class="section-title">${sectionTitle}</h3>
            <ul class="ingredient-list">`;
-      return tag;
     }
     const closeTag = isOrdered ? '</ol>' : '</ul>';
-
     let wrapperOpen = openTag();
     let itemsHtml   = '';
 
-    // Try to add one chunk of HTML to the current blocks
     function fits(html) {
       measurer.innerHTML = blocks.join('') + html;
       if (measurer.offsetHeight <= maxContentHeight) {
@@ -145,7 +141,6 @@ function generatePages(recipe) {
       return false;
     }
 
-    // Flush local page into pagesForThis (guard duplicates & empty)
     function flushLocal() {
       if (!blocks.length) return;
       const html = `<section class="page">${blocks.join('')}</section>`;
@@ -154,7 +149,6 @@ function generatePages(recipe) {
       }
     }
 
-    // Walk each item
     for (let i = 0; i < items.length; i++) {
       const li = `<li>${escapeHtml(items[i])}</li>`;
       const candidate = (firstPage ? wrapperOpen : '') +
@@ -166,14 +160,12 @@ function generatePages(recipe) {
         itemsHtml += li;
         if (isOrdered) stepCounter++;
       } else {
-        // overflow → flush this page
         const pageHtml = (firstPage ? wrapperOpen : '') +
                          itemsHtml +
                          closeTag;
         blocks.push(pageHtml);
         flushLocal();
 
-        // start fresh
         firstPage = false;
         blocks = [];
         measurer.innerHTML = '';
@@ -184,7 +176,6 @@ function generatePages(recipe) {
       }
     }
 
-    // flush whatever remains
     if (itemsHtml) {
       const pageHtml = (firstPage ? wrapperOpen : '') +
                        itemsHtml +
@@ -215,6 +206,17 @@ function generatePages(recipe) {
     allPages.push(...notePages);
   }
 
+
+  // ─── DEBUG DUMP ──────────────────────────────────────────────────────
+  console.groupCollapsed("🔍 PAGINATION DEBUG");
+  console.log("total pages:", allPages.length);
+  allPages.forEach((html, i) => {
+    console.log(i, html.replace(/<section/g, "\n<section"));
+  });
+  console.groupEnd();
+  // ────────────────────────────────────────────────────────────────────
+
+
   document.body.removeChild(measurer);
   return allPages;
 }
@@ -239,6 +241,7 @@ function formatIngredient(obj) {
   return item && qty ? `${item} — ${qty}` : (item || qty || '');
 }
 
+
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -246,8 +249,10 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;');
 }
 
+
 function renderBlankPage() {
   return `<section class="page blank">
     <div class="blank-content"></div>
   </section>`;
 }
+```
