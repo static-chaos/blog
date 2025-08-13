@@ -241,7 +241,3 @@ function renderBlankPage() {
     <div class="blank-content"></div>
   </section>`;
 }
-
-// IMPORTANT: close the DOMContentLoaded listener
-}); 
-```
