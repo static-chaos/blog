@@ -77,9 +77,7 @@ function generatePages(recipe) {
     : [];
   const notes = Array.isArray(recipe?.extra_notes)
     ? [...recipe.extra_notes]
-    : recipe?.extra_notes
-      ? [recipe.extra_notes]
-      : [];
+    : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   // 2) shared measurement setup
   const pageInnerHeight  = 600;     // px container height
@@ -112,7 +110,6 @@ function generatePages(recipe) {
     measurer.innerHTML = headerHtml;
     allPages.push(`<section class="page">${headerHtml}</section>`);
   })();
-
 
   // GENERIC list-pagination function
   function paginateList(items, isOrdered, sectionTitle) {
@@ -188,7 +185,6 @@ function generatePages(recipe) {
     return pagesForThis;
   }
 
-
   // 3) INGREDIENTS
   if (ingredients.length) {
     const ingPages = paginateList(ingredients, false, 'Ingredients');
@@ -207,11 +203,9 @@ function generatePages(recipe) {
     allPages.push(...notePages);
   }
 
-
   // simple debug to catch parse errors
   console.log("total pages:", allPages.length);
   allPages.forEach((html, i) => console.log(i, html));
-
 
   document.body.removeChild(measurer);
   return allPages;
@@ -247,4 +241,7 @@ function renderBlankPage() {
     <div class="blank-content"></div>
   </section>`;
 }
-});  // ← closes the DOMContentLoaded callback and addEventListener call
+
+// IMPORTANT: close the DOMContentLoaded listener
+}); 
+```
