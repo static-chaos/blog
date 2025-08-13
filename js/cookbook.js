@@ -208,12 +208,10 @@ function generatePages(recipe) {
 
 
   // ─── DEBUG DUMP ──────────────────────────────────────────────────────
-  console.groupCollapsed("🔍 PAGINATION DEBUG");
+    // simple debug to catch parse errors
   console.log("total pages:", allPages.length);
-  allPages.forEach((html, i) => {
-    console.log(i, html.replace(/<section/g, "\n<section"));
-  });
-  console.groupEnd();
+  allPages.forEach((html, i) => console.log(i, html));
+
   // ────────────────────────────────────────────────────────────────────
 
 
