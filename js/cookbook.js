@@ -110,7 +110,8 @@ function generatePages(recipe) {
     }
   };
 
- const addListItems = (items, type) => {
+ const addListItems = (items, type, sectionTitle = '') => {
+  let firstPage = true; // track if still on first page of this list
   let listOpen = type === 'ol'
     ? `<ol class="step-list" start="${stepCounter}">`
     : `<ul class="ingredient-list">`;
@@ -118,53 +119,44 @@ function generatePages(recipe) {
 
   for (let i = 0; i < items.length;) {
     const itemHtml = `<li>${escapeHtml(items[i])}</li>`;
+    const testBlock = (firstPage ? sectionTitle : '') +
+                      currentList + itemHtml +
+                      (type==='ol' ? '</ol>' : '</ul>');
 
-    if (addBlock(currentList + itemHtml + (type==='ol'?'</ol>':'</ul>'))) {
-      // Fits on current page
+    if (addBlock(testBlock)) {
       currentList += itemHtml;
       i++;
       if (type === 'ol') stepCounter++;
-
     } else {
-      // Close and finish this list for the current page only
       currentList += type==='ol' ? '</ol>' : '</ul>';
-      blocks.push(currentList);
+      blocks.push(firstPage ? sectionTitle + currentList : currentList);
+      flushPage(blocks);
 
-      flushPage(blocks); // flush this page
-
-      // Start a new empty page
       blocks = [];
       measurer.innerHTML = '';
-
-      // Reopen the list for remaining items
       currentList = listOpen;
+      firstPage = false;
     }
   }
 
-  // Add the last list (if any items are left)
   if (currentList !== listOpen) {
     currentList += type==='ol' ? '</ol>' : '</ul>';
-    blocks.push(currentList);
+    blocks.push(firstPage ? sectionTitle + currentList : currentList);
   }
 };
 
   // Ingredients
-  if (ingredients.length) {
-    blocks.push(`<h3 class="section-title">Ingredients</h3>`);
-    addListItems(ingredients, 'ul');
-  }
+ if (ingredients.length) {
+  addListItems(ingredients, 'ul', `<h3 class="section-title">Ingredients</h3>`);
+}
 
-  // Instructions
-  if (steps.length) {
-    blocks.push(`<h3 class="section-title">Instructions</h3>`);
-    addListItems(steps, 'ol');
-  }
+if (steps.length) {
+  addListItems(steps, 'ol', `<h3 class="section-title">Instructions</h3>`);
+}
 
-  // Notes
-  if (notes.length) {
-    blocks.push(`<h3 class="section-title">Notes</h3>`);
-    addListItems(notes, 'ul');
-  }
+if (notes.length) {
+  addListItems(notes, 'ul', `<h3 class="section-title">Notes</h3>`);
+}
 
   flushPage(blocks);
 
