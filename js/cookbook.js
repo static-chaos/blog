@@ -25,8 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const recipe = recipes[recipeIndex];
       const spreads = buildSpreadsForRecipe(recipe);
-      let currentSpreadIndex = 0;
+      console.log("DEBUG SPREADS:", spreads); // ✅ Debug log
 
+      let currentSpreadIndex = 0;
       renderSpread(container, spreads[currentSpreadIndex]);
 
       prevBtn.addEventListener('click', () => {
@@ -97,7 +98,7 @@ function generatePages(recipe) {
   const paddingY = 2 * 32; // 2em top & bottom (~32px each)
   const maxContentHeight = pageInnerHeight - paddingY;
 
-  // ✅ FIXED: safe addBlock that rebuilds measurer each time
+  // ✅ Fixed addBlock
   const addBlock = html => {
     measurer.innerHTML = blocks.join('') + html;
     if (measurer.offsetHeight <= maxContentHeight) {
@@ -130,13 +131,14 @@ function generatePages(recipe) {
       } else {
         currentList += type==='ol' ? '</ol>' : '</ul>';
         blocks.push(firstPage ? sectionTitle + currentList : currentList);
+        console.log("DEBUG PAGE ADDED:", blocks); // ✅ Debug log
         flushPage(blocks);
 
         blocks = [];
         measurer.innerHTML = '';
         currentList = listOpen;
         firstPage = false;
-        continue; // ✅ prevents re-adding the same overflowing item twice
+        continue;
       }
     }
 
@@ -148,14 +150,17 @@ function generatePages(recipe) {
 
   // Ingredients
   if (ingredients.length) {
+    console.log("DEBUG INGREDIENTS:", ingredients);
     addListItems(ingredients, 'ul', `<h3 class="section-title">Ingredients</h3>`);
   }
 
   if (steps.length) {
+    console.log("DEBUG STEPS:", steps);
     addListItems(steps, 'ol', `<h3 class="section-title">Instructions</h3>`);
   }
 
   if (notes.length) {
+    console.log("DEBUG NOTES:", notes);
     addListItems(notes, 'ul', `<h3 class="section-title">Notes</h3>`);
   }
 
