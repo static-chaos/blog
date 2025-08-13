@@ -111,6 +111,7 @@ function generatePages(recipe) {
     }
   };
 
+  // ✅ Fixed addListItems (no duplication)
   const addListItems = (items, type, sectionTitle = '') => {
     let firstPage = true; // track if still on first page of this list
     let listOpen = type === 'ol'
@@ -129,16 +130,18 @@ function generatePages(recipe) {
         i++;
         if (type === 'ol') stepCounter++;
       } else {
+        // close & flush current page without duplicating
         currentList += type==='ol' ? '</ol>' : '</ul>';
         blocks.push(firstPage ? sectionTitle + currentList : currentList);
-        console.log("DEBUG PAGE ADDED:", blocks); // ✅ Debug log
         flushPage(blocks);
 
+        // start fresh page with only the item that didn't fit
         blocks = [];
         measurer.innerHTML = '';
-        currentList = listOpen;
+        currentList = listOpen + itemHtml;
+        if (type === 'ol') stepCounter++;
+        i++; // move to next item
         firstPage = false;
-        continue;
       }
     }
 
