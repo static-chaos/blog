@@ -55,9 +55,15 @@ function buildSpreadsForRecipe(recipe) {
 }
 
 function generatePages(recipe) {
+  // ✅ Clear old content and reset trackers to prevent duplication
+  book.innerHTML = "";
+  blocks = [];
+  stepCounter = 1;
+
   const pages = [];
   const name = recipe?.name ?? 'Untitled Recipe';
   const description = recipe?.description ?? '';
+
 
   const ingredients = Array.isArray(recipe?.ingredients)
     ? recipe.ingredients.map(formatIngredient)
