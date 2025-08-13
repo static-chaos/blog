@@ -102,9 +102,18 @@ function generatePages(recipe) {
   document.body.appendChild(measurer);
 
   // push blocks into a <section class="page"> wrapper
-  function flushPage(blocks) {
-    pages.push(`<section class="page">${blocks.join('')}</section>`);
+ function flushPage(blocks) {
+  // don’t push completely empty pages
+  if (!blocks.length) return;
+
+  const html = `<section class="page">${blocks.join('')}</section>`;
+  
+  // only push if it’s different from the last page
+  if (pages[pages.length - 1] !== html) {
+    pages.push(html);
   }
+}
+
 
   // try adding one HTML chunk to current page; returns true if fits
   function addBlock(blocks, html, usedHeightRef) {
