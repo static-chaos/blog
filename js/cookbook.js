@@ -252,5 +252,6 @@ function renderBlankPage() {
   return `<section class="page blank">
     <div class="blank-content"></div>
   </section>`;
-}
+});
+
 ```
