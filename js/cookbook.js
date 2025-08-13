@@ -110,34 +110,43 @@ function generatePages(recipe) {
     }
   };
 
-  const addListItems = (items, type) => {
-    let listOpen = type === 'ol'
-      ? `<ol class="step-list" start="${stepCounter}">`
-      : `<ul class="ingredient-list">`;
-    let currentList = listOpen;
-    for (let i = 0; i < items.length; ) {
-      const itemHtml = `<li>${escapeHtml(items[i])}</li>`;
-      if (addBlock(currentList + itemHtml + (type==='ol'?'</ol>':'</ul>'))) {
-        currentList += itemHtml;
-        i++;
-        if (type === 'ol') stepCounter++;
-      } else {
-        // close off and flush
-        currentList += type==='ol' ? '</ol>' : '</ul>';
-        blocks.push(currentList);
-        flushPage(blocks);
-        blocks = [];
-        measurer.innerHTML = '';
-        usedHeight = 0;
-        // reopen list for remaining items
-        currentList = listOpen;
-      }
-    }
-    if (currentList !== listOpen) {
+ const addListItems = (items, type) => {
+  let listOpen = type === 'ol'
+    ? `<ol class="step-list" start="${stepCounter}">`
+    : `<ul class="ingredient-list">`;
+  let currentList = listOpen;
+
+  for (let i = 0; i < items.length;) {
+    const itemHtml = `<li>${escapeHtml(items[i])}</li>`;
+
+    if (addBlock(currentList + itemHtml + (type==='ol'?'</ol>':'</ul>'))) {
+      // Fits on current page
+      currentList += itemHtml;
+      i++;
+      if (type === 'ol') stepCounter++;
+
+    } else {
+      // Close and finish this list for the current page only
       currentList += type==='ol' ? '</ol>' : '</ul>';
       blocks.push(currentList);
+
+      flushPage(blocks); // flush this page
+
+      // Start a new empty page
+      blocks = [];
+      measurer.innerHTML = '';
+
+      // Reopen the list for remaining items
+      currentList = listOpen;
     }
-  };
+  }
+
+  // Add the last list (if any items are left)
+  if (currentList !== listOpen) {
+    currentList += type==='ol' ? '</ol>' : '</ul>';
+    blocks.push(currentList);
+  }
+};
 
   // Ingredients
   if (ingredients.length) {
