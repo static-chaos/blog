@@ -97,15 +97,15 @@ function generatePages(recipe) {
   const paddingY = 2 * 32; // 2em top & bottom (~32px each)
   const maxContentHeight = pageInnerHeight - paddingY;
 
-  // Add ingredients and steps dynamically
+  // ✅ FIXED: safe addBlock that rebuilds measurer each time
   const addBlock = html => {
-    measurer.innerHTML += html;
+    measurer.innerHTML = blocks.join('') + html;
     if (measurer.offsetHeight <= maxContentHeight) {
       blocks.push(html);
       usedHeight = measurer.offsetHeight;
       return true;
     } else {
-      measurer.innerHTML = measurer.innerHTML.slice(0, -(html.length));
+      measurer.innerHTML = blocks.join('');
       return false;
     }
   };
