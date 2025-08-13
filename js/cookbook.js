@@ -65,7 +65,6 @@ function buildSpreadsForRecipe(recipe) {
   return spreads;
 }
 
-
 function generatePages(recipe) {
   // 1) flatten recipe data
   const name        = recipe?.name ?? 'Untitled Recipe';
@@ -78,7 +77,9 @@ function generatePages(recipe) {
     : [];
   const notes = Array.isArray(recipe?.extra_notes)
     ? [...recipe.extra_notes]
-    : recipe?.extra_notes ? [recipe.extra_notes] : [];
+    : recipe?.extra_notes
+      ? [recipe.extra_notes]
+      : [];
 
   // 2) shared measurement setup
   const pageInnerHeight  = 600;     // px container height
@@ -207,18 +208,14 @@ function generatePages(recipe) {
   }
 
 
-  // ─── DEBUG DUMP ──────────────────────────────────────────────────────
-    // simple debug to catch parse errors
+  // simple debug to catch parse errors
   console.log("total pages:", allPages.length);
   allPages.forEach((html, i) => console.log(i, html));
-
-  // ────────────────────────────────────────────────────────────────────
 
 
   document.body.removeChild(measurer);
   return allPages;
 }
-
 
 function renderSpread(container, spread) {
   container.innerHTML = `<div class="page-spread active">
@@ -231,14 +228,12 @@ function renderSpread(container, spread) {
   if (pages[1]) pages[1].classList.add('right-page');
 }
 
-
 function formatIngredient(obj) {
   if (!obj) return '';
   const item = obj.item     != null ? String(obj.item)     : '';
   const qty  = obj.quantity != null ? String(obj.quantity) : '';
   return item && qty ? `${item} — ${qty}` : (item || qty || '');
 }
-
 
 function escapeHtml(str) {
   return String(str)
@@ -247,11 +242,9 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;');
 }
 
-
 function renderBlankPage() {
   return `<section class="page blank">
     <div class="blank-content"></div>
   </section>`;
-});
-
-```
+}
+});  // ← closes the DOMContentLoaded callback and addEventListener call
