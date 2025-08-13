@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // pick recipe by URL-hash slug or default to first
+      // choose via hash-slug or default to 0
       const slugFromHash = window.location.hash.slice(1).toLowerCase();
       const toSlug = s => String(s)
         .toLowerCase()
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
 /* ---------- Pagination logic ---------- */
 
 function buildSpreadsForRecipe(recipe) {
@@ -64,12 +65,11 @@ function buildSpreadsForRecipe(recipe) {
   return spreads;
 }
 
+
 function generatePages(recipe) {
-  const pages = [];
+  // 1) flatten recipe data
   const name        = recipe?.name ?? 'Untitled Recipe';
   const description = recipe?.description ?? '';
-
-  // prepare flat arrays of strings
   const ingredients = Array.isArray(recipe?.ingredients)
     ? recipe.ingredients.map(formatIngredient)
     : [];
@@ -78,16 +78,13 @@ function generatePages(recipe) {
     : [];
   const notes = Array.isArray(recipe?.extra_notes)
     ? [...recipe.extra_notes]
-    : recipe?.extra_notes
-      ? [recipe.extra_notes]
-      : [];
+    : recipe?.extra_notes ? [recipe.extra_notes] : [];
 
-  let stepCounter = 1;
-  const pageInnerHeight  = 600;     // px
-  const paddingY         = 2 * 32;  // ~2em top & bottom
+  // 2) shared measurement setup
+  const pageInnerHeight  = 600;     // px container height
+  const paddingY         = 2 * 32;  // ~2em top+bottom
   const maxContentHeight = pageInnerHeight - paddingY;
 
-  // hidden element to measure
   const measurer = document.createElement('div');
   measurer.style.cssText = `
     position:absolute;
@@ -102,113 +99,126 @@ function generatePages(recipe) {
   `;
   document.body.appendChild(measurer);
 
-  // 1) guard against empty or duplicate pages
-  function flushPage(blocks) {
-    if (!blocks.length) return;
-    const html = `<section class="page">${blocks.join('')}</section>`;
-    if (pages[pages.length - 1] !== html) {
-      pages.push(html);
-    }
-  }
+  let stepCounter = 1;
+  const allPages = [];
 
-  // 2) measure & push a single chunk if it fits
-  function addBlock(blocks, html, usedHeightRef) {
-    measurer.innerHTML = blocks.join('') + html;
-    if (measurer.offsetHeight <= maxContentHeight) {
-      blocks.push(html);
-      usedHeightRef.value = measurer.offsetHeight;
-      return true;
-    }
-    return false;
-  }
+  // HEADER PAGE (always first, no duplication)
+  (function flushHeader() {
+    const headerHtml = `<header class="page-header">
+      <h2 class="recipe-title">${escapeHtml(name)}</h2>
+      ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
+    </header>`;
+    measurer.innerHTML = headerHtml;
+    allPages.push(`<section class="page">${headerHtml}</section>`);
+  })();
 
-  // 3) paginate an array of items (ingredients, steps, notes)
+
+  // GENERIC list-pagination function
   function paginateList(items, isOrdered, sectionTitle) {
+    const pagesForThis = [];
     let firstPage = true;
     let blocks = [];
-    let usedHeightRef = { value: 0 };
+    let usedHeight = 0;
 
-    function openWrapper() {
-      if (isOrdered) {
-        return `<h3 class="section-title">${sectionTitle}</h3>
-                <ol class="step-list" start="${stepCounter}">`;
-      } else {
-        return `<h3 class="section-title">${sectionTitle}</h3>
-                <ul class="ingredient-list">`;
+    // Build opener & closer
+    function openTag() {
+      const tag = isOrdered
+        ? `<h3 class="section-title">${sectionTitle}</h3>
+           <ol class="step-list" start="${stepCounter}">`
+        : `<h3 class="section-title">${sectionTitle}</h3>
+           <ul class="ingredient-list">`;
+      return tag;
+    }
+    const closeTag = isOrdered ? '</ol>' : '</ul>';
+
+    let wrapperOpen = openTag();
+    let itemsHtml   = '';
+
+    // Try to add one chunk of HTML to the current blocks
+    function fits(html) {
+      measurer.innerHTML = blocks.join('') + html;
+      if (measurer.offsetHeight <= maxContentHeight) {
+        blocks.push(html);
+        usedHeight = measurer.offsetHeight;
+        return true;
+      }
+      return false;
+    }
+
+    // Flush local page into pagesForThis (guard duplicates & empty)
+    function flushLocal() {
+      if (!blocks.length) return;
+      const html = `<section class="page">${blocks.join('')}</section>`;
+      if (pagesForThis[pagesForThis.length - 1] !== html) {
+        pagesForThis.push(html);
       }
     }
 
-    let wrapperOpen = openWrapper();
-    let wrappedItems = '';
-
-    items.forEach(item => {
-      const li = `<li>${escapeHtml(item)}</li>`;
-      const closingTag = isOrdered ? '</ol>' : '</ul>';
+    // Walk each item
+    for (let i = 0; i < items.length; i++) {
+      const li = `<li>${escapeHtml(items[i])}</li>`;
       const candidate = (firstPage ? wrapperOpen : '') +
-                        wrappedItems +
+                        itemsHtml +
                         li +
-                        closingTag;
+                        closeTag;
 
-      if (addBlock(blocks, candidate, usedHeightRef)) {
-        wrappedItems += li;
+      if (fits(candidate)) {
+        itemsHtml += li;
         if (isOrdered) stepCounter++;
       } else {
-        // flush current page
-        const toPush = (firstPage ? wrapperOpen : '') +
-                       wrappedItems +
-                       closingTag;
-        blocks.push(toPush);
-        flushPage(blocks);
+        // overflow → flush this page
+        const pageHtml = (firstPage ? wrapperOpen : '') +
+                         itemsHtml +
+                         closeTag;
+        blocks.push(pageHtml);
+        flushLocal();
 
         // start fresh
+        firstPage = false;
         blocks = [];
         measurer.innerHTML = '';
-        firstPage = false;
 
-        wrapperOpen  = openWrapper();
-        wrappedItems = li;
+        wrapperOpen = openTag();
+        itemsHtml   = li;
         if (isOrdered) stepCounter++;
       }
-    });
-
-    // flush remaining items
-    if (wrappedItems) {
-      const closingTag = isOrdered ? '</ol>' : '</ul>';
-      const toPush = (firstPage ? wrapperOpen : '') +
-                     wrappedItems +
-                     closingTag;
-      blocks.push(toPush);
     }
-    flushPage(blocks);
+
+    // flush whatever remains
+    if (itemsHtml) {
+      const pageHtml = (firstPage ? wrapperOpen : '') +
+                       itemsHtml +
+                       closeTag;
+      blocks.push(pageHtml);
+      flushLocal();
+    }
+
+    return pagesForThis;
   }
 
-  // --- HEADER PAGE ---
-  const headerHtml = `<header class="page-header">
-    <h2 class="recipe-title">${escapeHtml(name)}</h2>
-    ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
-  </header>`;
-  let introBlocks = [headerHtml];
-  measurer.innerHTML = headerHtml;
-  flushPage(introBlocks);
 
-  // --- INGREDIENTS ---
+  // 3) INGREDIENTS
   if (ingredients.length) {
-    paginateList(ingredients, false, 'Ingredients');
+    const ingPages = paginateList(ingredients, false, 'Ingredients');
+    allPages.push(...ingPages);
   }
 
-  // --- INSTRUCTIONS ---
+  // 4) INSTRUCTIONS
   if (steps.length) {
-    paginateList(steps, true, 'Instructions');
+    const stepPages = paginateList(steps, true, 'Instructions');
+    allPages.push(...stepPages);
   }
 
-  // --- NOTES ---
+  // 5) NOTES
   if (notes.length) {
-    paginateList(notes, false, 'Notes');
+    const notePages = paginateList(notes, false, 'Notes');
+    allPages.push(...notePages);
   }
 
   document.body.removeChild(measurer);
-  return pages;
+  return allPages;
 }
+
 
 function renderSpread(container, spread) {
   container.innerHTML = `<div class="page-spread active">
@@ -220,6 +230,7 @@ function renderSpread(container, spread) {
   if (pages[0]) pages[0].classList.add('left-page');
   if (pages[1]) pages[1].classList.add('right-page');
 }
+
 
 function formatIngredient(obj) {
   if (!obj) return '';
