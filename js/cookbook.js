@@ -66,7 +66,6 @@ function buildSpreadsForRecipe(recipe) {
 }
 
 function generatePages(recipe) {
-  // 1) flatten recipe data
   const name        = recipe?.name ?? 'Untitled Recipe';
   const description = recipe?.description ?? '';
   const ingredients = Array.isArray(recipe?.ingredients)
@@ -79,9 +78,8 @@ function generatePages(recipe) {
     ? [...recipe.extra_notes]
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
-  // 2) shared measurement setup
-  const pageInnerHeight  = 600;     // px container height
-  const paddingY         = 2 * 32;  // ~2em top+bottom
+  const pageInnerHeight  = 600;
+  const paddingY         = 2 * 32;
   const maxContentHeight = pageInnerHeight - paddingY;
 
   const measurer = document.createElement('div');
@@ -101,111 +99,74 @@ function generatePages(recipe) {
   let stepCounter = 1;
   const allPages = [];
 
-  // HEADER PAGE (always first)
-  (function flushHeader() {
-    const headerHtml = `<header class="page-header">
-      <h2 class="recipe-title">${escapeHtml(name)}</h2>
-      ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
-    </header>`;
-    measurer.innerHTML = headerHtml;
-    allPages.push(`<section class="page">${headerHtml}</section>`);
-  })();
+  // Header page
+  const headerHtml = `<header class="page-header">
+    <h2 class="recipe-title">${escapeHtml(name)}</h2>
+    ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
+  </header>`;
+  allPages.push(`<section class="page">${headerHtml}</section>`);
 
-  // GENERIC list-pagination function
+  // Improved paginateList to avoid duplication
   function paginateList(items, isOrdered, sectionTitle) {
-    const pagesForThis = [];
     let firstPage = true;
-    let blocks = [];
-    let usedHeight = 0;
+    let pageBlocks = [];
+    let listItems = '';
 
-    function openTag() {
+    const openWrapper = () => {
+      const title = firstPage ? `<h3 class="section-title">${sectionTitle}</h3>` : '';
       return isOrdered
-        ? `<h3 class="section-title">${sectionTitle}</h3>
-           <ol class="step-list" start="${stepCounter}">`
-        : `<h3 class="section-title">${sectionTitle}</h3>
-           <ul class="ingredient-list">`;
-    }
+        ? `${title}<ol class="step-list" start="${stepCounter}">`
+        : `${title}<ul class="ingredient-list">`;
+    };
     const closeTag = isOrdered ? '</ol>' : '</ul>';
-    let wrapperOpen = openTag();
-    let itemsHtml   = '';
 
-    function fits(html) {
-      measurer.innerHTML = blocks.join('') + html;
-      if (measurer.offsetHeight <= maxContentHeight) {
-        blocks.push(html);
-        usedHeight = measurer.offsetHeight;
-        return true;
-      }
-      return false;
-    }
+    const startNewPage = () => {
+      pageBlocks = [openWrapper()];
+      listItems = '';
+    };
 
-    function flushLocal() {
-      if (!blocks.length) return;
-      const html = `<section class="page">${blocks.join('')}</section>`;
-      if (pagesForThis[pagesForThis.length - 1] !== html) {
-        pagesForThis.push(html);
+    const flushPageNow = () => {
+      if (!pageBlocks.length) return;
+      const html = `<section class="page">${pageBlocks.join('')}${listItems}${closeTag}</section>`;
+      if (allPages[allPages.length - 1] !== html) {
+        allPages.push(html);
       }
-    }
+      firstPage = false;
+      pageBlocks = [];
+      listItems = '';
+    };
+
+    startNewPage();
 
     for (let i = 0; i < items.length; i++) {
       const li = `<li>${escapeHtml(items[i])}</li>`;
-      const candidate = (firstPage ? wrapperOpen : '') +
-                        itemsHtml +
-                        li +
-                        closeTag;
+      const candidate = pageBlocks.join('') + listItems + li + closeTag;
 
-      if (fits(candidate)) {
-        itemsHtml += li;
+      measurer.innerHTML = candidate;
+      if (measurer.offsetHeight <= maxContentHeight) {
+        listItems += li;
         if (isOrdered) stepCounter++;
       } else {
-        const pageHtml = (firstPage ? wrapperOpen : '') +
-                         itemsHtml +
-                         closeTag;
-        blocks.push(pageHtml);
-        flushLocal();
-
-        firstPage = false;
-        blocks = [];
-        measurer.innerHTML = '';
-
-        wrapperOpen = openTag();
-        itemsHtml   = li;
+        flushPageNow();
+        startNewPage();
+        listItems = li;
         if (isOrdered) stepCounter++;
+        measurer.innerHTML = pageBlocks.join('') + listItems + closeTag;
+        if (measurer.offsetHeight > maxContentHeight) {
+          flushPageNow();
+          startNewPage();
+        }
       }
     }
 
-    if (itemsHtml) {
-      const pageHtml = (firstPage ? wrapperOpen : '') +
-                       itemsHtml +
-                       closeTag;
-      blocks.push(pageHtml);
-      flushLocal();
+    if (listItems) {
+      flushPageNow();
     }
-
-    return pagesForThis;
   }
 
-  // 3) INGREDIENTS
-  if (ingredients.length) {
-    const ingPages = paginateList(ingredients, false, 'Ingredients');
-    allPages.push(...ingPages);
-  }
-
-  // 4) INSTRUCTIONS
-  if (steps.length) {
-    const stepPages = paginateList(steps, true, 'Instructions');
-    allPages.push(...stepPages);
-  }
-
-  // 5) NOTES
-  if (notes.length) {
-    const notePages = paginateList(notes, false, 'Notes');
-    allPages.push(...notePages);
-  }
-
-  // simple debug to catch parse errors
-  console.log("total pages:", allPages.length);
-  allPages.forEach((html, i) => console.log(i, html));
+  if (ingredients.length) paginateList(ingredients, false, 'Ingredients');
+  if (steps.length)       paginateList(steps, true,  'Instructions');
+  if (notes.length)       paginateList(notes, false, 'Notes');
 
   document.body.removeChild(measurer);
   return allPages;
@@ -216,28 +177,4 @@ function renderSpread(container, spread) {
     ${spread.left || ''}
     ${spread.right || ''}
   </div>`;
-
-  const pages = container.querySelectorAll('.page');
-  if (pages[0]) pages[0].classList.add('left-page');
-  if (pages[1]) pages[1].classList.add('right-page');
-}
-
-function formatIngredient(obj) {
-  if (!obj) return '';
-  const item = obj.item     != null ? String(obj.item)     : '';
-  const qty  = obj.quantity != null ? String(obj.quantity) : '';
-  return item && qty ? `${item} — ${qty}` : (item || qty || '');
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-function renderBlankPage() {
-  return `<section class="page blank">
-    <div class="blank-content"></div>
-  </section>`;
-}
+  const pages = container.querySelectorAll
