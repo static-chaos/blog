@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const showSpread = (i) => {
         currentSpreadIndex = i;
         renderSpread(container, spreads[currentSpreadIndex]);
+        
         if (prevBtn) prevBtn.disabled = currentSpreadIndex === 0;
         if (nextBtn) nextBtn.disabled = currentSpreadIndex >= spreads.length - 1;
       };
@@ -71,12 +72,37 @@ document.addEventListener('DOMContentLoaded', () => {
 function buildSpreadsForRecipe(recipe) {
   const pages = generatePages(recipe);
   const spreads = [];
-  for (let i = 0; i < pages.length; i += 2) {
+  
+  let leftPageContent = '';
+  let rightPageContent = '';
+  
+  for (let i = 0; i < pages.length; i++) {
+    const page = pages[i];
+    if (leftPageContent.length <= rightPageContent.length) {
+      leftPageContent += page;
+    } else {
+      rightPageContent += page;
+    }
+    
+    // If both pages have content, push as a spread
+    if (leftPageContent.length && rightPageContent.length) {
+      spreads.push({
+        left:  leftPageContent,
+        right: rightPageContent
+      });
+      leftPageContent = '';
+      rightPageContent = '';
+    }
+  }
+
+  // If there are remaining content for one page
+  if (leftPageContent.length || rightPageContent.length) {
     spreads.push({
-      left:  pages[i],
-      right: pages[i + 1] || renderBlankPage()
+      left:  leftPageContent,
+      right: rightPageContent
     });
   }
+
   return spreads;
 }
 
@@ -121,10 +147,10 @@ function generatePages(recipe) {
   </header>`;
   allPages.push(`<section class="page">${headerHtml}</section>`);
 
+  // Combine sections (Ingredients, Instructions, Notes)
   function paginateList(items, isOrdered, sectionTitle) {
+    let pageContent = '';
     let firstPage = true;
-    let pageBlocks = [];
-    let listItems = '';
 
     const openWrapper = () => {
       const title = firstPage ? `<h3 class="section-title">${escapeHtml(sectionTitle)}</h3>` : '';
@@ -134,48 +160,24 @@ function generatePages(recipe) {
     };
     const closeTag = isOrdered ? '</ol>' : '</ul>';
 
-    const startNewPage = () => {
-      pageBlocks = [openWrapper()];
-      listItems = '';
-    };
+    pageContent += openWrapper();
 
-    const pushPageIfHasItems = () => {
-      if (!pageBlocks.length || !listItems) return;
-      const html = `<section class="page">${pageBlocks.join('')}${listItems}${closeTag}</section>`;
-      if (allPages[allPages.length - 1] !== html) {
-        allPages.push(html);
-      }
-      firstPage = false;
-      pageBlocks = [];
-      listItems = '';
-    };
-
-    startNewPage();
-
-    for (let i = 0; i < items.length; i++) {
-      const li = `<li>${escapeHtml(items[i])}</li>`;
-
-      measurer.innerHTML = pageBlocks.join('') + listItems + li + closeTag;
+    items.forEach(item => {
+      const li = `<li>${escapeHtml(item)}</li>`;
+      measurer.innerHTML = pageContent + li + closeTag;
       if (measurer.offsetHeight <= maxContentHeight) {
-        listItems += li;
+        pageContent += li;
         if (isOrdered) stepCounter++;
-        continue;
+      } else {
+        allPages.push(`<section class="page">${pageContent + closeTag}</section>`);
+        pageContent = openWrapper() + li; // Start new page with current item
+        if (isOrdered) stepCounter++;
       }
+    });
 
-      pushPageIfHasItems();
-      startNewPage();
-
-      measurer.innerHTML = pageBlocks.join('') + li + closeTag;
-      listItems = li;
-      if (isOrdered) stepCounter++;
-
-      if (measurer.offsetHeight > maxContentHeight) {
-        pushPageIfHasItems();
-        startNewPage();
-      }
+    if (pageContent) {
+      allPages.push(`<section class="page">${pageContent + closeTag}</section>`);
     }
-
-    pushPageIfHasItems();
   }
 
   if (ingredients.length) paginateList(ingredients, false, 'Ingredients');
