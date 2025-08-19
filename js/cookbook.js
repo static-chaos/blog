@@ -147,12 +147,12 @@ function generatePages(recipe) {
     };
 
     const pushPageIfHasItems = () => {
-      if (!pageBlocks.length || !listItems) return;
+      if (!pageBlocks.length || !listItems) return; // don't overwrite if nothing new
       const html = `<section class="page">${pageBlocks.join('')}${listItems}${closeTag}</section>`;
       if (forceNewPage || allPages.length === 0) {
         allPages.push(html);
       } else {
-        allPages[allPages.length - 1] = html;
+        allPages[allPages.length - 1] = html; // overwrite last page
       }
       firstPage = false;
       pageBlocks = [];
@@ -163,7 +163,7 @@ function generatePages(recipe) {
       startNewPage();
     } else {
       // Continue from last page content
-      const lastPageHtml = allPages.pop() || '';
+      const lastPageHtml = allPages[allPages.length - 1] || '';
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = lastPageHtml;
       const existingContent = tempDiv.querySelector('.page')?.innerHTML || '';
@@ -238,3 +238,14 @@ function formatIngredient(item) {
   if (typeof item === 'string') return item;
 
   const qty = item.quantity ?? item.qty ?? item.amount ?? '';
+  const unit = item.unit ?? '';
+  const name = item.name ?? item.ingredient ?? item.item ?? '';
+
+  const parts = [];
+  if (qty)  parts.push(String(qty));
+  if (unit) parts.push(String(unit));
+  if (name) parts.push(String(name));
+
+  const line = parts.join(' ').trim();
+  return line || JSON.stringify(item);
+}
