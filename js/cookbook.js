@@ -127,8 +127,8 @@ function generatePages(recipe) {
   </header>`;
   allPages.push(`<section class="page">${headerHtml}</section>`);
 
-  // Paginate a list into multiple pages without duplication or blank pages
-  function paginateList(items, isOrdered, sectionTitle) {
+  // Improved paginateList with forceNewPage flag
+  function paginateList(items, isOrdered, sectionTitle, forceNewPage) {
     let firstPage = true;
     let pageBlocks = [];
     let listItems = '';
@@ -147,23 +147,33 @@ function generatePages(recipe) {
     };
 
     const pushPageIfHasItems = () => {
-      // Only push a page if it actually has <li> content
       if (!pageBlocks.length || !listItems) return;
       const html = `<section class="page">${pageBlocks.join('')}${listItems}${closeTag}</section>`;
-      if (allPages[allPages.length - 1] !== html) {
+      if (forceNewPage || allPages.length === 0) {
         allPages.push(html);
+      } else {
+        allPages[allPages.length - 1] = html; // overwrite last page
       }
       firstPage = false;
       pageBlocks = [];
       listItems = '';
     };
 
-    startNewPage();
+    if (forceNewPage) {
+      startNewPage();
+    } else {
+      // Continue from last page content
+      const lastPageHtml = allPages[allPages.length - 1] || '';
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = lastPageHtml;
+      const existingContent = tempDiv.querySelector('.page')?.innerHTML || '';
+      pageBlocks = [existingContent];
+      listItems = '';
+    }
 
     for (let i = 0; i < items.length; i++) {
       const li = `<li>${escapeHtml(items[i])}</li>`;
 
-      // Try to add to current page
       measurer.innerHTML = pageBlocks.join('') + listItems + li + closeTag;
       if (measurer.offsetHeight <= maxContentHeight) {
         listItems += li;
@@ -171,29 +181,26 @@ function generatePages(recipe) {
         continue;
       }
 
-      // Current page is full; push it if it has items
       pushPageIfHasItems();
       startNewPage();
 
-      // Place the li on the new page; if even a single item doesn't fit (very long),
-      // still allow it by forcing it (to avoid infinite loop). You can add smarter splitting if needed.
       measurer.innerHTML = pageBlocks.join('') + li + closeTag;
       listItems = li;
       if (isOrdered) stepCounter++;
-      // If it still overflows, push anyway to move on
       if (measurer.offsetHeight > maxContentHeight) {
         pushPageIfHasItems();
         startNewPage();
       }
     }
 
-    // Flush trailing page if it contains items
     pushPageIfHasItems();
   }
 
-  if (ingredients.length) paginateList(ingredients, false, 'Ingredients');
-  if (steps.length)       paginateList(steps, true,  'Instructions');
-  if (notes.length)       paginateList(notes, false, 'Notes');
+  // Call paginateList with forceNewPage flag
+  let isFirstSection = true;
+  if (ingredients.length) { paginateList(ingredients, false, 'Ingredients', isFirstSection); isFirstSection = false; }
+  if (steps.length)       { paginateList(steps, true,  'Instructions', isFirstSection);      isFirstSection = false; }
+  if (notes.length)       { paginateList(notes, false, 'Notes', isFirstSection);              isFirstSection = false; }
 
   document.body.removeChild(measurer);
   return allPages;
@@ -208,7 +215,6 @@ function renderSpread(container, spread) {
     ${right}
   </div>`;
 
-  // Optional: ensure both pages have .page class (in case upstream HTML differs)
   const pages = container.querySelectorAll('.page-spread .page');
   pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
 }
@@ -232,7 +238,6 @@ function formatIngredient(item) {
   if (item == null) return '';
   if (typeof item === 'string') return item;
 
-  // Handle common shapes like { quantity, unit, name } or { amount, unit, ingredient }
   const qty = item.quantity ?? item.qty ?? item.amount ?? '';
   const unit = item.unit ?? '';
   const name = item.name ?? item.ingredient ?? item.item ?? '';
