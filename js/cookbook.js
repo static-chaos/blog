@@ -3,8 +3,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.recipe-book .book-content');
-  const prevBtn   = document.getElementById('prevBtn');
-  const nextBtn   = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
 
   if (!container) {
     console.error('Missing .recipe-book .book-content container');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // choose via hash-slug or default to 0
+      // Choose via hash-slug or default to 0
       const slugFromHash = window.location.hash.slice(1).toLowerCase();
       const toSlug = s => String(s)
         .toLowerCase()
@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 /* ---------- Pagination logic ---------- */
 
 function buildSpreadsForRecipe(recipe) {
@@ -76,7 +75,7 @@ function buildSpreadsForRecipe(recipe) {
   const spreads = [];
   for (let i = 0; i < pages.length; i += 2) {
     spreads.push({
-      left:  pages[i],
+      left: pages[i],
       right: pages[i + 1] || renderBlankPage()
     });
   }
@@ -84,7 +83,7 @@ function buildSpreadsForRecipe(recipe) {
 }
 
 function generatePages(recipe) {
-  const name        = recipe?.name ?? 'Untitled Recipe';
+  const name = recipe?.name ?? 'Untitled Recipe';
   const description = recipe?.description ?? '';
   const ingredients = Array.isArray(recipe?.ingredients)
     ? recipe.ingredients.map(formatIngredient)
@@ -97,8 +96,8 @@ function generatePages(recipe) {
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   // Layout constants (tune to match your CSS)
-  const pageInnerHeight  = 600;   // total inner height for .page content
-  const paddingY         = 2 * 32;
+  const pageInnerHeight = 600;   // total inner height for .page content
+  const paddingY = 2 * 32;
   const maxContentHeight = pageInnerHeight - paddingY;
 
   // Hidden measurer for pagination
@@ -192,7 +191,7 @@ function generatePages(recipe) {
   }
 
   if (ingredients.length) paginateList(ingredients, false, 'Ingredients');
-  if (steps.length)       paginateList(steps, true,  'Instructions');
+  if (steps.length)       paginateList(steps, true, 'Instructions');
   if (notes.length)       paginateList(notes, false, 'Notes');
 
   document.body.removeChild(measurer);
@@ -200,7 +199,7 @@ function generatePages(recipe) {
 }
 
 function renderSpread(container, spread) {
-  const left  = spread?.left  || renderBlankPage();
+  const left = spread?.left || renderBlankPage();
   const right = spread?.right || renderBlankPage();
 
   container.innerHTML = `<div class="page-spread active">
@@ -238,7 +237,7 @@ function formatIngredient(item) {
   const name = item.name ?? item.ingredient ?? item.item ?? '';
 
   const parts = [];
-  if (qty)  parts.push(String(qty));
+  if (qty) parts.push(String(qty));
   if (unit) parts.push(String(unit));
   if (name) parts.push(String(name));
 
