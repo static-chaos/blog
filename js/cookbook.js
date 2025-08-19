@@ -1,9 +1,10 @@
+// js/cookbook.js — No Images, Auto Pagination, No Scroll
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.recipe-book .book-content');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn   = document.getElementById('prevBtn');
+  const nextBtn   = document.getElementById('nextBtn');
 
   if (!container) {
     console.error('Missing .recipe-book .book-content container');
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // choose via hash-slug or default to 0
       const slugFromHash = window.location.hash.slice(1).toLowerCase();
       const toSlug = s => String(s)
         .toLowerCase()
@@ -66,35 +68,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+/* ---------- Pagination logic ---------- */
+
 function buildSpreadsForRecipe(recipe) {
   const pages = generatePages(recipe);
   const spreads = [];
-  let currentSpread = { left: "", right: "" };
-
-  let currentPage = 'left'; // Start with the left side of the spread
-
-  pages.forEach(page => {
-    if (currentPage === 'left') {
-      currentSpread.left = page;
-      currentPage = 'right';
-    } else {
-      currentSpread.right = page;
-      spreads.push(currentSpread);
-      currentSpread = { left: "", right: "" };
-      currentPage = 'left';
-      currentSpread.left = page;
-    }
-  });
-
-  if (currentSpread.left && currentSpread.right) {
-    spreads.push(currentSpread);
+  for (let i = 0; i < pages.length; i += 2) {
+    spreads.push({
+      left:  pages[i],
+      right: pages[i + 1] || renderBlankPage()
+    });
   }
-
   return spreads;
 }
 
 function generatePages(recipe) {
-  const name = recipe?.name ?? 'Untitled Recipe';
+  const name        = recipe?.name ?? 'Untitled Recipe';
   const description = recipe?.description ?? '';
   const ingredients = Array.isArray(recipe?.ingredients)
     ? recipe.ingredients.map(formatIngredient)
@@ -106,10 +96,12 @@ function generatePages(recipe) {
     ? [...recipe.extra_notes]
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
-  const pageInnerHeight = 600;  // total inner height for .page content
-  const paddingY = 2 * 32;
+  // Layout constants (tune to match your CSS)
+  const pageInnerHeight  = 600;   // total inner height for .page content
+  const paddingY         = 2 * 32;
   const maxContentHeight = pageInnerHeight - paddingY;
 
+  // Hidden measurer for pagination
   const measurer = document.createElement('div');
   measurer.style.cssText = `
     position:absolute;
@@ -128,12 +120,14 @@ function generatePages(recipe) {
   let stepCounter = 1;
   const allPages = [];
 
+  // Header page
   const headerHtml = `<header class="page-header">
     <h2 class="recipe-title">${escapeHtml(name)}</h2>
     ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
   </header>`;
   allPages.push(`<section class="page">${headerHtml}</section>`);
 
+  // Paginate a list into multiple pages without duplication or blank pages
   function paginateList(items, isOrdered, sectionTitle) {
     let firstPage = true;
     let pageBlocks = [];
@@ -145,7 +139,6 @@ function generatePages(recipe) {
         ? `${title}<ol class="step-list" start="${stepCounter}">`
         : `${title}<ul class="ingredient-list">`;
     };
-
     const closeTag = isOrdered ? '</ol>' : '</ul>';
 
     const startNewPage = () => {
@@ -154,6 +147,7 @@ function generatePages(recipe) {
     };
 
     const pushPageIfHasItems = () => {
+      // Only push a page if it actually has <li> content
       if (!pageBlocks.length || !listItems) return;
       const html = `<section class="page">${pageBlocks.join('')}${listItems}${closeTag}</section>`;
       if (allPages[allPages.length - 1] !== html) {
@@ -169,6 +163,7 @@ function generatePages(recipe) {
     for (let i = 0; i < items.length; i++) {
       const li = `<li>${escapeHtml(items[i])}</li>`;
 
+      // Try to add to current page
       measurer.innerHTML = pageBlocks.join('') + listItems + li + closeTag;
       if (measurer.offsetHeight <= maxContentHeight) {
         listItems += li;
@@ -176,32 +171,36 @@ function generatePages(recipe) {
         continue;
       }
 
+      // Current page is full; push it if it has items
       pushPageIfHasItems();
       startNewPage();
 
+      // Place the li on the new page; if even a single item doesn't fit (very long),
+      // still allow it by forcing it (to avoid infinite loop). You can add smarter splitting if needed.
       measurer.innerHTML = pageBlocks.join('') + li + closeTag;
       listItems = li;
       if (isOrdered) stepCounter++;
-
+      // If it still overflows, push anyway to move on
       if (measurer.offsetHeight > maxContentHeight) {
         pushPageIfHasItems();
         startNewPage();
       }
     }
 
+    // Flush trailing page if it contains items
     pushPageIfHasItems();
   }
 
   if (ingredients.length) paginateList(ingredients, false, 'Ingredients');
-  if (steps.length) paginateList(steps, true, 'Instructions');
-  if (notes.length) paginateList(notes, false, 'Notes');
+  if (steps.length)       paginateList(steps, true,  'Instructions');
+  if (notes.length)       paginateList(notes, false, 'Notes');
 
   document.body.removeChild(measurer);
   return allPages;
 }
 
 function renderSpread(container, spread) {
-  const left = spread?.left || renderBlankPage();
+  const left  = spread?.left  || renderBlankPage();
   const right = spread?.right || renderBlankPage();
 
   container.innerHTML = `<div class="page-spread active">
@@ -209,9 +208,12 @@ function renderSpread(container, spread) {
     ${right}
   </div>`;
 
+  // Optional: ensure both pages have .page class (in case upstream HTML differs)
   const pages = container.querySelectorAll('.page-spread .page');
   pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
 }
+
+/* ---------- Helpers ---------- */
 
 function renderBlankPage() {
   return `<section class="page page-blank"></section>`;
@@ -230,8 +232,16 @@ function formatIngredient(item) {
   if (item == null) return '';
   if (typeof item === 'string') return item;
 
-  const qty = item.quantity ?? item.qty ?? '';
+  // Handle common shapes like { quantity, unit, name } or { amount, unit, ingredient }
+  const qty = item.quantity ?? item.qty ?? item.amount ?? '';
   const unit = item.unit ?? '';
-  const ingredient = item.ingredient ?? item.name ?? '';
-  return `${qty ? `<strong>${qty}</strong> ` : ''}${unit ? `<em>${unit}</em> ` : ''}${ingredient}`;
+  const name = item.name ?? item.ingredient ?? item.item ?? '';
+
+  const parts = [];
+  if (qty)  parts.push(String(qty));
+  if (unit) parts.push(String(unit));
+  if (name) parts.push(String(name));
+
+  const line = parts.join(' ').trim();
+  return line || JSON.stringify(item);
 }
