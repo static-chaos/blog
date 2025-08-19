@@ -1,4 +1,3 @@
-// js/cookbook.js — No Images, Auto Pagination, No Scroll
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // choose via hash-slug or default to 0
       const slugFromHash = window.location.hash.slice(1).toLowerCase();
       const toSlug = s => String(s)
         .toLowerCase()
@@ -68,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 /* ---------- Pagination logic ---------- */
 
 function buildSpreadsForRecipe(recipe) {
@@ -96,12 +93,10 @@ function generatePages(recipe) {
     ? [...recipe.extra_notes]
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
-  // Layout constants (tune to match your CSS)
-  const pageInnerHeight  = 600;   // total inner height for .page content
+  const pageInnerHeight  = 600;
   const paddingY         = 2 * 32;
   const maxContentHeight = pageInnerHeight - paddingY;
 
-  // Hidden measurer for pagination
   const measurer = document.createElement('div');
   measurer.style.cssText = `
     position:absolute;
@@ -120,14 +115,12 @@ function generatePages(recipe) {
   let stepCounter = 1;
   const allPages = [];
 
-  // Header page
   const headerHtml = `<header class="page-header">
     <h2 class="recipe-title">${escapeHtml(name)}</h2>
     ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
   </header>`;
   allPages.push(`<section class="page">${headerHtml}</section>`);
 
-  // Paginate a list into multiple pages without duplication or blank pages
   function paginateList(items, isOrdered, sectionTitle) {
     let firstPage = true;
     let pageBlocks = [];
@@ -147,7 +140,6 @@ function generatePages(recipe) {
     };
 
     const pushPageIfHasItems = () => {
-      // Only push a page if it actually has <li> content
       if (!pageBlocks.length || !listItems) return;
       const html = `<section class="page">${pageBlocks.join('')}${listItems}${closeTag}</section>`;
       if (allPages[allPages.length - 1] !== html) {
@@ -163,7 +155,6 @@ function generatePages(recipe) {
     for (let i = 0; i < items.length; i++) {
       const li = `<li>${escapeHtml(items[i])}</li>`;
 
-      // Try to add to current page
       measurer.innerHTML = pageBlocks.join('') + listItems + li + closeTag;
       if (measurer.offsetHeight <= maxContentHeight) {
         listItems += li;
@@ -171,23 +162,19 @@ function generatePages(recipe) {
         continue;
       }
 
-      // Current page is full; push it if it has items
       pushPageIfHasItems();
       startNewPage();
 
-      // Place the li on the new page; if even a single item doesn't fit (very long),
-      // still allow it by forcing it (to avoid infinite loop). You can add smarter splitting if needed.
       measurer.innerHTML = pageBlocks.join('') + li + closeTag;
       listItems = li;
       if (isOrdered) stepCounter++;
-      // If it still overflows, push anyway to move on
+
       if (measurer.offsetHeight > maxContentHeight) {
         pushPageIfHasItems();
         startNewPage();
       }
     }
 
-    // Flush trailing page if it contains items
     pushPageIfHasItems();
   }
 
@@ -208,12 +195,9 @@ function renderSpread(container, spread) {
     ${right}
   </div>`;
 
-  // Optional: ensure both pages have .page class (in case upstream HTML differs)
   const pages = container.querySelectorAll('.page-spread .page');
   pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
 }
-
-/* ---------- Helpers ---------- */
 
 function renderBlankPage() {
   return `<section class="page page-blank"></section>`;
@@ -232,7 +216,6 @@ function formatIngredient(item) {
   if (item == null) return '';
   if (typeof item === 'string') return item;
 
-  // Handle common shapes like { quantity, unit, name } or { amount, unit, ingredient }
   const qty = item.quantity ?? item.qty ?? item.amount ?? '';
   const unit = item.unit ?? '';
   const name = item.name ?? item.ingredient ?? item.item ?? '';
