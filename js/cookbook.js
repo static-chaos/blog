@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Choose recipe based on hash-slug or default to first one
+      // choose via hash-slug or default to 0
       const slugFromHash = window.location.hash.slice(1).toLowerCase();
       const toSlug = s => String(s)
         .toLowerCase()
@@ -41,22 +41,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const showSpread = (i) => {
         currentSpreadIndex = i;
-        renderSpread(container, spreads[currentSpreadIndex]);
+        renderSpread(container, spreads[currentSpreadIndex]); // Render the two-page spread
         if (prevBtn) prevBtn.disabled = currentSpreadIndex === 0;
         if (nextBtn) nextBtn.disabled = currentSpreadIndex >= spreads.length - 1;
       };
 
-      showSpread(0);
+      showSpread(0); // Initially show the first spread
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
-          if (currentSpreadIndex > 0) showSpread(currentSpreadIndex - 1);
+          if (currentSpreadIndex > 0) showSpread(currentSpreadIndex - 1); // Navigate to the previous spread
         });
       }
 
       if (nextBtn) {
         nextBtn.addEventListener('click', () => {
-          if (currentSpreadIndex < spreads.length - 1) showSpread(currentSpreadIndex + 1);
+          if (currentSpreadIndex < spreads.length - 1) showSpread(currentSpreadIndex + 1); // Navigate to the next spread
         });
       }
     })
@@ -204,7 +204,6 @@ function renderSpread(container, spread) {
 }
 
 /* ---------- Helpers ---------- */
-
 function renderBlankPage() {
   return `<section class="page page-blank"></section>`;
 }
@@ -222,15 +221,17 @@ function formatIngredient(item) {
   if (item == null) return '';
   if (typeof item === 'string') return item;
 
+  // Handle common shapes like { quantity, unit, name } or { amount, unit, ingredient }
   const qty = item.quantity ?? item.qty ?? item.amount ?? '';
   const unit = item.unit ?? '';
   const name = item.name ?? item.ingredient ?? item.item ?? '';
 
   const parts = [];
-  if (qty) parts.push(String(qty));
+  if (qty)  parts.push(String(qty));
   if (unit) parts.push(String(unit));
   if (name) parts.push(String(name));
 
   const line = parts.join(' ').trim();
   return line || JSON.stringify(item);
 }
+
