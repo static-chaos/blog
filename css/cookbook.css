@@ -22,27 +22,41 @@ body {
   overflow: hidden;
 }
 
-/* Left edge */
+/* Left edge with stacked page effect */
 .recipe-book::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  width: 20px;
+  left: -10px;
+  width: 30px;
   height: 100%;
-  background: linear-gradient(to right, #dcd6c9, transparent);
+  background: repeating-linear-gradient(
+    to right,
+    #dcd6c9,
+    #dcd6c9 2px,
+    #f7f3ed 2px,
+    #f7f3ed 4px
+  );
+  box-shadow: inset 5px 0 8px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
-/* Right edge */
+/* Right edge with stacked page effect */
 .recipe-book::after {
   content: "";
   position: absolute;
   top: 0;
-  right: 0;
-  width: 20px;
+  right: -10px;
+  width: 30px;
   height: 100%;
-  background: linear-gradient(to left, #dcd6c9, transparent);
+  background: repeating-linear-gradient(
+    to left,
+    #dcd6c9,
+    #dcd6c9 2px,
+    #f7f3ed 2px,
+    #f7f3ed 4px
+  );
+  box-shadow: inset -5px 0 8px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
@@ -55,16 +69,16 @@ body {
   overflow: hidden;
 }
 
-/* Central divider (book spine) */
+/* Central divider (book spine) - more prominent */
 .book-content::before {
   content: "";
   position: absolute;
   top: 0;
   left: 50%;
-  width: 2px;
+  width: 6px;
   height: 100%;
-  background-color: #d6cfc2;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  background: radial-gradient(circle, #b8b2a8 0%, #d6cfc2 70%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   transform: translateX(-50%);
   z-index: 2;
 }
@@ -104,6 +118,7 @@ body {
   user-select: none;
   position: relative;
   overflow: hidden;
+  border: 1px solid #dcd6c9;
 }
 
 /* Left page crease shadow + fold effect */
