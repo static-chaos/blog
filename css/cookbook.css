@@ -19,21 +19,31 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   background: #f7f3ed;
   border-radius: 0 0 12px 12px;
-  overflow: hidden; /* outer mask remains */
+  overflow: hidden;
 }
 
-/* Corner clips to simulate book edges */
-.recipe-book > span {
+/* Left edge */
+.recipe-book::before {
+  content: "";
   position: absolute;
-  width: 40px;
-  height: 40px;
-  background: #e8e3d6;
-  border-radius: 0 0 100% 0;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: inset -6px -6px 6px #d0c9ba, 6px 6px 12px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  left: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(to right, #dcd6c9, transparent);
+  z-index: 1;
+}
+
+/* Right edge */
+.recipe-book::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(to left, #dcd6c9, transparent);
+  z-index: 1;
 }
 
 /* Book content holds all page spreads */
@@ -42,7 +52,21 @@ body {
   width: 100%;
   height: 100%;
   perspective: 1500px;
-  overflow: hidden; /* spread transitions cleanly, no clipping inside pages because JS paginates */
+  overflow: hidden;
+}
+
+/* Central divider (book spine) */
+.book-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background-color: #d6cfc2;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  transform: translateX(-50%);
+  z-index: 2;
 }
 
 /* Each page spread */
@@ -75,22 +99,23 @@ body {
   box-sizing: border-box;
   background-color: #fffdfa;
   box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
-  border-radius: 0 0 8px 0;
   font-size: 1.1em;
   color: #4a463f;
   user-select: none;
   position: relative;
-  overflow: hidden; /* ← keeps page visually bounded; JS ensures content fits, so no scrollbars needed */
+  overflow: hidden;
 }
 
-/* Left page crease shadow */
+/* Left page crease shadow + fold effect */
 .left-page {
+  background: linear-gradient(to right, #fffdfa, #f2eee9);
   box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
   border-radius: 0 0 0 8px;
 }
 
-/* Right page crease shadow */
+/* Right page crease shadow + fold effect */
 .right-page {
+  background: linear-gradient(to left, #fffdfa, #f2eee9);
   box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
   border-radius: 0 0 8px 0;
 }
@@ -106,8 +131,6 @@ body {
   letter-spacing: 0.05em;
   user-select: text;
 }
-
-/* Removed all .recipe-image / figure styles */
 
 /* Headings for Ingredients and Instructions */
 h2 {
