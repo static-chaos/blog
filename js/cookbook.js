@@ -67,17 +67,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* ---------- Pagination logic ---------- */
-
 function buildSpreadsForRecipe(recipe) {
   const pages = generatePages(recipe);
   const spreads = [];
-  for (let i = 0; i < pages.length; i += 2) {
-    spreads.push({
-      left: pages[i], 
-      right: pages[i + 1] || renderBlankPage()
-    });
+  let currentPageContent = '';
+
+  // Combine pages to spreads, only create a new spread when necessary
+  for (let i = 0; i < pages.length; i++) {
+    currentPageContent += pages[i];
+
+    // If the current page content exceeds the max content height, push to spreads and reset
+    const measurer = document.createElement('div');
+    measurer.style.cssText = `position:absolute; visibility:hidden; left:-9999px; top:-9999px; width:450px; padding:2em 3em; box-sizing:border-box; font-family:'Playfair Display', serif; font-size:1.1em; line-height:1.5;`;
+    document.body.appendChild(measurer);
+    
+    measurer.innerHTML = currentPageContent;
+    
+    const pageInnerHeight = 600;
+    const paddingY = 2 * 32;
+    const maxContentHeight = pageInnerHeight - paddingY;
+
+    if (measurer.offsetHeight > maxContentHeight) {
+      // Page content overflows, push current content to spreads and start new spread
+      spreads.push({ left: currentPageContent });
+      currentPageContent = pages[i];
+    }
+    
+    document.body.removeChild(measurer);
   }
+
+  // Push the remaining content if any
+  if (currentPageContent) {
+    spreads.push({ left: currentPageContent });
+  }
+
   return spreads;
 }
 
