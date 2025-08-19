@@ -35,15 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (recipeIndex < 0) recipeIndex = 0;
 
       const recipe = recipes[recipeIndex];
-      const pages = generatePages(recipe);
+      const spreads = buildSpreadsForRecipe(recipe);
 
       let currentPageIndex = 0;
 
       const showPage = (i) => {
         currentPageIndex = i;
-        renderPage(container, pages[currentPageIndex]);
+        renderSpread(container, spreads[currentPageIndex]);
         if (prevBtn) prevBtn.disabled = currentPageIndex === 0;
-        if (nextBtn) nextBtn.disabled = currentPageIndex >= pages.length - 1;
+        if (nextBtn) nextBtn.disabled = currentPageIndex >= spreads.length - 1;
       };
 
       showPage(0);
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (nextBtn) {
         nextBtn.addEventListener('click', () => {
-          if (currentPageIndex < pages.length - 1) showPage(currentPageIndex + 1);
+          if (currentPageIndex < spreads.length - 1) showPage(currentPageIndex + 1);
         });
       }
     })
@@ -68,6 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ---------- Pagination logic ---------- */
+
+function buildSpreadsForRecipe(recipe) {
+  const pages = generatePages(recipe);
+  const spreads = [];
+  for (let i = 0; i < pages.length; i += 2) {
+    spreads.push({
+      left: pages[i], 
+      right: pages[i + 1] || renderBlankPage()
+    });
+  }
+  return spreads;
+}
 
 function generatePages(recipe) {
   const name        = recipe?.name ?? 'Untitled Recipe';
@@ -183,8 +195,22 @@ function generatePages(recipe) {
   }
 }
 
-function renderPage(container, pageHtml) {
-  container.innerHTML = `<div class="page-spread active">${pageHtml}</div>`;
+function renderSpread(container, spread) {
+  const left  = spread?.left  || renderBlankPage();
+  const right = spread?.right || renderBlankPage();
+
+  container.innerHTML = `<div class="page-spread active">
+    ${left}
+    ${right}
+  </div>`;
+
+  // Optional: ensure both pages have .page class (in case upstream HTML differs)
+  const pages = container.querySelectorAll('.page-spread .page');
+  pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
+}
+
+function renderBlankPage() {
+  return `<section class="page page-blank"></section>`;
 }
 
 function escapeHtml(value) {
