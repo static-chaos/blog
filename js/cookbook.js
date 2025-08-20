@@ -1,4 +1,3 @@
-// js/cookbook.js — No Images, Auto Pagination, No Scroll
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -127,73 +126,99 @@ function generatePages(recipe) {
   </header>`;
   allPages.push(`<section class="page">${headerHtml}</section>`);
 
-  // Paginate a list into multiple pages without duplication or blank pages
-  function paginateList(items, isOrdered, sectionTitle) {
-    let firstPage = true;
-    let pageBlocks = [];
-    let listItems = '';
+  // We'll accumulate all content blocks for ingredients, steps, and notes
+  const blocks = [];
 
-    const openWrapper = () => {
-      const title = firstPage ? `<h3 class="section-title">${escapeHtml(sectionTitle)}</h3>` : '';
-      return isOrdered
-        ? `${title}<ol class="step-list" start="${stepCounter}">`
-        : `${title}<ul class="ingredient-list">`;
-    };
-    const closeTag = isOrdered ? '</ol>' : '</ul>';
-
-    const startNewPage = () => {
-      pageBlocks = [openWrapper()];
-      listItems = '';
-    };
-
-    const pushPageIfHasItems = () => {
-      // Only push a page if it actually has <li> content
-      if (!pageBlocks.length || !listItems) return;
-      const html = `<section class="page">${pageBlocks.join('')}${listItems}${closeTag}</section>`;
-      if (allPages[allPages.length - 1] !== html) {
-        allPages.push(html);
-      }
-      firstPage = false;
-      pageBlocks = [];
-      listItems = '';
-    };
-
-    startNewPage();
-
-    for (let i = 0; i < items.length; i++) {
-      const li = `<li>${escapeHtml(items[i])}</li>`;
-
-      // Try to add to current page
-      measurer.innerHTML = pageBlocks.join('') + listItems + li + closeTag;
-      if (measurer.offsetHeight <= maxContentHeight) {
-        listItems += li;
-        if (isOrdered) stepCounter++;
-        continue;
-      }
-
-      // Current page is full; push it if it has items
-      pushPageIfHasItems();
-      startNewPage();
-
-      // Place the li on the new page; if even a single item doesn't fit (very long),
-      // still allow it by forcing it (to avoid infinite loop). You can add smarter splitting if needed.
-      measurer.innerHTML = pageBlocks.join('') + li + closeTag;
-      listItems = li;
-      if (isOrdered) stepCounter++;
-      // If it still overflows, push anyway to move on
-      if (measurer.offsetHeight > maxContentHeight) {
-        pushPageIfHasItems();
-        startNewPage();
-      }
-    }
-
-    // Flush trailing page if it contains items
-    pushPageIfHasItems();
+  if (ingredients.length) {
+    blocks.push({
+      type: "ul",
+      title: "Ingredients",
+      items: ingredients.map(escapeHtml)
+    });
+  }
+  if (steps.length) {
+    blocks.push({
+      type: "ol",
+      title: "Instructions",
+      items: steps.map(escapeHtml),
+      start: stepCounter
+    });
+  }
+  if (notes.length) {
+    blocks.push({
+      type: "ul",
+      title: "Notes",
+      items: notes.map(escapeHtml)
+    });
   }
 
-  if (ingredients.length) paginateList(ingredients, false, 'Ingredients');
-  if (steps.length)       paginateList(steps, true,  'Instructions');
-  if (notes.length)       paginateList(notes, false, 'Notes');
+  // 'Smart' pagination: fill each page to the max, section content flows together!
+  let currentPage = '';
+  let openList = false;
+  let currentListTag = '';
+  let olStart = stepCounter;
+
+  for (const block of blocks) {
+    let blockOpened = false;
+    for (let i = 0; i < block.items.length; i++) {
+      const isFirstItem = i === 0;
+      // Open new list and section title if needed.
+      if (!openList) {
+        let titleHtml = '';
+        if (isFirstItem && block.title) {
+          titleHtml = `<h3 class="section-title">${escapeHtml(block.title)}</h3>`;
+        }
+        if (block.type === "ol") {
+          currentPage += `${titleHtml}<ol class="step-list" start="${olStart}">`;
+          currentListTag = "ol";
+        } else {
+          currentPage += `${titleHtml}<ul class="ingredient-list">`;
+          currentListTag = "ul";
+        }
+        openList = true;
+        blockOpened = true;
+      }
+
+      // Try to add list item
+      currentPage += `<li>${block.items[i]}</li>`;
+      measurer.innerHTML = currentPage + (currentListTag === "ol" ? "</ol>" : "</ul>");
+      if (measurer.offsetHeight > maxContentHeight) {
+        // Remove oversized <li> and close the list, push page, start new.
+        const removeLi = currentPage.lastIndexOf('<li>');
+        currentPage = currentPage.substring(0, removeLi);
+        currentPage += (currentListTag === "ol" ? "</ol>" : "</ul>");
+        allPages.push(`<section class="page">${currentPage}</section>`);
+        // Start new list on new page
+        let titleHtml = '';
+        if (block.title && (isFirstItem || blockOpened === false)) {
+          titleHtml = `<h3 class="section-title">${escapeHtml(block.title)}</h3>`;
+        }
+        if (block.type === "ol") {
+          currentPage = `${titleHtml}<ol class="step-list" start="${olStart}">`;
+          currentListTag = "ol";
+        } else {
+          currentPage = `${titleHtml}<ul class="ingredient-list">`;
+          currentListTag = "ul";
+        }
+        openList = true;
+        // Add back the item
+        currentPage += `<li>${block.items[i]}</li>`;
+      }
+      if (block.type === "ol") {
+        olStart++;
+      }
+    }
+    // If we finish the block, close list but stay on the page for flowing sections
+    if (openList) {
+      currentPage += (currentListTag === "ol" ? "</ol>" : "</ul>");
+      openList = false;
+      currentListTag = '';
+    }
+  }
+  // Push any trailing content
+  if (currentPage) {
+    allPages.push(`<section class="page">${currentPage}</section>`);
+  }
 
   document.body.removeChild(measurer);
   return allPages;
