@@ -2,8 +2,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.recipe-book .book-content');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn   = document.getElementById('prevBtn');
+  const nextBtn   = document.getElementById('nextBtn');
 
   if (!container) {
     console.error('Missing .recipe-book .book-content container');
@@ -11,12 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   fetch('data/cookbook.json')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
+    .then(r => r.json())
     .then(data => {
       const recipes = Array.isArray(data?.recipes) ? data.recipes : [];
       if (!recipes.length) {
@@ -71,59 +66,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* ---------- Pagination logic continuously combining all content ---------- */
+/* ---------- Pagination logic with continuous content flow ---------- */
 
 function buildSpreadsForRecipe(recipe) {
-  const pages = generateContinuousPages(recipe);
+  const pages = generatePages(recipe);
   const spreads = [];
   for (let i = 0; i < pages.length; i += 2) {
     spreads.push({
-      left: pages[i],
+      left:  pages[i],
       right: pages[i + 1] || renderBlankPage()
     });
   }
   return spreads;
 }
 
-function generateContinuousPages(recipe) {
-  // Combine all sections into one flat array of html blocks
-  const blocks = [];
-
-  const name = escapeHtml(recipe?.name ?? 'Untitled Recipe');
-  blocks.push(`<h2 class="recipe-title">${name}</h2>`);
-  if (recipe?.description) {
-    blocks.push(`<p class="recipe-desc">${escapeHtml(recipe.description)}</p>`);
-  }
-
-  if (Array.isArray(recipe?.ingredients) && recipe.ingredients.length) {
-    blocks.push(`<h3 class="section-title">Ingredients</h3>`);
-    blocks.push('<ul class="ingredient-list">');
-    recipe.ingredients.forEach(ing => {
-      blocks.push(`<li>${escapeHtml(formatIngredient(ing))}</li>`);
-    });
-    blocks.push('</ul>');
-  }
-
-  if (Array.isArray(recipe?.instructions) && recipe.instructions.length) {
-    blocks.push(`<h3 class="section-title">Instructions</h3>`);
-    blocks.push('<ol class="step-list">');
-    recipe.instructions.forEach(step => {
-      blocks.push(`<li>${escapeHtml(step)}</li>`);
-    });
-    blocks.push('</ol>');
-  }
-
-  if (Array.isArray(recipe?.extra_notes) && recipe.extra_notes.length) {
-    blocks.push(`<h3 class="section-title">Notes</h3>`);
-    blocks.push('<ul class="note-list">');
-    recipe.extra_notes.forEach(note => {
-      blocks.push(`<li>${escapeHtml(note)}</li>`);
-    });
-    blocks.push('</ul>');
-  }
+function generatePages(recipe) {
+  const name        = recipe?.name ?? 'Untitled Recipe';
+  const description = recipe?.description ?? '';
+  const ingredients = Array.isArray(recipe?.ingredients)
+    ? recipe.ingredients.map(formatIngredient)
+    : [];
+  const steps = Array.isArray(recipe?.instructions)
+    ? [...recipe.instructions]
+    : [];
+  const notes = Array.isArray(recipe?.extra_notes)
+    ? [...recipe.extra_notes]
+    : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   const pageInnerHeight  = 600;
-  const paddingY         = 2 * 16; // vertical padding
+  const paddingY         = 2 * 16; // 32px vertical padding (1em top+bottom)
   const maxContentHeight = pageInnerHeight - paddingY;
 
   const measurer = document.createElement('div');
@@ -141,33 +112,77 @@ function generateContinuousPages(recipe) {
   `;
   document.body.appendChild(measurer);
 
-  const pages = [];
+  function splitToSentences(text) {
+    if (!text) return [];
+    return text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g)?.map(s => s.trim()) || [text];
+  }
+
+  // Combine all blocks continuously
+  const blocks = [];
+
+  blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
+  if (description) {
+    splitToSentences(description).forEach(s => {
+      blocks.push(`<p class="recipe-desc">${escapeHtml(s)}</p>`);
+    });
+  }
+
+  if (ingredients.length) {
+    blocks.push(`<h3 class="section-title">Ingredients</h3>`);
+    blocks.push('<ul class="ingredient-list">');
+    ingredients.forEach(ing => {
+      blocks.push(`<li>${escapeHtml(ing)}</li>`);
+    });
+    blocks.push('</ul>');
+  }
+
+  // Now append instructions as paragraphs, not forcing separate pages
+  steps.forEach(step => {
+    splitToSentences(step).forEach(sentence => {
+      blocks.push(`<p>${escapeHtml(sentence)}</p>`);
+    });
+  });
+
+  if (notes.length) {
+    blocks.push(`<h3 class="section-title">Notes</h3>`);
+    blocks.push('<ul class="note-list">');
+    notes.forEach(note => {
+      splitToSentences(note).forEach(sentence => {
+        blocks.push(`<li>${escapeHtml(sentence)}</li>`);
+      });
+    });
+    blocks.push('</ul>');
+  }
+
+  const allPages = [];
   let currentPageContent = '';
 
-  for (let i = 0; i < blocks.length; i++) {
+  for(let i = 0; i < blocks.length; i++) {
     const block = blocks[i];
-    const trialContent = currentPageContent + block;
-    measurer.innerHTML = trialContent;
-    if (measurer.offsetHeight <= maxContentHeight) {
-      currentPageContent = trialContent;
+    const tentativeContent = currentPageContent + block;
+    measurer.innerHTML = tentativeContent;
+    if(measurer.offsetHeight <= maxContentHeight) {
+      currentPageContent = tentativeContent;
     } else {
-      if (currentPageContent) pages.push(`<section class="page">${currentPageContent}</section>`);
+      if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
       currentPageContent = block;
     }
   }
-  if (currentPageContent) pages.push(`<section class="page">${currentPageContent}</section>`);
+  if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
 
   document.body.removeChild(measurer);
-  return pages;
+
+  return allPages;
 }
 
 function renderSpread(container, spread) {
-  container.innerHTML = `
-    <div class="page-spread active">
-      <div class="page left-page">${spread.left}</div>
-      <div class="page right-page">${spread.right}</div>
-    </div>
-  `;
+  const left  = spread?.left  || renderBlankPage();
+  const right = spread?.right || renderBlankPage();
+
+  container.innerHTML = `<div class="page-spread active">
+    ${left}
+    ${right}
+  </div>`;
 
   const pages = container.querySelectorAll('.page-spread .page');
   pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
@@ -181,8 +196,10 @@ function renderBlankPage() {
 
 function escapeHtml(value) {
   return String(value ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
 
@@ -194,5 +211,10 @@ function formatIngredient(item) {
   const unit = item.unit ?? '';
   const name = item.name ?? item.ingredient ?? item.item ?? '';
 
-  return [qty, unit, name].filter(Boolean).join(' ');
+  const parts = [];
+  if (qty)  parts.push(String(qty));
+  if (unit) parts.push(String(unit));
+  if (name) parts.push(String(name));
+
+  return parts.join(' ').trim();
 }
