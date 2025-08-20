@@ -94,7 +94,7 @@ function generatePages(recipe) {
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   const pageInnerHeight  = 600;
-  const paddingY         = 2 * 32;
+  const paddingY         = 2 * 16; // 1em vertical padding = 16px per pads make total 32px
   const maxContentHeight = pageInnerHeight - paddingY;
 
   const measurer = document.createElement('div');
@@ -137,78 +137,9 @@ function generatePages(recipe) {
     blocks.push('</ul>');
   }
 
-  // Split steps into sentences with index
-  let instructionLiBlocks = [];
-  let instructionIndex = 1;
-  steps.forEach(step => {
-    splitToSentences(step).forEach(sentence => {
-      instructionLiBlocks.push({ text: sentence, index: instructionIndex++ });
-    });
-  });
-
-  function paginateInstructions(blocks) {
-    let pages = [];
-    let currentPage = '';
-    let olStart = 1;
-    let isListOpen = false;
-    let firstPage = true;
-
-    for (let i = 0; i < blocks.length; i++) {
-      const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
-      let tentativeContent;
-
-      if (!isListOpen) {
-        // Add "Instructions" heading only on the first instruction page
-        const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
-        tentativeContent = currentPage + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
-      } else {
-        tentativeContent = currentPage.replace(/<\/ol>$/, '') + liHtml + '</ol>';
-      }
-
-      measurer.innerHTML = tentativeContent;
-      if (measurer.offsetHeight <= maxContentHeight) {
-        if (!isListOpen) {
-          const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
-          currentPage += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
-          isListOpen = true;
-          firstPage = false;
-        } else {
-          currentPage = currentPage.replace(/<\/ol>$/, '') + liHtml;
-        }
-        olStart++;
-      } else {
-        if (isListOpen) currentPage += '</ol>';
-        pages.push(`<section class="page">${currentPage}</section>`);
-        currentPage = `<ol class="step-list" start="${olStart}">${liHtml}`;
-        isListOpen = true;
-        olStart++;
-        firstPage = false;
-      }
-    }
-
-    if (isListOpen) currentPage += '</ol>';
-    if (currentPage) pages.push(`<section class="page">${currentPage}</section>`);
-
-    // Merge last page with previous if it’s too empty to avoid blank space
-    if (pages.length > 1) {
-      const lastPageContent = pages[pages.length - 1];
-      measurer.innerHTML = lastPageContent;
-      const lastPageHeight = measurer.offsetHeight;
-      if (lastPageHeight < maxContentHeight * 0.4) { // threshold 40% height
-        const prevPageContent = pages[pages.length - 2];
-        measurer.innerHTML = prevPageContent + lastPageContent;
-        if (measurer.offsetHeight <= maxContentHeight) {
-          pages[pages.length - 2] = prevPageContent + lastPageContent;
-          pages.pop();
-        }
-      }
-    }
-
-    return pages;
-  }
-
+  // Step 1: Paginate blocks before instructions (title, desc, ingredients)
   let currentPageContent = '';
-  for(let i = 0; i < blocks.length; i++){
+  for(let i = 0; i < blocks.length; i++) {
     const block = blocks[i];
     const tentativeContent = currentPageContent + block;
     measurer.innerHTML = tentativeContent;
@@ -221,8 +152,71 @@ function generatePages(recipe) {
   }
   if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
 
-  const instructionPages = paginateInstructions(instructionLiBlocks);
+  // Measure leftover space in last page after prep blocks
+  measurer.innerHTML = allPages[allPages.length - 1];
+  const lastPageHeight = measurer.offsetHeight;
+  const leftoverSpace = maxContentHeight - lastPageHeight;
 
+  // Prepare instruction blocks split into sentences
+  let instructionLiBlocks = [];
+  let instructionIndex = 1;
+  steps.forEach(step => {
+    splitToSentences(step).forEach(sentence => {
+      instructionLiBlocks.push({ text: sentence, index: instructionIndex++ });
+    });
+  });
+
+  // Step 2: Paginate instructions, optionally merging first instruction page with last page if leftover space is large enough
+  let instructionPages = [];
+  if (instructionLiBlocks.length) {
+    // If leftover space enough for small portion, try to merge first instruction blocks
+    if (leftoverSpace >= maxContentHeight * 0.25) {
+      // Attempt to merge instructions into last page
+      let currPage = allPages.pop().replace(/<\/section>$/, '');
+
+      let olStart = 1;
+      let isListOpen = false;
+      let firstPage = true;
+      let newPageContent = currPage;
+
+      for (let i = 0; i < instructionLiBlocks.length; i++) {
+        const liHtml = `<li>${escapeHtml(instructionLiBlocks[i].text)}</li>`;
+        let tentativeContent;
+        if (!isListOpen) {
+          const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
+          tentativeContent = newPageContent + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
+        } else {
+          tentativeContent = newPageContent.replace(/<\/ol>$/, '') + liHtml + '</ol>';
+        }
+        measurer.innerHTML = tentativeContent;
+        if (measurer.offsetHeight <= maxContentHeight) {
+          if (!isListOpen) {
+            const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
+            newPageContent += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
+            isListOpen = true;
+            firstPage = false;
+          } else {
+            newPageContent = newPageContent.replace(/<\/ol>$/, '') + liHtml;
+          }
+          olStart++;
+        } else {
+          if (isListOpen) newPageContent += '</ol>';
+          instructionPages.push(`<section class="page">${newPageContent}</section>`);
+          newPageContent = `<ol class="step-list" start="${olStart}">${liHtml}`;
+          isListOpen = true;
+          olStart++;
+          firstPage = false;
+        }
+      }
+      if (isListOpen) newPageContent += '</ol>';
+      if (newPageContent) instructionPages.push(`<section class="page">${newPageContent}</section>`);
+    } else {
+      // Just paginate instructions normally if leftover space too small
+      instructionPages = paginateInstructions(instructionLiBlocks, measurer, maxContentHeight);
+    }
+  }
+
+  // Step 3: Paginate notes if any (unchanged)
   let notesPages = [];
   if(notes.length){
     const noteBlocks = [];
@@ -253,6 +247,66 @@ function generatePages(recipe) {
   document.body.removeChild(measurer);
 
   return [...allPages, ...instructionPages, ...notesPages];
+}
+
+function paginateInstructions(blocks, measurer, maxContentHeight) {
+  let pages = [];
+  let currentPage = '';
+  let olStart = 1;
+  let isListOpen = false;
+  let firstPage = true;
+
+  for (let i = 0; i < blocks.length; i++) {
+    const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
+    let tentativeContent;
+
+    if (!isListOpen) {
+      const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
+      tentativeContent = currentPage + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
+    } else {
+      tentativeContent = currentPage.replace(/<\/ol>$/, '') + liHtml + '</ol>';
+    }
+
+    measurer.innerHTML = tentativeContent;
+    if (measurer.offsetHeight <= maxContentHeight) {
+      if (!isListOpen) {
+        const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
+        currentPage += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
+        isListOpen = true;
+        firstPage = false;
+      } else {
+        currentPage = currentPage.replace(/<\/ol>$/, '') + liHtml;
+      }
+      olStart++;
+    } else {
+      if (isListOpen) currentPage += '</ol>';
+      pages.push(`<section class="page">${currentPage}</section>`);
+      currentPage = `<ol class="step-list" start="${olStart}">${liHtml}`;
+      isListOpen = true;
+      olStart++;
+      firstPage = false;
+    }
+  }
+
+  if (isListOpen) currentPage += '</ol>';
+  if (currentPage) pages.push(`<section class="page">${currentPage}</section>`);
+
+  // Merge last page with previous if it’s too empty to avoid blank space
+  if (pages.length > 1) {
+    const lastPageContent = pages[pages.length - 1];
+    measurer.innerHTML = lastPageContent;
+    const lastPageHeight = measurer.offsetHeight;
+    if (lastPageHeight < maxContentHeight * 0.4) { // threshold 40% height
+      const prevPageContent = pages[pages.length - 2];
+      measurer.innerHTML = prevPageContent + lastPageContent;
+      if (measurer.offsetHeight <= maxContentHeight) {
+        pages[pages.length - 2] = prevPageContent + lastPageContent;
+        pages.pop();
+      }
+    }
+  }
+
+  return pages;
 }
 
 function renderSpread(container, spread) {
