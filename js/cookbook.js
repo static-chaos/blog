@@ -5,378 +5,127 @@ document.addEventListener('DOMContentLoaded', () => {
   const prevBtn   = document.getElementById('prevBtn');
   const nextBtn   = document.getElementById('nextBtn');
 
-  if (!container) {
-    console.error('Missing .recipe-book .book-content container');
-    return;
-  }
-
   fetch('data/cookbook.json')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
+    .then(r => r.json())
     .then(data => {
-      const recipes = Array.isArray(data?.recipes) ? data.recipes : [];
-      if (!recipes.length) {
-        container.innerHTML = `<p style="color:#c00">No recipes found</p>`;
-        if (prevBtn) prevBtn.disabled = true;
-        if (nextBtn) nextBtn.disabled = true;
-        return;
-      }
-
+      const recipes = data?.recipes || [];
       const slugFromHash = window.location.hash.slice(1).toLowerCase();
-      const toSlug = s => String(s)
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-]/g, '');
-
-      let recipeIndex = slugFromHash
-        ? recipes.findIndex(r => toSlug(r.name) === slugFromHash)
-        : 0;
-      if (recipeIndex < 0) recipeIndex = 0;
+      const toSlug = s => String(s).toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+      let recipeIndex = slugFromHash ? recipes.findIndex(r => toSlug(r.name) === slugFromHash) : 0;
+      if(recipeIndex<0) recipeIndex=0;
 
       const recipe = recipes[recipeIndex];
       const spreads = buildSpreadsForRecipe(recipe);
 
-      let currentSpreadIndex = 0;
-
-      const showSpread = (i) => {
-        currentSpreadIndex = i;
-        renderSpread(container, spreads[currentSpreadIndex]);
-        if (prevBtn) prevBtn.disabled = currentSpreadIndex === 0;
-        if (nextBtn) nextBtn.disabled = currentSpreadIndex >= spreads.length - 1;
-      };
-
+      let spreadIndex=0;
+      function showSpread(i){
+        spreadIndex=i;
+        renderSpread(container, spreads[i]);
+        prevBtn.disabled = i===0;
+        nextBtn.disabled = i>=spreads.length-1;
+      }
       showSpread(0);
-
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          if (currentSpreadIndex > 0) showSpread(currentSpreadIndex - 1);
-        });
-      }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          if (currentSpreadIndex < spreads.length - 1) showSpread(currentSpreadIndex + 1);
-        });
-      }
-    })
-    .catch(err => {
-      console.error('Error loading recipes:', err);
-      container.innerHTML = `<p style="color:#c00">Error loading recipes</p>`;
-      if (prevBtn) prevBtn.disabled = true;
-      if (nextBtn) nextBtn.disabled = true;
+      prevBtn.onclick=()=>{if(spreadIndex>0) showSpread(spreadIndex-1)};
+      nextBtn.onclick=()=>{if(spreadIndex<spreads.length-1) showSpread(spreadIndex+1)};
     });
 });
 
-/* ---------- Pagination logic ---------- */
-
-function buildSpreadsForRecipe(recipe) {
-  const pages = generatePages(recipe);
-  const spreads = [];
-  for (let i = 0; i < pages.length; i += 2) {
+/* ---------- Core Pagination ---------- */
+function buildSpreadsForRecipe(recipe){
+  const pages = paginateContinuous(recipe);
+  const spreads=[];
+  for(let i=0;i<pages.length;i+=2){
     spreads.push({
-      left:  pages[i],
-      right: pages[i + 1] || renderBlankPage()
+      left: pages[i],
+      right: pages[i+1]||renderBlankPage()
     });
   }
   return spreads;
 }
 
-function generatePages(recipe) {
-  const name        = recipe?.name ?? 'Untitled Recipe';
-  const description = recipe?.description ?? '';
-  const ingredients = Array.isArray(recipe?.ingredients)
-    ? recipe.ingredients.map(formatIngredient)
-    : [];
-  const steps = Array.isArray(recipe?.instructions)
-    ? [...recipe.instructions]
-    : [];
-  const notes = Array.isArray(recipe?.extra_notes)
-    ? [...recipe.extra_notes]
-    : (recipe?.extra_notes ? [recipe.extra_notes] : []);
+function paginateContinuous(recipe){
+  const blocks=[];
 
-  const pageInnerHeight  = 600;
-  const paddingY         = 2 * 16; // vertical padding: 1em top & bottom = 16px * 2
-  const maxContentHeight = pageInnerHeight - paddingY;
+  blocks.push(`<h2 class="recipe-title">${escapeHtml(recipe?.name||'Untitled')}</h2>`);
+  if(recipe?.description) blocks.push(`<p>${escapeHtml(recipe.description)}</p>`);
 
-  const measurer = document.createElement('div');
-  measurer.style.cssText = `
-    position:absolute;
-    visibility:hidden;
-    pointer-events:none;
-    left:-9999px; top:-9999px;
-    width:450px;
-    padding:1em 3em;
-    box-sizing:border-box;
-    font-family:'Playfair Display', serif;
-    font-size:1.1em;
-    line-height:1.4;
-  `;
-  document.body.appendChild(measurer);
-
-  function splitToSentences(text) {
-    if (!text) return [];
-    return text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g)?.map(s => s.trim()) || [text];
-  }
-
-  const blocks = [];
-
-  blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
-  if (description) {
-    splitToSentences(description).forEach(s => {
-      blocks.push(`<p class="recipe-desc">${escapeHtml(s)}</p>`);
-    });
-  }
-
-  if (ingredients.length) {
+  if(Array.isArray(recipe?.ingredients) && recipe.ingredients.length){
     blocks.push(`<h3 class="section-title">Ingredients</h3>`);
-    blocks.push('<ul class="ingredient-list">');
-    ingredients.forEach(ing => {
-      blocks.push(`<li>${escapeHtml(ing)}</li>`);
+    blocks.push('<ul class="ingredients">');
+    recipe.ingredients.forEach(i=>{
+      blocks.push(`<li>${escapeHtml(formatIngredient(i))}</li>`);
     });
     blocks.push('</ul>');
   }
 
-  // Step 1: Paginate blocks before instructions (title, desc, ingredients)
-  let currentPageContent = '';
-  const allPages = [];
-
-  for(let i = 0; i < blocks.length; i++) {
-    const block = blocks[i];
-    const tentativeContent = currentPageContent + block;
-    measurer.innerHTML = tentativeContent;
-    if(measurer.offsetHeight <= maxContentHeight){
-      currentPageContent = tentativeContent;
-    } else {
-      if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
-      currentPageContent = block;
-    }
-  }
-  if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
-
-  // Measure leftover space in last page after prep blocks
-  measurer.innerHTML = allPages[allPages.length - 1];
-  const lastPageHeight = measurer.offsetHeight;
-  const leftoverSpace = maxContentHeight - lastPageHeight;
-
-  // Prepare instruction blocks split into sentences
-  let instructionLiBlocks = [];
-  let instructionIndex = 1;
-  steps.forEach(step => {
-    splitToSentences(step).forEach(sentence => {
-      instructionLiBlocks.push({ text: sentence, index: instructionIndex++ });
+  if(Array.isArray(recipe?.instructions) && recipe.instructions.length){
+    blocks.push(`<h3 class="section-title">Instructions</h3>`);
+    blocks.push('<ol class="instructions">');
+    recipe.instructions.forEach(step=>{
+      blocks.push(`<li>${escapeHtml(step)}</li>`);
     });
+    blocks.push('</ol>');
+  }
+
+  if(Array.isArray(recipe?.extra_notes) && recipe.extra_notes.length){
+    blocks.push(`<h3 class="section-title">Notes</h3>`);
+    blocks.push('<ul class="notes">');
+    recipe.extra_notes.forEach(note=>{
+      blocks.push(`<li>${escapeHtml(note)}</li>`);
+    });
+    blocks.push('</ul>');
+  }
+
+  // paginate blocks into pages
+  const measurer=document.createElement('div');
+  measurer.style.cssText=`
+    position:absolute;left:-9999px;top:-9999px;width:450px;
+    padding:2em;box-sizing:border-box;visibility:hidden;
+    font-family:'Inter',sans-serif;font-size:1em;line-height:1.6;
+  `;
+  document.body.appendChild(measurer);
+
+  const maxHeight=600-(2*20); // page height minus padding guess
+  const pages=[];
+  let current='';
+
+  blocks.forEach(block=>{
+    let test=current+block;
+    measurer.innerHTML=test;
+    if(measurer.offsetHeight<=maxHeight){
+      current=test;
+    } else {
+      if(current) pages.push(`<section class="page">${current}</section>`);
+      current=block;
+    }
   });
-
-  // Step 2: Paginate instructions, optionally merging first instruction page with last page if leftover space is large enough
-  let instructionPages = [];
-  if (instructionLiBlocks.length) {
-    if (leftoverSpace >= maxContentHeight * 0.25) {
-      // Merge first instruction blocks into last page
-      let currPage = allPages.pop().replace(/<\/section>$/, '');
-
-      let olStart = 1;
-      let isListOpen = false;
-      let firstPage = true;
-      let newPageContent = currPage;
-
-      for (let i = 0; i < instructionLiBlocks.length; i++) {
-        const liHtml = `<li>${escapeHtml(instructionLiBlocks[i].text)}</li>`;
-        const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
-        let tentativeContent;
-        if (!isListOpen) {
-          tentativeContent = newPageContent + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
-        } else {
-          tentativeContent = newPageContent.replace(/<\/ol>$/, '') + liHtml + '</ol>';
-        }
-        measurer.innerHTML = tentativeContent;
-        if (measurer.offsetHeight <= maxContentHeight) {
-          if (!isListOpen) {
-            newPageContent += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
-            isListOpen = true;
-            firstPage = false;
-          } else {
-            newPageContent = newPageContent.replace(/<\/ol>$/, '') + liHtml;
-          }
-          olStart++;
-        } else {
-          if (isListOpen) newPageContent += '</ol>';
-          instructionPages.push(`<section class="page">${newPageContent}</section>`);
-          newPageContent = `<ol class="step-list" start="${olStart}">${liHtml}`;
-          isListOpen = true;
-          olStart++;
-          firstPage = false;
-        }
-      }
-      if (isListOpen) newPageContent += '</ol>';
-      if (newPageContent) instructionPages.push(`<section class="page">${newPageContent}</section>`);
-    } else {
-      instructionPages = paginateInstructions(instructionLiBlocks, measurer, maxContentHeight);
-    }
-  }
-
-  // Step 3: Paginate notes section similarly with leftover space merge logic
-  let notesPages = [];
-  if(notes.length){
-    const noteBlocks = [];
-    noteBlocks.push(`<h3 class="section-title">Notes</h3>`);
-    noteBlocks.push('<ul class="note-list">');
-    notes.forEach(note => {
-      splitToSentences(note).forEach(sentence => {
-        noteBlocks.push(`<li>${escapeHtml(sentence)}</li>`);
-      });
-    });
-    noteBlocks.push('</ul>');
-
-    // measure leftover space after instructions (or last page)
-    measurer.innerHTML = instructionPages.length ? instructionPages[instructionPages.length -1] : allPages[allPages.length -1];
-    const lastInstructionPageHeight = measurer.offsetHeight;
-    const leftoverSpaceAfterInstructions = maxContentHeight - lastInstructionPageHeight;
-
-    if (leftoverSpaceAfterInstructions >= maxContentHeight * 0.25) {
-      // Try merging notes into last page of previous section
-      let currPage = (instructionPages.length ? instructionPages : allPages).pop().replace(/<\/section>$/, '');
-
-      let newPageContent = currPage;
-      let notesPageContent = '';
-      for(let i = 0; i < noteBlocks.length; i++) {
-        const block = noteBlocks[i];
-        const tentativeContent = newPageContent + notesPageContent + block;
-        measurer.innerHTML = tentativeContent;
-        if(measurer.offsetHeight <= maxContentHeight) {
-          notesPageContent += block;
-        } else {
-          if(notesPageContent) notesPages.push(`<section class="page">${newPageContent + notesPageContent}</section>`);
-          newPageContent = '';
-          notesPageContent = block;
-        }
-      }
-      if(notesPageContent) notesPages.push(`<section class="page">${newPageContent + notesPageContent}</section>`);
-    } else {
-      // Paginate notes normally
-      let notesPageContent = '';
-      for(let i = 0; i < noteBlocks.length; i++){
-        const block = noteBlocks[i];
-        const tentativeContent = notesPageContent + block;
-        measurer.innerHTML = tentativeContent;
-        if(measurer.offsetHeight <= maxContentHeight){
-          notesPageContent = tentativeContent;
-        } else {
-          if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
-          notesPageContent = block;
-        }
-      }
-      if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
-    }
-  }
+  if(current) pages.push(`<section class="page">${current}</section>`);
 
   document.body.removeChild(measurer);
-
-  return [...allPages, ...instructionPages, ...notesPages];
-}
-
-function paginateInstructions(blocks, measurer, maxContentHeight) {
-  let pages = [];
-  let currentPage = '';
-  let olStart = 1;
-  let isListOpen = false;
-  let firstPage = true;
-
-  for(let i = 0; i < blocks.length; i++) {
-    const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
-    const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
-    let tentativeContent;
-
-    if (!isListOpen) {
-      tentativeContent = currentPage + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
-    } else {
-      tentativeContent = currentPage.replace(/<\/ol>$/, '') + liHtml + '</ol>';
-    }
-
-    measurer.innerHTML = tentativeContent;
-    if (measurer.offsetHeight <= maxContentHeight) {
-      if (!isListOpen) {
-        currentPage += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
-        isListOpen = true;
-        firstPage = false;
-      } else {
-        currentPage = currentPage.replace(/<\/ol>$/, '') + liHtml;
-      }
-      olStart++;
-    } else {
-      if (isListOpen) currentPage += '</ol>';
-      pages.push(`<section class="page">${currentPage}</section>`);
-      currentPage = `<ol class="step-list" start="${olStart}">${liHtml}`;
-      isListOpen = true;
-      olStart++;
-      firstPage = false;
-    }
-  }
-
-  if (isListOpen) currentPage += '</ol>';
-  if (currentPage) pages.push(`<section class="page">${currentPage}</section>`);
-
-  // Merge last page with previous if it’s too small
-  if (pages.length > 1) {
-    measurer.innerHTML = pages[pages.length - 1];
-    const lastPageHeight = measurer.offsetHeight;
-    if (lastPageHeight < maxContentHeight * 0.4) {
-      const prevPageContent = pages[pages.length - 2];
-      measurer.innerHTML = prevPageContent + pages[pages.length -1];
-      if (measurer.offsetHeight <= maxContentHeight) {
-        pages[pages.length - 2] = prevPageContent + pages[pages.length -1];
-        pages.pop();
-      }
-    }
-  }
-
   return pages;
 }
 
-function renderSpread(container, spread) {
-  const left  = spread?.left  || renderBlankPage();
-  const right = spread?.right || renderBlankPage();
-
-  container.innerHTML = `<div class="page-spread active">
-    ${left}
-    ${right}
-  </div>`;
-
-  const pages = container.querySelectorAll('.page-spread .page');
-  pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
+function renderSpread(container, spread){
+  container.innerHTML=`
+    <div class="page-spread active">
+      <div class="page left-page">${spread.left}</div>
+      <div class="page right-page">${spread.right}</div>
+    </div>`;
 }
 
-/* ---------- Helpers ---------- */
+function renderBlankPage(){return '';}
 
-function renderBlankPage() {
-  return `<section class="page page-blank"></section>`;
+function escapeHtml(v){
+  return String(v??'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 }
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function formatIngredient(item) {
-  if (item == null) return '';
-  if (typeof item === 'string') return item;
-
-  const qty = item.quantity ?? item.qty ?? item.amount ?? '';
-  const unit = item.unit ?? '';
-  const name = item.name ?? item.ingredient ?? item.item ?? '';
-
-  const parts = [];
-  if (qty)  parts.push(String(qty));
-  if (unit) parts.push(String(unit));
-  if (name) parts.push(String(name));
-
-  const line = parts.join(' ').trim();
-  return line || JSON.stringify(item);
+function formatIngredient(item){
+  if(typeof item==='string') return item;
+  if(!item) return '';
+  const qty=item.quantity||item.qty||'';
+  const unit=item.unit||'';
+  const name=item.name||item.ingredient||'';
+  return [qty,unit,name].filter(Boolean).join(' ');
 }
