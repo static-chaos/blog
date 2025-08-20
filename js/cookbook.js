@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* ---------- Pagination logic with continuous content flow ---------- */
+/* ---------- Pagination logic with continuous flow ---------- */
 
 function buildSpreadsForRecipe(recipe) {
   const pages = generatePages(recipe);
@@ -94,7 +94,7 @@ function generatePages(recipe) {
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   const pageInnerHeight  = 600;
-  const paddingY         = 2 * 16; // 32px vertical padding (1em top+bottom)
+  const paddingY         = 2 * 16; // total vertical padding
   const maxContentHeight = pageInnerHeight - paddingY;
 
   const measurer = document.createElement('div');
@@ -117,10 +117,11 @@ function generatePages(recipe) {
     return text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g)?.map(s => s.trim()) || [text];
   }
 
-  // Combine all blocks continuously
+  // Combine all sections' content into one blocks array continuously
   const blocks = [];
 
   blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
+  
   if (description) {
     splitToSentences(description).forEach(s => {
       blocks.push(`<p class="recipe-desc">${escapeHtml(s)}</p>`);
@@ -136,7 +137,7 @@ function generatePages(recipe) {
     blocks.push('</ul>');
   }
 
-  // Now append instructions as paragraphs, not forcing separate pages
+  // Append all instruction sentences as paragraphs continuously (not forcing separate ordered list blocks)
   steps.forEach(step => {
     splitToSentences(step).forEach(sentence => {
       blocks.push(`<p>${escapeHtml(sentence)}</p>`);
