@@ -109,7 +109,8 @@ body {
 .page {
   width: 50%;
   height: 100%;
-  padding: 2em 3em;
+  padding: 1em 3em;
+  line-height: 1.4;
   box-sizing: border-box;
   background-color: #fffdfa;
   box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
