@@ -104,11 +104,11 @@ function generatePages(recipe) {
     pointer-events:none;
     left:-9999px; top:-9999px;
     width:450px;
-    padding:2em 3em;
+    padding:1em 3em;
     box-sizing:border-box;
     font-family:'Playfair Display', serif;
     font-size:1.1em;
-    line-height:1.5;
+    line-height:1.4;
   `;
   document.body.appendChild(measurer);
 
