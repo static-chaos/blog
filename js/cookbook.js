@@ -94,7 +94,7 @@ function generatePages(recipe) {
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   const pageInnerHeight  = 600;
-  const paddingY         = 2 * 16; // 1em vertical padding = 16px per pads make total 32px
+  const paddingY         = 2 * 16;
   const maxContentHeight = pageInnerHeight - paddingY;
 
   const measurer = document.createElement('div');
@@ -108,7 +108,7 @@ function generatePages(recipe) {
     box-sizing:border-box;
     font-family:'Playfair Display', serif;
     font-size:1.1em;
-    line-height:1.4;
+    line-height:1.6;
   `;
   document.body.appendChild(measurer);
 
@@ -117,7 +117,6 @@ function generatePages(recipe) {
     return text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g)?.map(s => s.trim()) || [text];
   }
 
-  // Combine all content into one continuous flow before pagination 
   const blocks = [];
 
   blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
@@ -136,12 +135,17 @@ function generatePages(recipe) {
     blocks.push('</ul>');
   }
 
-  // Append instructions as paragraphs merged into the same flow
-  steps.forEach(step => {
-    splitToSentences(step).forEach(sentence => {
-      blocks.push(`<p>${escapeHtml(sentence)}</p>`);
+  // Add instructions heading and ordered list for numbered steps
+  if (steps.length) {
+    blocks.push(`<h3 class="section-title">Instructions</h3>`);
+    blocks.push('<ol class="instructions-list">');
+    steps.forEach(step => {
+      splitToSentences(step).forEach(sentence => {
+        blocks.push(`<li>${escapeHtml(sentence)}</li>`);
+      });
     });
-  });
+    blocks.push('</ol>');
+  }
 
   if (notes.length) {
     blocks.push(`<h3 class="section-title">Notes</h3>`);
