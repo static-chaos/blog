@@ -118,26 +118,24 @@ function generatePages(recipe) {
 
   const allPages = [];
 
-  // Break long texts into sentences for finer pagination
+  // Helper: split text into sentences for fine pagination
   function splitToSentences(text) {
     return text.match(/[^\.!\?]+[\.!\?]+|\s*$/g).filter(Boolean).map(s => s.trim());
   }
 
-  // Build a flat array of HTML blocks representing all content
+  // Build flat array of HTML blocks for all content
   const blocks = [];
 
-  // Add title
   blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
-  // Add description as sentence blocks
   if (description) {
     splitToSentences(description).forEach(s => {
       blocks.push(`<p class="recipe-desc">${escapeHtml(s)}</p>`);
     });
   }
 
-  // Add ingredients section: title + list items separately
   if (ingredients.length) {
     blocks.push(`<h3 class="section-title">Ingredients</h3>`);
+    // Ingredients list opening tag
     blocks.push('<ul class="ingredient-list">');
     ingredients.forEach(ing => {
       blocks.push(`<li>${escapeHtml(ing)}</li>`);
@@ -145,41 +143,78 @@ function generatePages(recipe) {
     blocks.push('</ul>');
   }
 
-  // Add instructions section
   if (steps.length) {
     blocks.push(`<h3 class="section-title">Instructions</h3>`);
-    blocks.push('<ol class="step-list" start="1">');
-    steps.forEach(step => {
-      splitToSentences(step).forEach(sentence => {
-        blocks.push(`<li>${escapeHtml(sentence)}</li>`);
-      });
-    });
-    blocks.push('</ol>');
+    // We'll split instructions across pages with proper numbering
+    // So instructions go as separate <li> blocks
   }
 
-  // Add notes section
-  if (notes.length) {
-    blocks.push(`<h3 class="section-title">Notes</h3>`);
-    blocks.push('<ul class="note-list">');
-    notes.forEach(note => {
-      splitToSentences(note).forEach(sentence => {
-        blocks.push(`<li>${escapeHtml(sentence)}</li>`);
-      });
+  // Split instructions into sentence-level <li> to allow smooth pagination
+  let instructionLiBlocks = [];
+  let instructionIndex = 1;
+  steps.forEach(step => {
+    splitToSentences(step).forEach(sentence => {
+      instructionLiBlocks.push({ text: sentence, index: instructionIndex++ });
     });
-    blocks.push('</ul>');
+  });
+
+  // We'll paginate instructions in a separate function to handle numbering continuation
+  function paginateInstructions(blocks) {
+    let pages = [];       // store page blocks as strings
+    let currentPage = ''; // current page content
+    let olStart = 1;      // current ordered list start index
+    let isListOpen = false;
+
+    for (let i = 0; i < blocks.length; i++) {
+      const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
+
+      let tentativeContent;
+      if (!isListOpen) {
+        tentativeContent = currentPage + `<ol class="step-list" start="${olStart}">` + liHtml;
+      } else {
+        tentativeContent = currentPage + liHtml;
+      }
+      // When adding the last li on page, close the list tentatively for measurement
+      tentativeContent += '</ol>';
+
+      measurer.innerHTML = tentativeContent;
+      if (measurer.offsetHeight <= maxContentHeight) {
+        if (!isListOpen) {
+          currentPage += `<ol class="step-list" start="${olStart}">` + liHtml;
+          isListOpen = true;
+        } else {
+          currentPage += liHtml;
+        }
+        olStart++;
+      } else {
+        if (isListOpen) {
+          currentPage += '</ol>';
+        }
+        pages.push(`<section class="page">${currentPage}</section>`);
+        // Start new page with this li
+        currentPage = `<ol class="step-list" start="${olStart}">${liHtml}`;
+        isListOpen = true;
+        olStart++;
+      }
+    }
+    if (isListOpen) {
+      currentPage += '</ol>';
+    }
+    if (currentPage) {
+      pages.push(`<section class="page">${currentPage}</section>`);
+    }
+    return pages;
   }
 
-  // Paginate blocks into pages based on maxContentHeight
+  // Paginate blocks other than instructions
   let currentPageContent = '';
   for (let i = 0; i < blocks.length; i++) {
     const block = blocks[i];
-    // Append block tentatively and measure
     const tentativeContent = currentPageContent + block;
     measurer.innerHTML = tentativeContent;
     if (measurer.offsetHeight <= maxContentHeight) {
       currentPageContent = tentativeContent;
     } else {
-      // Page full, push current and start new
       if (currentPageContent) {
         allPages.push(`<section class="page">${currentPageContent}</section>`);
       }
@@ -190,8 +225,47 @@ function generatePages(recipe) {
     allPages.push(`<section class="page">${currentPageContent}</section>`);
   }
 
+  // Paginate instructions separately with proper numbering continuation
+  const instructionPages = paginateInstructions(instructionLiBlocks);
+
+  // Add notes section at the end after instructions
+  let notesPages = [];
+  if (notes.length) {
+    // Similar to ingredients - use sentence splitting for notes
+    const noteBlocks = [];
+    noteBlocks.push(`<h3 class="section-title">Notes</h3>`);
+    noteBlocks.push('<ul class="note-list">');
+    notes.forEach(note => {
+      splitToSentences(note).forEach(sentence => {
+        noteBlocks.push(`<li>${escapeHtml(sentence)}</li>`);
+      });
+    });
+    noteBlocks.push('</ul>');
+
+    // Paginate notes blocks
+    let notesPageContent = '';
+    for (let i = 0; i < noteBlocks.length; i++) {
+      const block = noteBlocks[i];
+      const tentativeContent = notesPageContent + block;
+      measurer.innerHTML = tentativeContent;
+      if (measurer.offsetHeight <= maxContentHeight) {
+        notesPageContent = tentativeContent;
+      } else {
+        if (notesPageContent) {
+          notesPages.push(`<section class="page">${notesPageContent}</section>`);
+        }
+        notesPageContent = block;
+      }
+    }
+    if (notesPageContent) {
+      notesPages.push(`<section class="page">${notesPageContent}</section>`);
+    }
+  }
+
   document.body.removeChild(measurer);
-  return allPages;
+
+  // Combine pages: before instructions + instructionPages + notesPages
+  return [...allPages, ...instructionPages, ...notesPages];
 }
 
 function renderSpread(container, spread) {
@@ -203,7 +277,7 @@ function renderSpread(container, spread) {
     ${right}
   </div>`;
 
-  // Optional: ensure both pages have .page class (in case upstream HTML differs)
+  // Ensure both pages have .page class
   const pages = container.querySelectorAll('.page-spread .page');
   pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
 }
