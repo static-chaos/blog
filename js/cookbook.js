@@ -95,8 +95,8 @@ function generatePages(recipe) {
     ? [...recipe.extra_notes]
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
-  // Layout constants (tune to match your CSS)
-  const pageInnerHeight  = 600;   // total inner height for .page content
+  // Constants for layout and height limits
+  const pageInnerHeight  = 600;
   const paddingY         = 2 * 32;
   const maxContentHeight = pageInnerHeight - paddingY;
 
@@ -116,108 +116,78 @@ function generatePages(recipe) {
   `;
   document.body.appendChild(measurer);
 
-  let stepCounter = 1;
   const allPages = [];
 
-  // Header page
-  const headerHtml = `<header class="page-header">
-    <h2 class="recipe-title">${escapeHtml(name)}</h2>
-    ${description ? `<p class="recipe-desc">${escapeHtml(description)}</p>` : ''}
-  </header>`;
-  allPages.push(`<section class="page">${headerHtml}</section>`);
+  // Break long texts into sentences for finer pagination
+  function splitToSentences(text) {
+    return text.match(/[^\.!\?]+[\.!\?]+|\s*$/g).filter(Boolean).map(s => s.trim());
+  }
 
-  // We'll accumulate all content blocks for ingredients, steps, and notes
+  // Build a flat array of HTML blocks representing all content
   const blocks = [];
 
+  // Add title
+  blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
+  // Add description as sentence blocks
+  if (description) {
+    splitToSentences(description).forEach(s => {
+      blocks.push(`<p class="recipe-desc">${escapeHtml(s)}</p>`);
+    });
+  }
+
+  // Add ingredients section: title + list items separately
   if (ingredients.length) {
-    blocks.push({
-      type: "ul",
-      title: "Ingredients",
-      items: ingredients.map(escapeHtml)
+    blocks.push(`<h3 class="section-title">Ingredients</h3>`);
+    blocks.push('<ul class="ingredient-list">');
+    ingredients.forEach(ing => {
+      blocks.push(`<li>${escapeHtml(ing)}</li>`);
     });
+    blocks.push('</ul>');
   }
+
+  // Add instructions section
   if (steps.length) {
-    blocks.push({
-      type: "ol",
-      title: "Instructions",
-      items: steps.map(escapeHtml),
-      start: stepCounter
+    blocks.push(`<h3 class="section-title">Instructions</h3>`);
+    blocks.push('<ol class="step-list" start="1">');
+    steps.forEach(step => {
+      splitToSentences(step).forEach(sentence => {
+        blocks.push(`<li>${escapeHtml(sentence)}</li>`);
+      });
     });
+    blocks.push('</ol>');
   }
+
+  // Add notes section
   if (notes.length) {
-    blocks.push({
-      type: "ul",
-      title: "Notes",
-      items: notes.map(escapeHtml)
+    blocks.push(`<h3 class="section-title">Notes</h3>`);
+    blocks.push('<ul class="note-list">');
+    notes.forEach(note => {
+      splitToSentences(note).forEach(sentence => {
+        blocks.push(`<li>${escapeHtml(sentence)}</li>`);
+      });
     });
+    blocks.push('</ul>');
   }
 
-  // 'Smart' pagination: fill each page to the max, section content flows together!
-  let currentPage = '';
-  let openList = false;
-  let currentListTag = '';
-  let olStart = stepCounter;
-
-  for (const block of blocks) {
-    let blockOpened = false;
-    for (let i = 0; i < block.items.length; i++) {
-      const isFirstItem = i === 0;
-      // Open new list and section title if needed.
-      if (!openList) {
-        let titleHtml = '';
-        if (isFirstItem && block.title) {
-          titleHtml = `<h3 class="section-title">${escapeHtml(block.title)}</h3>`;
-        }
-        if (block.type === "ol") {
-          currentPage += `${titleHtml}<ol class="step-list" start="${olStart}">`;
-          currentListTag = "ol";
-        } else {
-          currentPage += `${titleHtml}<ul class="ingredient-list">`;
-          currentListTag = "ul";
-        }
-        openList = true;
-        blockOpened = true;
+  // Paginate blocks into pages based on maxContentHeight
+  let currentPageContent = '';
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    // Append block tentatively and measure
+    const tentativeContent = currentPageContent + block;
+    measurer.innerHTML = tentativeContent;
+    if (measurer.offsetHeight <= maxContentHeight) {
+      currentPageContent = tentativeContent;
+    } else {
+      // Page full, push current and start new
+      if (currentPageContent) {
+        allPages.push(`<section class="page">${currentPageContent}</section>`);
       }
-
-      // Try to add list item
-      currentPage += `<li>${block.items[i]}</li>`;
-      measurer.innerHTML = currentPage + (currentListTag === "ol" ? "</ol>" : "</ul>");
-      if (measurer.offsetHeight > maxContentHeight) {
-        // Remove oversized <li> and close the list, push page, start new.
-        const removeLi = currentPage.lastIndexOf('<li>');
-        currentPage = currentPage.substring(0, removeLi);
-        currentPage += (currentListTag === "ol" ? "</ol>" : "</ul>");
-        allPages.push(`<section class="page">${currentPage}</section>`);
-        // Start new list on new page
-        let titleHtml = '';
-        if (block.title && (isFirstItem || blockOpened === false)) {
-          titleHtml = `<h3 class="section-title">${escapeHtml(block.title)}</h3>`;
-        }
-        if (block.type === "ol") {
-          currentPage = `${titleHtml}<ol class="step-list" start="${olStart}">`;
-          currentListTag = "ol";
-        } else {
-          currentPage = `${titleHtml}<ul class="ingredient-list">`;
-          currentListTag = "ul";
-        }
-        openList = true;
-        // Add back the item
-        currentPage += `<li>${block.items[i]}</li>`;
-      }
-      if (block.type === "ol") {
-        olStart++;
-      }
-    }
-    // If we finish the block, close list but stay on the page for flowing sections
-    if (openList) {
-      currentPage += (currentListTag === "ol" ? "</ol>" : "</ul>");
-      openList = false;
-      currentListTag = '';
+      currentPageContent = block;
     }
   }
-  // Push any trailing content
-  if (currentPage) {
-    allPages.push(`<section class="page">${currentPage}</section>`);
+  if (currentPageContent) {
+    allPages.push(`<section class="page">${currentPageContent}</section>`);
   }
 
   document.body.removeChild(measurer);
