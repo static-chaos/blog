@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // choose via hash-slug or default to 0
       const slugFromHash = window.location.hash.slice(1).toLowerCase();
       const toSlug = s => String(s)
         .toLowerCase()
@@ -67,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 /* ---------- Pagination logic ---------- */
 
 function buildSpreadsForRecipe(recipe) {
@@ -95,12 +93,10 @@ function generatePages(recipe) {
     ? [...recipe.extra_notes]
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
-  // Constants for layout and height limits
   const pageInnerHeight  = 600;
   const paddingY         = 2 * 32;
   const maxContentHeight = pageInnerHeight - paddingY;
 
-  // Hidden measurer for pagination
   const measurer = document.createElement('div');
   measurer.style.cssText = `
     position:absolute;
@@ -118,12 +114,14 @@ function generatePages(recipe) {
 
   const allPages = [];
 
-  // Helper: split text into sentences for fine pagination
+  // Split long texts into sentences for fine pagination
   function splitToSentences(text) {
-    return text.match(/[^\.!\?]+[\.!\?]+|\s*$/g).filter(Boolean).map(s => s.trim());
+    if (!text) return [];
+    // Match sentences by punctuation followed by space, or line ends
+    return text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g)?.map(s => s.trim()) || [text];
   }
 
-  // Build flat array of HTML blocks for all content
+  // Compose initial blocks of HTML content
   const blocks = [];
 
   blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
@@ -135,7 +133,6 @@ function generatePages(recipe) {
 
   if (ingredients.length) {
     blocks.push(`<h3 class="section-title">Ingredients</h3>`);
-    // Ingredients list opening tag
     blocks.push('<ul class="ingredient-list">');
     ingredients.forEach(ing => {
       blocks.push(`<li>${escapeHtml(ing)}</li>`);
@@ -143,13 +140,8 @@ function generatePages(recipe) {
     blocks.push('</ul>');
   }
 
-  if (steps.length) {
-    blocks.push(`<h3 class="section-title">Instructions</h3>`);
-    // We'll split instructions across pages with proper numbering
-    // So instructions go as separate <li> blocks
-  }
-
-  // Split instructions into sentence-level <li> to allow smooth pagination
+  // Instructions will be handled separately with proper numbering continuation
+  // Split instructions into sentence-level items with index
   let instructionLiBlocks = [];
   let instructionIndex = 1;
   steps.forEach(step => {
@@ -158,24 +150,22 @@ function generatePages(recipe) {
     });
   });
 
-  // We'll paginate instructions in a separate function to handle numbering continuation
+  // Paginate instructions with proper ordered list and start attribute
   function paginateInstructions(blocks) {
-    let pages = [];       // store page blocks as strings
-    let currentPage = ''; // current page content
-    let olStart = 1;      // current ordered list start index
+    let pages = [];
+    let currentPage = '';
+    let olStart = 1;
     let isListOpen = false;
 
     for (let i = 0; i < blocks.length; i++) {
       const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
-
       let tentativeContent;
+
       if (!isListOpen) {
-        tentativeContent = currentPage + `<ol class="step-list" start="${olStart}">` + liHtml;
+        tentativeContent = currentPage + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
       } else {
-        tentativeContent = currentPage + liHtml;
+        tentativeContent = currentPage.replace(/<\/ol>$/, '') + liHtml + '</ol>';
       }
-      // When adding the last li on page, close the list tentatively for measurement
-      tentativeContent += '</ol>';
 
       measurer.innerHTML = tentativeContent;
       if (measurer.offsetHeight <= maxContentHeight) {
@@ -183,55 +173,44 @@ function generatePages(recipe) {
           currentPage += `<ol class="step-list" start="${olStart}">` + liHtml;
           isListOpen = true;
         } else {
-          currentPage += liHtml;
+          currentPage = currentPage.replace(/<\/ol>$/, '') + liHtml;
         }
         olStart++;
       } else {
-        if (isListOpen) {
-          currentPage += '</ol>';
-        }
+        if (isListOpen) currentPage += '</ol>';
         pages.push(`<section class="page">${currentPage}</section>`);
-        // Start new page with this li
         currentPage = `<ol class="step-list" start="${olStart}">${liHtml}`;
         isListOpen = true;
         olStart++;
       }
     }
-    if (isListOpen) {
-      currentPage += '</ol>';
-    }
-    if (currentPage) {
-      pages.push(`<section class="page">${currentPage}</section>`);
-    }
+
+    if (isListOpen) currentPage += '</ol>';
+    if (currentPage) pages.push(`<section class="page">${currentPage}</section>`);
     return pages;
   }
 
-  // Paginate blocks other than instructions
+  // Paginate all content except instructions
   let currentPageContent = '';
-  for (let i = 0; i < blocks.length; i++) {
+  for(let i = 0; i < blocks.length; i++){
     const block = blocks[i];
     const tentativeContent = currentPageContent + block;
     measurer.innerHTML = tentativeContent;
-    if (measurer.offsetHeight <= maxContentHeight) {
+    if(measurer.offsetHeight <= maxContentHeight){
       currentPageContent = tentativeContent;
     } else {
-      if (currentPageContent) {
-        allPages.push(`<section class="page">${currentPageContent}</section>`);
-      }
+      if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
       currentPageContent = block;
     }
   }
-  if (currentPageContent) {
-    allPages.push(`<section class="page">${currentPageContent}</section>`);
-  }
+  if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
 
-  // Paginate instructions separately with proper numbering continuation
+  // Paginate instructions and notes separately
   const instructionPages = paginateInstructions(instructionLiBlocks);
 
-  // Add notes section at the end after instructions
+  // Notes pagination
   let notesPages = [];
-  if (notes.length) {
-    // Similar to ingredients - use sentence splitting for notes
+  if(notes.length){
     const noteBlocks = [];
     noteBlocks.push(`<h3 class="section-title">Notes</h3>`);
     noteBlocks.push('<ul class="note-list">');
@@ -242,29 +221,24 @@ function generatePages(recipe) {
     });
     noteBlocks.push('</ul>');
 
-    // Paginate notes blocks
     let notesPageContent = '';
-    for (let i = 0; i < noteBlocks.length; i++) {
+    for(let i = 0; i < noteBlocks.length; i++){
       const block = noteBlocks[i];
       const tentativeContent = notesPageContent + block;
       measurer.innerHTML = tentativeContent;
-      if (measurer.offsetHeight <= maxContentHeight) {
+      if(measurer.offsetHeight <= maxContentHeight){
         notesPageContent = tentativeContent;
       } else {
-        if (notesPageContent) {
-          notesPages.push(`<section class="page">${notesPageContent}</section>`);
-        }
+        if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
         notesPageContent = block;
       }
     }
-    if (notesPageContent) {
-      notesPages.push(`<section class="page">${notesPageContent}</section>`);
-    }
+    if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
   }
 
   document.body.removeChild(measurer);
 
-  // Combine pages: before instructions + instructionPages + notesPages
+  // Combine pages: blocks + instructionPages + notesPages
   return [...allPages, ...instructionPages, ...notesPages];
 }
 
@@ -277,7 +251,6 @@ function renderSpread(container, spread) {
     ${right}
   </div>`;
 
-  // Ensure both pages have .page class
   const pages = container.querySelectorAll('.page-spread .page');
   pages.forEach(p => p.setAttribute('aria-hidden', 'false'));
 }
@@ -301,7 +274,6 @@ function formatIngredient(item) {
   if (item == null) return '';
   if (typeof item === 'string') return item;
 
-  // Handle common shapes like { quantity, unit, name } or { amount, unit, ingredient }
   const qty = item.quantity ?? item.qty ?? item.amount ?? '';
   const unit = item.unit ?? '';
   const name = item.name ?? item.ingredient ?? item.item ?? '';
