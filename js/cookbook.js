@@ -1,4 +1,3 @@
-```js
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -280,4 +279,3 @@ function formatIngredient(item) {
   const line = parts.join(' ').trim();
   return line || JSON.stringify(item);
 }
-```
