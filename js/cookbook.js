@@ -94,7 +94,7 @@ function generatePages(recipe) {
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   const pageInnerHeight  = 600;
-  const paddingY         = 2 * 16; // 1em vertical padding = 16px per pads make total 32px
+  const paddingY         = 2 * 16; // vertical padding (2 * 1em = 32px)
   const maxContentHeight = pageInnerHeight - paddingY;
 
   const measurer = document.createElement('div');
@@ -111,8 +111,6 @@ function generatePages(recipe) {
     line-height:1.4;
   `;
   document.body.appendChild(measurer);
-
-  const allPages = [];
 
   function splitToSentences(text) {
     if (!text) return [];
@@ -139,6 +137,8 @@ function generatePages(recipe) {
 
   // Step 1: Paginate blocks before instructions (title, desc, ingredients)
   let currentPageContent = '';
+  const allPages = [];
+
   for(let i = 0; i < blocks.length; i++) {
     const block = blocks[i];
     const tentativeContent = currentPageContent + block;
@@ -169,9 +169,8 @@ function generatePages(recipe) {
   // Step 2: Paginate instructions, optionally merging first instruction page with last page if leftover space is large enough
   let instructionPages = [];
   if (instructionLiBlocks.length) {
-    // If leftover space enough for small portion, try to merge first instruction blocks
     if (leftoverSpace >= maxContentHeight * 0.25) {
-      // Attempt to merge instructions into last page
+      // Merge first instruction blocks into last page
       let currPage = allPages.pop().replace(/<\/section>$/, '');
 
       let olStart = 1;
@@ -191,7 +190,6 @@ function generatePages(recipe) {
         measurer.innerHTML = tentativeContent;
         if (measurer.offsetHeight <= maxContentHeight) {
           if (!isListOpen) {
-            const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
             newPageContent += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
             isListOpen = true;
             firstPage = false;
@@ -211,12 +209,11 @@ function generatePages(recipe) {
       if (isListOpen) newPageContent += '</ol>';
       if (newPageContent) instructionPages.push(`<section class="page">${newPageContent}</section>`);
     } else {
-      // Just paginate instructions normally if leftover space too small
       instructionPages = paginateInstructions(instructionLiBlocks, measurer, maxContentHeight);
     }
   }
 
-  // Step 3: Paginate notes if any (unchanged)
+  // Step 3: Paginate notes section similarly with leftover space merge logic
   let notesPages = [];
   if(notes.length){
     const noteBlocks = [];
@@ -229,19 +226,46 @@ function generatePages(recipe) {
     });
     noteBlocks.push('</ul>');
 
-    let notesPageContent = '';
-    for(let i = 0; i < noteBlocks.length; i++){
-      const block = noteBlocks[i];
-      const tentativeContent = notesPageContent + block;
-      measurer.innerHTML = tentativeContent;
-      if(measurer.offsetHeight <= maxContentHeight){
-        notesPageContent = tentativeContent;
-      } else {
-        if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
-        notesPageContent = block;
+    // measure leftover space after instructions (or last page)
+    measurer.innerHTML = instructionPages.length ? instructionPages[instructionPages.length -1] : allPages[allPages.length -1];
+    const lastInstructionPageHeight = measurer.offsetHeight;
+    const leftoverSpaceAfterInstructions = maxContentHeight - lastInstructionPageHeight;
+
+    if (leftoverSpaceAfterInstructions >= maxContentHeight * 0.25) {
+      // Try merging notes into last page of previous section
+      let currPage = (instructionPages.length ? instructionPages : allPages).pop().replace(/<\/section>$/, '');
+
+      let newPageContent = currPage;
+      let notesPageContent = '';
+      for(let i = 0; i < noteBlocks.length; i++) {
+        const block = noteBlocks[i];
+        const tentativeContent = newPageContent + notesPageContent + block;
+        measurer.innerHTML = tentativeContent;
+        if(measurer.offsetHeight <= maxContentHeight) {
+          notesPageContent += block;
+        } else {
+          if(notesPageContent) notesPages.push(`<section class="page">${newPageContent + notesPageContent}</section>`);
+          newPageContent = '';
+          notesPageContent = block;
+        }
       }
+      if(notesPageContent) notesPages.push(`<section class="page">${newPageContent + notesPageContent}</section>`);
+    } else {
+      // Paginate notes normally
+      let notesPageContent = '';
+      for(let i = 0; i < noteBlocks.length; i++){
+        const block = noteBlocks[i];
+        const tentativeContent = notesPageContent + block;
+        measurer.innerHTML = tentativeContent;
+        if(measurer.offsetHeight <= maxContentHeight){
+          notesPageContent = tentativeContent;
+        } else {
+          if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
+          notesPageContent = block;
+        }
+      }
+      if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
     }
-    if(notesPageContent) notesPages.push(`<section class="page">${notesPageContent}</section>`);
   }
 
   document.body.removeChild(measurer);
@@ -256,7 +280,7 @@ function paginateInstructions(blocks, measurer, maxContentHeight) {
   let isListOpen = false;
   let firstPage = true;
 
-  for (let i = 0; i < blocks.length; i++) {
+  for(let i = 0; i < blocks.length; i++) {
     const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
     let tentativeContent;
 
@@ -270,7 +294,6 @@ function paginateInstructions(blocks, measurer, maxContentHeight) {
     measurer.innerHTML = tentativeContent;
     if (measurer.offsetHeight <= maxContentHeight) {
       if (!isListOpen) {
-        const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
         currentPage += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
         isListOpen = true;
         firstPage = false;
@@ -291,16 +314,15 @@ function paginateInstructions(blocks, measurer, maxContentHeight) {
   if (isListOpen) currentPage += '</ol>';
   if (currentPage) pages.push(`<section class="page">${currentPage}</section>`);
 
-  // Merge last page with previous if it’s too empty to avoid blank space
+  // Merge last page with previous if it’s too small
   if (pages.length > 1) {
-    const lastPageContent = pages[pages.length - 1];
-    measurer.innerHTML = lastPageContent;
+    measurer.innerHTML = pages[pages.length - 1];
     const lastPageHeight = measurer.offsetHeight;
-    if (lastPageHeight < maxContentHeight * 0.4) { // threshold 40% height
+    if (lastPageHeight < maxContentHeight * 0.4) {
       const prevPageContent = pages[pages.length - 2];
-      measurer.innerHTML = prevPageContent + lastPageContent;
+      measurer.innerHTML = prevPageContent + pages[pages.length -1];
       if (measurer.offsetHeight <= maxContentHeight) {
-        pages[pages.length - 2] = prevPageContent + lastPageContent;
+        pages[pages.length - 2] = prevPageContent + pages[pages.length -1];
         pages.pop();
       }
     }
