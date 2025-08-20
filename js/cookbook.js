@@ -114,14 +114,11 @@ function generatePages(recipe) {
 
   const allPages = [];
 
-  // Split long texts into sentences for fine pagination
   function splitToSentences(text) {
     if (!text) return [];
-    // Match sentences by punctuation followed by space, or line ends
     return text.match(/[^\.!\?]+[\.!\?]+|[^\.!\?]+$/g)?.map(s => s.trim()) || [text];
   }
 
-  // Compose initial blocks of HTML content
   const blocks = [];
 
   blocks.push(`<h2 class="recipe-title">${escapeHtml(name)}</h2>`);
@@ -140,8 +137,7 @@ function generatePages(recipe) {
     blocks.push('</ul>');
   }
 
-  // Instructions will be handled separately with proper numbering continuation
-  // Split instructions into sentence-level items with index
+  // Split steps into sentences with index
   let instructionLiBlocks = [];
   let instructionIndex = 1;
   steps.forEach(step => {
@@ -150,19 +146,21 @@ function generatePages(recipe) {
     });
   });
 
-  // Paginate instructions with proper ordered list and start attribute
   function paginateInstructions(blocks) {
     let pages = [];
     let currentPage = '';
     let olStart = 1;
     let isListOpen = false;
+    let firstPage = true;
 
     for (let i = 0; i < blocks.length; i++) {
       const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
       let tentativeContent;
 
       if (!isListOpen) {
-        tentativeContent = currentPage + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
+        // Add "Instructions" heading only on the first instruction page
+        const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
+        tentativeContent = currentPage + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
       } else {
         tentativeContent = currentPage.replace(/<\/ol>$/, '') + liHtml + '</ol>';
       }
@@ -170,8 +168,10 @@ function generatePages(recipe) {
       measurer.innerHTML = tentativeContent;
       if (measurer.offsetHeight <= maxContentHeight) {
         if (!isListOpen) {
-          currentPage += `<ol class="step-list" start="${olStart}">` + liHtml;
+          const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
+          currentPage += heading + `<ol class="step-list" start="${olStart}">` + liHtml;
           isListOpen = true;
+          firstPage = false;
         } else {
           currentPage = currentPage.replace(/<\/ol>$/, '') + liHtml;
         }
@@ -182,15 +182,31 @@ function generatePages(recipe) {
         currentPage = `<ol class="step-list" start="${olStart}">${liHtml}`;
         isListOpen = true;
         olStart++;
+        firstPage = false;
       }
     }
 
     if (isListOpen) currentPage += '</ol>';
     if (currentPage) pages.push(`<section class="page">${currentPage}</section>`);
+
+    // Merge last page with previous if it’s too empty to avoid blank space
+    if (pages.length > 1) {
+      const lastPageContent = pages[pages.length - 1];
+      measurer.innerHTML = lastPageContent;
+      const lastPageHeight = measurer.offsetHeight;
+      if (lastPageHeight < maxContentHeight * 0.4) { // threshold 40% height
+        const prevPageContent = pages[pages.length - 2];
+        measurer.innerHTML = prevPageContent + lastPageContent;
+        if (measurer.offsetHeight <= maxContentHeight) {
+          pages[pages.length - 2] = prevPageContent + lastPageContent;
+          pages.pop();
+        }
+      }
+    }
+
     return pages;
   }
 
-  // Paginate all content except instructions
   let currentPageContent = '';
   for(let i = 0; i < blocks.length; i++){
     const block = blocks[i];
@@ -205,10 +221,8 @@ function generatePages(recipe) {
   }
   if(currentPageContent) allPages.push(`<section class="page">${currentPageContent}</section>`);
 
-  // Paginate instructions and notes separately
   const instructionPages = paginateInstructions(instructionLiBlocks);
 
-  // Notes pagination
   let notesPages = [];
   if(notes.length){
     const noteBlocks = [];
@@ -238,7 +252,6 @@ function generatePages(recipe) {
 
   document.body.removeChild(measurer);
 
-  // Combine pages: blocks + instructionPages + notesPages
   return [...allPages, ...instructionPages, ...notesPages];
 }
 
