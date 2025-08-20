@@ -11,7 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   fetch('data/cookbook.json')
-    .then(r => r.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
       const recipes = Array.isArray(data?.recipes) ? data.recipes : [];
       if (!recipes.length) {
@@ -59,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })
     .catch(err => {
-      console.error(err);
+      console.error('Error loading recipes:', err);
       container.innerHTML = `<p style="color:#c00">Error loading recipes</p>`;
       if (prevBtn) prevBtn.disabled = true;
       if (nextBtn) nextBtn.disabled = true;
@@ -94,7 +99,7 @@ function generatePages(recipe) {
     : (recipe?.extra_notes ? [recipe.extra_notes] : []);
 
   const pageInnerHeight  = 600;
-  const paddingY         = 2 * 16; // vertical padding (2 * 1em = 32px)
+  const paddingY         = 2 * 16; // vertical padding: 1em top & bottom = 16px * 2
   const maxContentHeight = pageInnerHeight - paddingY;
 
   const measurer = document.createElement('div');
@@ -180,9 +185,9 @@ function generatePages(recipe) {
 
       for (let i = 0; i < instructionLiBlocks.length; i++) {
         const liHtml = `<li>${escapeHtml(instructionLiBlocks[i].text)}</li>`;
+        const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
         let tentativeContent;
         if (!isListOpen) {
-          const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
           tentativeContent = newPageContent + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
         } else {
           tentativeContent = newPageContent.replace(/<\/ol>$/, '') + liHtml + '</ol>';
@@ -282,10 +287,10 @@ function paginateInstructions(blocks, measurer, maxContentHeight) {
 
   for(let i = 0; i < blocks.length; i++) {
     const liHtml = `<li>${escapeHtml(blocks[i].text)}</li>`;
+    const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
     let tentativeContent;
 
     if (!isListOpen) {
-      const heading = firstPage ? `<h3 class="section-title">Instructions</h3>` : '';
       tentativeContent = currentPage + heading + `<ol class="step-list" start="${olStart}">` + liHtml + '</ol>';
     } else {
       tentativeContent = currentPage.replace(/<\/ol>$/, '') + liHtml + '</ol>';
