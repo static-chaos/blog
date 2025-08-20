@@ -266,3 +266,9 @@ h2 {
 .slide-out-left { animation: slideOutLeft 0.6s ease forwards; z-index: 15; }
 .slide-in-left { animation: slideInLeft 0.6s ease forwards; z-index: 10; }
 .slide-out-right { animation: slideOutRight 0.6s ease forwards; z-index: 15; }
+
+.recipe-title, .section-title, p, li {
+  margin-top: 0;
+  margin-bottom: 0.3em;
+  line-height: 1.3;
+}
