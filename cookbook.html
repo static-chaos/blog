@@ -4,9 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Recipe Blackboard</title>
-    <!-- Fonts -->
+  
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet" />
+  
+  <!-- CSS -->
   <link rel="stylesheet" href="css/cookbook.css" />
 </head>
 <body>
@@ -16,19 +19,28 @@
 
     <!-- Book container -->
     <div class="recipe-book">
-      <span></span> <!-- Decorative spine/clip -->
       <div class="book-content">
-        <!-- Pages will be injected here by cookbook.js -->
+        <!-- Pages injected by JS -->
+        
+        <!-- Spine (embossed gold title) -->
+        <div class="spine">
+          <span>RECIPES</span>
+        </div>
+        
+        <!-- Stacked-page edges top/bottom -->
+        <div class="top-stack"></div>
+        <div class="bottom-stack"></div>
       </div>
+    </div>
 
-      <!-- Navigation buttons -->
-      <div class="nav-buttons">
-        <button id="prevBtn">Previous</button>
-        <button id="nextBtn">Next</button>
-      </div>
+    <!-- Navigation buttons (kept OUTSIDE the book) -->
+    <div class="nav-buttons">
+      <button id="prevBtn">‹</button>
+      <button id="nextBtn">›</button>
     </div>
   </div>
 
+  <!-- JS -->
   <script src="js/cookbook.js"></script>
 </body>
 </html>
