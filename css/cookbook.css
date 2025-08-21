@@ -1,5 +1,5 @@
 /* ================================
-   ORIGINAL BODY STYLING
+   General body styling for centering
 ================================ */
 body {
   background: radial-gradient(circle at center, #2a2d38 0%, #191b1f 100%);
@@ -13,54 +13,284 @@ body {
   position: relative;
 }
 
-/* ================================
-   ORIGINAL RECIPE BOOK CONTAINER
-================================ */
+/* -----------------------
+   Hardbound leather cover
+----------------------- */
 .recipe-book {
   position: relative;
   width: 900px;
   height: 600px;
-  background: #5a3e2b;
+  background: #5a3e2b; /* rich leather */
   border-radius: 14px;
-  padding: 14px;
   box-shadow:
     0 15px 40px rgba(0,0,0,0.5),
-    inset 0 2px 5px rgba(255,255,255,0.2),
+    inset 0 2px 5px rgba(255,255,255,0.15),
     inset 0 -2px 6px rgba(0,0,0,0.4);
   overflow: hidden;
+
+  /* leather texture */
   background-image:
     linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%),
     linear-gradient(45deg, rgba(0,0,0,0.15) 0%, transparent 50%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 3px);
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.05) 0 1px,
+      transparent 1px 3px
+    );
   background-blend-mode: overlay;
 }
 
-/* ================================
-   BOOK CONTENT (ORIGINAL)
-================================ */
+/* -----------------------
+   Inner white page block
+----------------------- */
 .book-content {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
   perspective: 1500px;
   overflow: hidden;
-  background: #fff;
+  background: #ffffff;
   border-radius: 6px;
-  margin: 10px;
+  margin: 10px; /* reveal brown cover edges */
   box-shadow: 0 0 12px rgba(0,0,0,0.25);
 }
 
-/* ORIGINAL SPREAD/PAGE/ANIMATION CODE… 
-   (keeping ALL rules you pasted originally: 
-   .page-spread, .page, .left-page/.right-page, 
-   .recipe-title, h2, section-titles, 
-   lists, checkboxes, nav, and animations) */
+/* Central divider / original experiments */
+.book-content::before,
+.book-content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 28px;
+  height: 100%;
+  z-index: 1;
+}
 
-/* ================================
-   === NEW ENHANCEMENTS BELOW ===
-================================ */
+.book-content::before {
+  left: -12px;
+  background: repeating-linear-gradient(
+    to right,
+    #e6e9f0,
+    #e6e9f0 2px,
+    #fff 2px,
+    #fff 4px
+  );
+  box-shadow: inset 5px 0 8px rgba(0, 0, 0, 0.08);
+}
+.book-content::after {
+  right: -12px;
+  background: repeating-linear-gradient(
+    to left,
+    #e6e9f0,
+    #e6e9f0 2px,
+    #fff 2px,
+    #fff 4px
+  );
+  box-shadow: inset -5px 0 8px rgba(0, 0, 0, 0.08);
+}
 
-/* --- Prominent Spine --- */
+/* Decorative central spine strip (original) */
+.book-content::before {
+  content: "";
+}
+.book-content::after {
+  content: "";
+}
+
+/* -----------------------
+   Page Spreads & Pages
+----------------------- */
+.page-spread {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: opacity 0.4s ease;
+  box-sizing: border-box;
+}
+.page-spread.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.page {
+  width: 50%;
+  height: 100%;
+  padding: 1em 3em;
+  line-height: 1.4;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05),
+              inset -2px 0 4px rgba(0,0,0,0.05);
+  font-size: 1.1em;
+  color: #2e2e2e;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+.left-page {
+  background: linear-gradient(to right, #ffffff, #f6f7fa);
+  box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
+}
+.right-page {
+  background: linear-gradient(to left, #ffffff, #f6f7fa);
+  box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
+}
+
+/* -----------------------
+   Text Inside Pages
+----------------------- */
+.recipe-title {
+  text-align: center;
+  font-size: 2.8em;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.3em;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: #1c1c1c;
+  position: relative;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.5),
+               0 -1px 1px rgba(0,0,0,0.2);
+  user-select: text;
+}
+/* underline flourish */
+.recipe-title::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 120px;
+  height: 10px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="10"><path d="M5 5 Q40 0, 80 5 T115 5" stroke="%23d4af37" stroke-width="2" fill="transparent" stroke-linecap="round"/></svg>') no-repeat center;
+  transform: translateX(-50%);
+  opacity: 0.9;
+}
+
+h2 {
+  font-size: 1.6em;
+  margin-bottom: 0.8em;
+  border-bottom: 1.5px dashed #bbb;
+  padding-bottom: 0.4em;
+  user-select: text;
+}
+.section-title {
+  font-size: 1.4em;
+  margin: 0.8em 0 0.6em;
+  border-bottom: 1.5px dashed #bbb;
+  padding-bottom: 0.3em;
+  font-weight: 600;
+  color: #655940;
+  user-select: text;
+}
+
+/* Lists */
+.ingredients ul,
+.instructions ol,
+.notes ul {padding-left:0;margin:0;}
+.ingredients li,
+.instructions li,
+.notes li {
+  font-size:1.1em;
+  line-height:1.6;
+  margin-bottom:0.6em;
+  user-select:text;
+}
+.ingredients ul {list-style:none;}
+.instructions ol {list-style-position: inside; padding-left:1.2em;}
+
+/* Checkboxes */
+.ingredients li label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  gap: 0.5em;
+}
+.ingredients li input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #9c8f7a;
+}
+
+/* -----------------------
+   Navigation Buttons
+----------------------- */
+.nav-buttons {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2em;
+  pointer-events: none;
+  user-select: none;
+  z-index: 20;
+}
+.nav-buttons button {
+  pointer-events: all;
+  padding: 0.6em 1.3em;
+  background-color: #d4af37;
+  border: none;
+  color: #442f1f;
+  font-size: 1.1em;
+  font-family: 'Playfair Display', serif;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(212,175,55,0.5);
+}
+.nav-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.nav-buttons button:hover:not(:disabled) {
+  background-color: #c09a2e;
+  transform: translateY(-2px);
+}
+
+/* -----------------------
+   Page-Turn Animations
+----------------------- */
+@keyframes slideInRight { from { opacity:0; transform: translateX(100%);} to { opacity:1; transform: translateX(0);} }
+@keyframes slideOutLeft { from { opacity:1; transform: translateX(0);} to { opacity:0; transform: translateX(-100%);} }
+@keyframes slideInLeft { from { opacity:0; transform: translateX(-100%);} to { opacity:1; transform: translateX(0);} }
+@keyframes slideOutRight { from { opacity:1; transform: translateX(0);} to { opacity:0; transform: translateX(100%);} }
+
+.slide-in-right { animation: slideInRight 0.6s ease forwards; z-index: 10; }
+.slide-out-left { animation: slideOutLeft 0.6s ease forwards; z-index: 15; }
+.slide-in-left { animation: slideInLeft 0.6s ease forwards; z-index: 10; }
+.slide-out-right { animation: slideOutRight 0.6s ease forwards; z-index: 15; }
+
+.recipe-title, .section-title, p, li {
+  margin-top: 0;
+  margin-bottom: 0.3em;
+  line-height: 1.3;
+}
+.instructions-list {
+  margin-left: 1.5em;
+  margin-bottom: 1.2em;
+  padding-left: 1em;
+  list-style-type: decimal;
+  line-height: 1.6;
+  color: #4a4438;
+}
+.instructions-list li { margin-bottom: 0.8em; }
+
+/* =========================================
+   ENHANCEMENTS - Luxury Realism Layer
+========================================= */
+
+/* Prominent Spine */
 .book-content .spine {
   position: absolute;
   top: 0; left: 50%;
@@ -71,75 +301,61 @@ body {
     inset 0 0 12px rgba(0,0,0,0.6),
     0 0 25px rgba(0,0,0,0.8);
   border-radius: 6px;
-  z-index: 50; /* bring to top */
+  z-index: 50;
 }
 .book-content .spine::before,
 .book-content .spine::after {
   content:"";
   position:absolute; top:5%; bottom:5%;
-  width:2px;
-  background: rgba(212,175,55,0.8);
+  width:2px; background: rgba(212,175,55,0.8);
 }
 .book-content .spine::before { left:5px; }
 .book-content .spine::after { right:5px; }
-/* embossed vertical gold title */
 .book-content .spine span {
   position:absolute; top:50%; left:50%;
   transform: translate(-50%,-50%) rotate(-90deg);
-  font-size: 1em; font-weight: 700;
-  letter-spacing: 0.2em; color: #d4af37;
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #d4af37;
   text-shadow: 0 1px 2px rgba(0,0,0,0.9);
   font-family: 'Playfair Display', serif;
 }
 
-/* --- Stronger Stacked Pages (left/right/top/bottom) --- */
+/* Stacked pages on all edges */
 .book-content::before,
 .book-content::after {
-  content:"";
-  position:absolute; top:0;
-  width:40px; height:100%;
-  z-index: 10;
+  width:40px !important;
 }
 .book-content::before {
   left:-20px;
-  background: repeating-linear-gradient(to right,#ddd,#ddd 4px,#fff 4px,#fff 8px);
-  box-shadow: inset 10px 0 12px rgba(0,0,0,0.2);
+  background: repeating-linear-gradient(to right,#ddd,#ddd 4px,#fff 4px,#fff 8px) !important;
 }
 .book-content::after {
   right:-20px;
-  background: repeating-linear-gradient(to left,#ddd,#ddd 4px,#fff 4px,#fff 8px);
-  box-shadow: inset -10px 0 12px rgba(0,0,0,0.2);
+  background: repeating-linear-gradient(to left,#ddd,#ddd 4px,#fff 4px,#fff 8px) !important;
 }
-/* Additional top & bottom page edges */
 .book-content .top-stack,
 .book-content .bottom-stack {
   position:absolute; left:0; right:0;
-  height:20px; z-index: 9;
+  height:20px;
   background: repeating-linear-gradient(to bottom,#ddd,#ddd 3px,#fff 3px,#fff 6px);
+  z-index: 9;
 }
 .book-content .top-stack {
   top:-10px;
   box-shadow: inset 0 10px 8px rgba(0,0,0,0.15);
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
 }
 .book-content .bottom-stack {
   bottom:-10px;
   box-shadow: inset 0 -10px 8px rgba(0,0,0,0.15);
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
 }
 
-/* --- Refined Recipe Title (smaller, elegant) --- */
-.recipe-title {
-  font-size: 2.2em !important; /* override original */
-}
-
-/* --- Nav Buttons Outside the Book --- */
+/* Nav Buttons Outside */
 .nav-buttons {
   position: absolute;
   top: 50%;
-  width: 1200px; /* push outwards */
+  width: 1200px; /* move out */
   transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
@@ -156,7 +372,7 @@ body {
   color: #fff;
   font-size: 1.4em;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.7);
   transition: transform 0.2s ease, background 0.3s ease;
 }
 .nav-buttons button:hover:not(:disabled) {
@@ -166,4 +382,21 @@ body {
 .nav-buttons button:disabled {
   background:#777;
   box-shadow:none;
+}
+
+/* Fix blank space in pages */
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-bottom: 1em !important;
+}
+.page p, .page ul, .page ol {
+  margin-bottom: 0.4em;
+}
+
+/* Smaller recipe title override */
+.recipe-title {
+  font-size: 2.2em !important;
+  margin-bottom: 0.6em !important;
 }
