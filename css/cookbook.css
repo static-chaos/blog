@@ -1,6 +1,6 @@
 /* General body styling for centering the book */
 body {
-  background-color: #f4f6fa; /* modern cool backdrop */
+  background-color: #e2e6f0; /* cooler backdrop so book pops */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,19 +11,30 @@ body {
   position: relative;
 }
 
-/* Recipe book container */
+/* --- Hardbound cover: brown --- */
 .recipe-book {
   position: relative;
   width: 900px;
   height: 600px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background: #5a3e2b; /* rich brown leather tone */
+  border-radius: 14px;
+  padding: 14px; /* inner padding for paper pages */
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+/* Paper page block inside hardbound cover */
+.recipe-book .page-wrapper {
+  width: 100%;
+  height: 100%;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 6px;
+  position: relative;
   overflow: hidden;
 }
 
 /* Left edge with stacked page effect */
-.recipe-book::before {
+.page-wrapper::before {
   content: "";
   position: absolute;
   top: 0;
@@ -42,7 +53,7 @@ body {
 }
 
 /* Right edge with stacked page effect */
-.recipe-book::after {
+.page-wrapper::after {
   content: "";
   position: absolute;
   top: 0;
@@ -60,7 +71,7 @@ body {
   z-index: 1;
 }
 
-/* Book content holds all page spreads */
+/* --- Inside book content --- */
 .book-content {
   position: relative;
   width: 100%;
@@ -77,8 +88,8 @@ body {
   left: 50%;
   width: 6px;
   height: 100%;
-  background: linear-gradient(to bottom, #ccd2db, #e3e6eb 50%, #ccd2db 100%);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to bottom, #bbb, #dcdcdc 50%, #bbb 100%);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   transform: translateX(-50%);
   z-index: 2;
 }
@@ -104,13 +115,12 @@ body {
   z-index: 5;
 }
 
-/* Left and right page styling */
+/* Pages */
 .page {
   width: 50%;
   height: 100%;
   padding: 1em 3em;
   line-height: 1.4;
-  box-sizing: border-box;
   background-color: #ffffff;
   box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
   font-size: 1.1em;
@@ -118,39 +128,36 @@ body {
   user-select: none;
   position: relative;
   overflow: hidden;
-  border: none; /* no old border */
+  border: none;
 }
 
-/* Left page crease shadow */
+/* Page shading */
 .left-page {
   background: linear-gradient(to right, #ffffff, #f8f9fb);
   box-shadow: inset -8px 0 12px rgba(0,0,0,0.05);
-  border-radius: 0 0 0 8px;
+  border-radius: 0 0 0 6px;
 }
-
-/* Right page crease shadow */
 .right-page {
   background: linear-gradient(to left, #ffffff, #f8f9fb);
   box-shadow: inset 8px 0 12px rgba(0,0,0,0.05);
-  border-radius: 0 0 8px 0;
+  border-radius: 0 0 6px 0;
 }
 
-/* Recipe title */
+/* Title styling */
 .recipe-title {
   text-align: center;
   font-size: 2.8em;
-  margin-top: 0;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem;
   border-bottom: 3px solid #e6e9f0;
   padding-bottom: 0.4em;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   font-weight: 700;
   color: #1c1c1c;
-  user-select: text;
   position: relative;
+  user-select: text;
 }
 
-/* Adding a doodle underline effect for title */
+/* Doodle underline effect */
 .recipe-title::after {
   content: "";
   position: absolute;
@@ -163,7 +170,7 @@ body {
   opacity: 0.8;
 }
 
-/* Headings for Ingredients and Instructions */
+/* Section headings */
 h2 {
   font-size: 1.6em;
   margin-bottom: 0.8em;
@@ -181,7 +188,7 @@ h2 {
   user-select: text;
 }
 
-/* Ingredients and Instructions lists */
+/* Lists */
 .ingredients ul,
 .instructions ol,
 .notes ul {
@@ -196,9 +203,7 @@ h2 {
   margin-bottom: 0.6em;
   user-select: text;
 }
-.ingredients ul {
-  list-style: none;
-}
+.ingredients ul { list-style: none; }
 .instructions ol {
   list-style-position: inside;
   padding-left: 1.2em;
@@ -216,7 +221,7 @@ h2 {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #4b7bec; /* modern blue */
+  accent-color: #4b7bec;
 }
 
 /* Navigation Buttons */
@@ -255,35 +260,17 @@ h2 {
   transform: translateY(-2px);
 }
 
-/* Page Animation Keyframes */
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(100%); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideOutLeft {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-100%); }
-}
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-100%); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideOutRight {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(100%); }
-}
+/* Animations */
+@keyframes slideInRight { from {opacity:0;transform:translateX(100%);} to {opacity:1;transform:translateX(0);} }
+@keyframes slideOutLeft { from {opacity:1;transform:translateX(0);} to {opacity:0;transform:translateX(-100%);} }
+@keyframes slideInLeft { from {opacity:0;transform:translateX(-100%);} to {opacity:1;transform:translateX(0);} }
+@keyframes slideOutRight { from {opacity:1;transform:translateX(0);} to {opacity:0;transform:translateX(100%);} }
 
-/* Animation classes */
-.slide-in-right { animation: slideInRight 0.6s ease forwards; z-index: 10; }
-.slide-out-left { animation: slideOutLeft 0.6s ease forwards; z-index: 15; }
-.slide-in-left { animation: slideInLeft 0.6s ease forwards; z-index: 10; }
-.slide-out-right { animation: slideOutRight 0.6s ease forwards; z-index: 15; }
+.slide-in-right   { animation: slideInRight 0.6s ease forwards; z-index: 10; }
+.slide-out-left   { animation: slideOutLeft 0.6s ease forwards; z-index: 15; }
+.slide-in-left    { animation: slideInLeft 0.6s ease forwards; z-index: 10; }
+.slide-out-right  { animation: slideOutRight 0.6s ease forwards; z-index: 15; }
 
-.recipe-title, .section-title, p, li {
-  margin-top: 0;
-  margin-bottom: 0.3em;
-  line-height: 1.3;
-}
 .instructions-list {
   margin-left: 1.5em;
   margin-bottom: 1.2em;
@@ -292,6 +279,4 @@ h2 {
   line-height: 1.6;
   color: #2d2d2d;
 }
-.instructions-list li {
-  margin-bottom: 0.8em;
-}
+.instructions-list li { margin-bottom: 0.8em; }
