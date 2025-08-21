@@ -1,5 +1,5 @@
 /* ================================
-   General body styling for centering
+   GENERAL BODY
 ================================ */
 body {
   background: radial-gradient(circle at center, #2a2d38 0%, #191b1f 100%);
@@ -13,14 +13,14 @@ body {
   position: relative;
 }
 
-/* -----------------------
-   Hardbound leather cover
------------------------ */
+/* ================================
+   RECIPE BOOK CONTAINER
+================================ */
 .recipe-book {
   position: relative;
   width: 900px;
   height: 600px;
-  background: #5a3e2b; /* rich leather */
+  background: #5a3e2b;
   border-radius: 14px;
   box-shadow:
     0 15px 40px rgba(0,0,0,0.5),
@@ -28,7 +28,7 @@ body {
     inset 0 -2px 6px rgba(0,0,0,0.4);
   overflow: hidden;
 
-  /* leather texture */
+  /* leather‑like texture */
   background-image:
     linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%),
     linear-gradient(45deg, rgba(0,0,0,0.15) 0%, transparent 50%),
@@ -40,66 +40,24 @@ body {
   background-blend-mode: overlay;
 }
 
-/* -----------------------
-   Inner white page block
------------------------ */
+/* ================================
+   BOOK CONTENT (PAGES BLOCK)
+================================ */
 .book-content {
   position: relative;
   width: calc(100% - 20px);
   height: calc(100% - 20px);
   perspective: 1500px;
   overflow: hidden;
-  background: #ffffff;
+  background: #fff;
   border-radius: 6px;
-  margin: 10px; /* reveal brown cover edges */
+  margin: 10px; /* reveal leather margin */
   box-shadow: 0 0 12px rgba(0,0,0,0.25);
 }
 
-/* Central divider / original experiments */
-.book-content::before,
-.book-content::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 28px;
-  height: 100%;
-  z-index: 1;
-}
-
-.book-content::before {
-  left: -12px;
-  background: repeating-linear-gradient(
-    to right,
-    #e6e9f0,
-    #e6e9f0 2px,
-    #fff 2px,
-    #fff 4px
-  );
-  box-shadow: inset 5px 0 8px rgba(0, 0, 0, 0.08);
-}
-.book-content::after {
-  right: -12px;
-  background: repeating-linear-gradient(
-    to left,
-    #e6e9f0,
-    #e6e9f0 2px,
-    #fff 2px,
-    #fff 4px
-  );
-  box-shadow: inset -5px 0 8px rgba(0, 0, 0, 0.08);
-}
-
-/* Decorative central spine strip (original) */
-.book-content::before {
-  content: "";
-}
-.book-content::after {
-  content: "";
-}
-
-/* -----------------------
-   Page Spreads & Pages
------------------------ */
+/* ================================
+   PAGE SPREADS
+================================ */
 .page-spread {
   position: absolute;
   top: 0; left: 0;
@@ -110,7 +68,6 @@ body {
   transform-style: preserve-3d;
   backface-visibility: hidden;
   transition: opacity 0.4s ease;
-  box-sizing: border-box;
 }
 .page-spread.active {
   opacity: 1;
@@ -118,6 +75,9 @@ body {
   z-index: 5;
 }
 
+/* ================================
+   PAGES
+================================ */
 .page {
   width: 50%;
   height: 100%;
@@ -125,8 +85,6 @@ body {
   line-height: 1.4;
   box-sizing: border-box;
   background-color: #ffffff;
-  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05),
-              inset -2px 0 4px rgba(0,0,0,0.05);
   font-size: 1.1em;
   color: #2e2e2e;
   user-select: none;
@@ -135,17 +93,17 @@ body {
   border: none;
 }
 .left-page {
-  background: linear-gradient(to right, #ffffff, #f6f7fa);
-  box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
+  background: linear-gradient(to right, #fff, #f6f7fa);
+  box-shadow: inset -8px 0 12px rgba(0,0,0,0.08);
 }
 .right-page {
-  background: linear-gradient(to left, #ffffff, #f6f7fa);
-  box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
+  background: linear-gradient(to left, #fff, #f6f7fa);
+  box-shadow: inset 8px 0 12px rgba(0,0,0,0.08);
 }
 
-/* -----------------------
-   Text Inside Pages
------------------------ */
+/* ================================
+   TITLES
+================================ */
 .recipe-title {
   text-align: center;
   font-size: 2.8em;
@@ -158,9 +116,7 @@ body {
   position: relative;
   text-shadow: 0 1px 1px rgba(255,255,255,0.5),
                0 -1px 1px rgba(0,0,0,0.2);
-  user-select: text;
 }
-/* underline flourish */
 .recipe-title::after {
   content: "";
   position: absolute;
@@ -172,13 +128,11 @@ body {
   transform: translateX(-50%);
   opacity: 0.9;
 }
-
 h2 {
   font-size: 1.6em;
   margin-bottom: 0.8em;
   border-bottom: 1.5px dashed #bbb;
   padding-bottom: 0.4em;
-  user-select: text;
 }
 .section-title {
   font-size: 1.4em;
@@ -187,42 +141,45 @@ h2 {
   padding-bottom: 0.3em;
   font-weight: 600;
   color: #655940;
-  user-select: text;
 }
 
-/* Lists */
+/* ================================
+   LISTS
+================================ */
 .ingredients ul,
 .instructions ol,
-.notes ul {padding-left:0;margin:0;}
+.notes ul {
+  padding-left: 0;
+  margin: 0;
+}
 .ingredients li,
 .instructions li,
 .notes li {
-  font-size:1.1em;
-  line-height:1.6;
-  margin-bottom:0.6em;
-  user-select:text;
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-bottom: 0.6em;
 }
-.ingredients ul {list-style:none;}
-.instructions ol {list-style-position: inside; padding-left:1.2em;}
+.ingredients ul { list-style: none; }
+.instructions ol { list-style-position: inside; padding-left:1.2em; }
 
-/* Checkboxes */
+/* ================================
+   CHECKBOXES
+================================ */
 .ingredients li label {
   cursor: pointer;
   display: flex;
   align-items: center;
-  user-select: none;
   gap: 0.5em;
 }
 .ingredients li input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 18px; height: 18px;
   cursor: pointer;
   accent-color: #9c8f7a;
 }
 
-/* -----------------------
-   Navigation Buttons
------------------------ */
+/* ================================
+   NAV BUTTONS (ORIGINAL)
+================================ */
 .nav-buttons {
   position: absolute;
   bottom: 20px;
@@ -230,12 +187,9 @@ h2 {
   display: flex;
   justify-content: space-between;
   padding: 0 2em;
-  pointer-events: none;
-  user-select: none;
   z-index: 20;
 }
 .nav-buttons button {
-  pointer-events: all;
   padding: 0.6em 1.3em;
   background-color: #d4af37;
   border: none;
@@ -250,26 +204,25 @@ h2 {
 }
 .nav-buttons button:disabled {
   background-color: #ccc;
-  cursor: not-allowed;
   box-shadow: none;
 }
 .nav-buttons button:hover:not(:disabled) {
-  background-color: #c09a2e;
+  background:#c09a2e;
   transform: translateY(-2px);
 }
 
-/* -----------------------
-   Page-Turn Animations
------------------------ */
-@keyframes slideInRight { from { opacity:0; transform: translateX(100%);} to { opacity:1; transform: translateX(0);} }
-@keyframes slideOutLeft { from { opacity:1; transform: translateX(0);} to { opacity:0; transform: translateX(-100%);} }
-@keyframes slideInLeft { from { opacity:0; transform: translateX(-100%);} to { opacity:1; transform: translateX(0);} }
-@keyframes slideOutRight { from { opacity:1; transform: translateX(0);} to { opacity:0; transform: translateX(100%);} }
+/* ================================
+   PAGE TURN ANIMATIONS
+================================ */
+@keyframes slideInRight { from{opacity:0; transform:translateX(100%);} to{opacity:1; transform:translateX(0);} }
+@keyframes slideOutLeft { from{opacity:1; transform:translateX(0);} to{opacity:0; transform:translateX(-100%);} }
+@keyframes slideInLeft { from{opacity:0; transform:translateX(-100%);} to{opacity:1; transform:translateX(0);} }
+@keyframes slideOutRight { from{opacity:1; transform:translateX(0);} to{opacity:0; transform:translateX(100%);} }
 
-.slide-in-right { animation: slideInRight 0.6s ease forwards; z-index: 10; }
-.slide-out-left { animation: slideOutLeft 0.6s ease forwards; z-index: 15; }
-.slide-in-left { animation: slideInLeft 0.6s ease forwards; z-index: 10; }
-.slide-out-right { animation: slideOutRight 0.6s ease forwards; z-index: 15; }
+.slide-in-right  { animation: slideInRight 0.6s ease forwards; z-index: 10;}
+.slide-out-left  { animation: slideOutLeft 0.6s ease forwards; z-index: 15;}
+.slide-in-left   { animation: slideInLeft 0.6s ease forwards; z-index: 10;}
+.slide-out-right { animation: slideOutRight 0.6s ease forwards; z-index: 15;}
 
 .recipe-title, .section-title, p, li {
   margin-top: 0;
@@ -290,113 +243,86 @@ h2 {
    ENHANCEMENTS - Luxury Realism Layer
 ========================================= */
 
-/* Prominent Spine */
+/* 1. Prominent Spine */
 .book-content .spine {
   position: absolute;
   top: 0; left: 50%;
-  width: 32px; height: 100%;
+  width: 40px; height: 100%;
   transform: translateX(-50%);
-  background: linear-gradient(to right,#050505,#2c1a10,#050505);
+  background: radial-gradient(circle at center,#000 0%,#1a0d05 40%,#000 100%);
   box-shadow:
-    inset 0 0 12px rgba(0,0,0,0.6),
-    0 0 25px rgba(0,0,0,0.8);
-  border-radius: 6px;
-  z-index: 50;
+    inset 0 0 15px rgba(255,255,255,0.15),
+    0 0 35px rgba(0,0,0,0.9);
+  border-radius: 8px;
+  z-index: 200;
 }
 .book-content .spine::before,
 .book-content .spine::after {
   content:"";
   position:absolute; top:5%; bottom:5%;
-  width:2px; background: rgba(212,175,55,0.8);
+  width:3px; background: rgba(212,175,55,0.85);
 }
-.book-content .spine::before { left:5px; }
-.book-content .spine::after { right:5px; }
+.book-content .spine::before { left:6px; }
+.book-content .spine::after  { right:6px; }
 .book-content .spine span {
   position:absolute; top:50%; left:50%;
-  transform: translate(-50%,-50%) rotate(-90deg);
-  font-size: 1em;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: #d4af37;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.9);
-  font-family: 'Playfair Display', serif;
+  transform:translate(-50%,-50%) rotate(-90deg);
+  font-size:1.1em; font-weight:700;
+  letter-spacing:0.25em; color:#d4af37;
+  text-shadow:0 2px 3px rgba(0,0,0,0.9);
 }
 
-/* Stacked pages on all edges */
-.book-content::before,
-.book-content::after {
-  width:40px !important;
-}
+/* 2. Strong Stacked Pages All Edges */
 .book-content::before {
-  left:-20px;
-  background: repeating-linear-gradient(to right,#ddd,#ddd 4px,#fff 4px,#fff 8px) !important;
+  left:-22px !important;
+  background: repeating-linear-gradient(to right,#ddd 0 4px,#f9f9f9 4px 8px,#fff 8px 12px) !important;
+  box-shadow: inset 12px 0 14px rgba(0,0,0,0.25) !important;
 }
 .book-content::after {
-  right:-20px;
-  background: repeating-linear-gradient(to left,#ddd,#ddd 4px,#fff 4px,#fff 8px) !important;
+  right:-22px !important;
+  background: repeating-linear-gradient(to left,#ddd 0 4px,#f9f9f9 4px 8px,#fff 8px 12px) !important;
+  box-shadow: inset -12px 0 14px rgba(0,0,0,0.25) !important;
 }
 .book-content .top-stack,
 .book-content .bottom-stack {
   position:absolute; left:0; right:0;
-  height:20px;
-  background: repeating-linear-gradient(to bottom,#ddd,#ddd 3px,#fff 3px,#fff 6px);
-  z-index: 9;
+  height:24px;
+  background: repeating-linear-gradient(to bottom,#ddd 0 3px,#f9f9f9 3px 6px,#fff 6px 9px);
 }
 .book-content .top-stack {
-  top:-10px;
-  box-shadow: inset 0 10px 8px rgba(0,0,0,0.15);
+  top:-12px;
+  box-shadow: inset 0 12px 10px rgba(0,0,0,0.15);
 }
 .book-content .bottom-stack {
-  bottom:-10px;
-  box-shadow: inset 0 -10px 8px rgba(0,0,0,0.15);
+  bottom:-12px;
+  box-shadow: inset 0 -12px 10px rgba(0,0,0,0.15);
 }
 
-/* Nav Buttons Outside */
-.nav-buttons {
-  position: absolute;
-  top: 50%;
-  width: 1200px; /* move out */
+/* 3. Nav Buttons Outside Book */
+.nav-buttons {position: relative; width:0; height:0;}
+#prevBtn, #nextBtn {
+  position: absolute; top: 50%;
   transform: translateY(-50%);
-  display: flex;
-  justify-content: space-between;
-  pointer-events: none;
-  z-index: 200;
+  padding: 1em;
+  background: #d4af37;
+  border: none; border-radius: 50%;
+  color:#fff; font-size:1.4em;
+  font-weight:700;
+  cursor:pointer; z-index:500;
+  box-shadow:0 4px 14px rgba(0,0,0,0.6);
+  transition: transform 0.2s, background 0.3s;
 }
-.nav-buttons button {
-  pointer-events: all;
-  padding: 1em 1.2em;
-  background-color: #d4af37;
-  border: none;
-  border-radius: 50%;
-  font-weight: bold;
-  color: #fff;
-  font-size: 1.4em;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.7);
-  transition: transform 0.2s ease, background 0.3s ease;
-}
-.nav-buttons button:hover:not(:disabled) {
+#prevBtn { left: -70px; }
+#nextBtn { right: -70px; }
+#prevBtn:hover, #nextBtn:hover {
   background:#c09a2e;
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-50%);
 }
-.nav-buttons button:disabled {
-  background:#777;
-  box-shadow:none;
-}
-
-/* Fix blank space in pages */
-.page {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding-bottom: 1em !important;
-}
-.page p, .page ul, .page ol {
-  margin-bottom: 0.4em;
+#prevBtn:disabled, #nextBtn:disabled {
+  background:#777; box-shadow:none;
 }
 
-/* Smaller recipe title override */
-.recipe-title {
-  font-size: 2.2em !important;
-  margin-bottom: 0.6em !important;
-}
+/* 4. Blank Space Fix + Smaller Title */
+.page {display:flex; flex-direction:column; justify-content:flex-start; padding-bottom:0.5em !important;}
+.page p, .page ul, .page ol {margin-bottom:0.4em;}
+.recipe-title {font-size:2.2em !important; margin-bottom:0.4em !important;}
