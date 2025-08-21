@@ -4,7 +4,7 @@
 
 /* General body styling for centering the book */
 body {
-  background: linear-gradient(135deg, #6b4f34 0%, #3f2f24 100%);
+  background: linear-gradient(135deg, #2f3b4c 0%, #1d2733 100%);
   display: flex;
   justify-content: center;
   align-items: center;
