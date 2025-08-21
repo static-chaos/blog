@@ -4,28 +4,27 @@
 
 /* General body styling for centering the book */
 body {
-  /* Rich walnut brown background */
-  background-color: #4a2e16;
+  /* Rich maroon-brown background (mahogany desk style) */
+  background-color: #3a1c1c;
   background-image:
-    /* subtle woodgrain lines */
+    /* subtle woodgrain diagonal highlights */
     repeating-linear-gradient(
       45deg,
-      rgba(255,255,255,0.04) 0px,
-      rgba(255,255,255,0.04) 2px,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 2px,
       transparent 2px,
       transparent 6px
     ),
     repeating-linear-gradient(
       -45deg,
-      rgba(0,0,0,0.05) 0px,
-      rgba(0,0,0,0.05) 1px,
+      rgba(0, 0, 0, 0.08) 0px,
+      rgba(0, 0, 0, 0.08) 1px,
       transparent 1px,
       transparent 5px
     ),
-    radial-gradient(circle at center, #5c3a21 0%, #2e1a0e 100%);
+    radial-gradient(circle at center, #5a2a2a 0%, #2a0f0f 100%);
   
   background-blend-mode: overlay, overlay, normal;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,6 +34,7 @@ body {
   color: #333;
   position: relative;
 }
+
 
 
 /* Recipe book container */
