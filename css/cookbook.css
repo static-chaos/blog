@@ -1,6 +1,6 @@
 /* ================================
    General Background
-   ================================ */
+================================ */
 body {
   background: radial-gradient(circle at center, #1a1817 0%, #0a0a0a 100%);
   display: flex;
@@ -10,24 +10,25 @@ body {
   margin: 0;
   font-family: 'Playfair Display', serif;
   color: #333;
+  position: relative;
 }
 
 /* ================================
    Hardbound Leather Cover
-   ================================ */
+================================ */
 .recipe-book {
   position: relative;
   width: 900px;
   height: 600px;
-  background: #4b2c1d; /* deep brown leather */
+  background: #4b2c1d; /* deep brown luxury leather */
   border-radius: 16px;
-  padding: 22px; /* thick cover margin */
+  padding: 20px;
   box-shadow:
     0 25px 55px rgba(0,0,0,0.7),
     inset 0 2px 10px rgba(255,255,255,0.08),
     inset 0 -6px 15px rgba(0,0,0,0.6);
 
-  /* subtle leather texture */
+  /* leather texture */
   background-image:
     linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 40%),
     linear-gradient(45deg, rgba(0,0,0,0.2) 0%, transparent 50%),
@@ -43,17 +44,17 @@ body {
   border-radius: 16px;
   pointer-events: none;
   background:
-    radial-gradient(circle at top left, rgba(212,175,55,0.6) 4px, transparent 6px) top left no-repeat,
-    radial-gradient(circle at top right, rgba(212,175,55,0.6) 4px, transparent 6px) top right no-repeat,
-    radial-gradient(circle at bottom left, rgba(212,175,55,0.6) 4px, transparent 6px) bottom left no-repeat,
-    radial-gradient(circle at bottom right, rgba(212,175,55,0.6) 4px, transparent 6px) bottom right no-repeat;
-  background-size: 18px 18px;
+    radial-gradient(circle at top left, rgba(212,175,55,0.6) 4px, transparent 7px) top left no-repeat,
+    radial-gradient(circle at top right, rgba(212,175,55,0.6) 4px, transparent 7px) top right no-repeat,
+    radial-gradient(circle at bottom left, rgba(212,175,55,0.6) 4px, transparent 7px) bottom left no-repeat,
+    radial-gradient(circle at bottom right, rgba(212,175,55,0.6) 4px, transparent 7px) bottom right no-repeat;
+  background-size: 20px 20px;
   z-index: 4;
 }
 
 /* ================================
-   Book Content (Paper Block)
-   ================================ */
+   Book Content (White Pages Block)
+================================ */
 .book-content {
   position: relative;
   width: 100%;
@@ -65,7 +66,7 @@ body {
   z-index: 2;
 }
 
-/* Clear stacked page edges */
+/* Stacked Page Edges - LEFT and RIGHT */
 .book-content::before,
 .book-content::after {
   content: "";
@@ -75,49 +76,80 @@ body {
   height: 100%;
   z-index: 1;
 }
-.book-content::before { /* left pages */
+.book-content::before { /* Left */
   left: -16px;
   background: repeating-linear-gradient(
     to right,
-    #ececec,
-    #ececec 3px,
-    #f9f9f9 3px,
-    #ffffff 6px
+    #eee,
+    #eee 3px,
+    #fff 3px,
+    #fff 6px
   );
-  box-shadow: inset 10px 0 12px rgba(0,0,0,0.12);
+  box-shadow: inset 10px 0 12px rgba(0,0,0,0.15);
 }
-.book-content::after { /* right pages */
+.book-content::after { /* Right */
   right: -16px;
   background: repeating-linear-gradient(
     to left,
-    #ececec,
-    #ececec 3px,
-    #f9f9f9 3px,
-    #ffffff 6px
+    #eee,
+    #eee 3px,
+    #fff 3px,
+    #fff 6px
   );
-  box-shadow: inset -10px 0 12px rgba(0,0,0,0.12);
+  box-shadow: inset -10px 0 12px rgba(0,0,0,0.15);
+}
+
+/* Stacked Page Edges - TOP and BOTTOM */
+.book-content .top-stack,
+.book-content .bottom-stack {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #eee,
+    #eee 3px,
+    #fff 3px,
+    #fff 6px
+  );
+  z-index: 2;
+}
+.book-content .top-stack {
+  top: -10px;
+  box-shadow: inset 0 10px 8px rgba(0,0,0,0.12);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.book-content .bottom-stack {
+  bottom: -10px;
+  box-shadow: inset 0 -10px 8px rgba(0,0,0,0.12);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 /* ================================
    Prominent Spine
-   ================================ */
+================================ */
 .spine {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 24px;
+  width: 30px;
   height: 100%;
   transform: translateX(-50%);
-  background: linear-gradient(to right, #120a06, #2a1c12, #120a06);
+  background: radial-gradient(circle at center,
+    #0a0705 0%,
+    #2a180d 40%,
+    #0a0705 100%);
   box-shadow:
     inset 4px 0 10px rgba(255,255,255,0.1),
-    inset -4px 0 10px rgba(0,0,0,0.4),
-    0 0 20px rgba(0,0,0,0.8);
-  border-radius: 4px;
-  z-index: 10;
+    inset -4px 0 10px rgba(0,0,0,0.6),
+    0 0 25px rgba(0,0,0,0.8);
+  border-radius: 6px;
+  z-index: 12;
 }
-
-/* Gold vertical seams on spine */
+/* Gold seams on spine edges */
 .spine::before,
 .spine::after {
   content: "";
@@ -125,19 +157,18 @@ body {
   top: 5%;
   bottom: 5%;
   width: 2px;
-  background: rgba(212,175,55,0.6);
+  background: rgba(212,175,55,0.7);
 }
-.spine::before { left: 3px; }
-.spine::after  { right: 3px; }
-
-/* Embossed vertical title */
+.spine::before { left: 4px; }
+.spine::after  { right: 4px; }
+/* Vertical title */
 .spine span {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%) rotate(-90deg);
   font-size: 1em;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.15em;
   font-weight: 700;
   color: #d4af37;
   text-shadow: 0 1px 2px rgba(0,0,0,0.8);
@@ -145,14 +176,12 @@ body {
 }
 
 /* ================================
-   Page Spreads
-   ================================ */
+   Page Spread
+================================ */
 .page-spread {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   display: flex;
   opacity: 0;
   pointer-events: none;
@@ -164,55 +193,50 @@ body {
   z-index: 5;
 }
 
-/* ================================
-   Individual Pages
-   ================================ */
+/* Pages */
 .page {
   width: 50%;
   height: 100%;
   padding: 1em 3em;
-  line-height: 1.4;
-  box-sizing: border-box;
-  background: #ffffff;
+  background: #fff;
   font-size: 1.1em;
   color: #2e2e2e;
-  border-radius: 0 0 10px 10px; /* rounded */
+  border-radius: 0 0 10px 10px;
   overflow: hidden;
   position: relative;
-  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05),
-              inset -2px 0 4px rgba(0,0,0,0.05);
+  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
 }
 .left-page {
-  background: linear-gradient(to right, #ffffff, #f7f7fa);
+  background: linear-gradient(to right, #fff, #f7f7fa);
   box-shadow: inset -8px 0 14px rgba(0,0,0,0.08);
   border-bottom-left-radius: 10px;
 }
 .right-page {
-  background: linear-gradient(to left, #ffffff, #f7f7fa);
+  background: linear-gradient(to left, #fff, #f7f7fa);
   box-shadow: inset 8px 0 14px rgba(0,0,0,0.08);
   border-bottom-right-radius: 10px;
 }
 
 /* ================================
    Recipe Title
-   ================================ */
+================================ */
 .recipe-title {
   text-align: center;
-  font-size: 2.2em; /* reduced size */
+  font-size: 2.2em; /* smaller for balance */
   margin: 0 0 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  position: relative;
   color: #1c1c1c;
-  text-shadow: 0 1px 1px rgba(255,255,255,0.5),
-               0 -1px 1px rgba(0,0,0,0.25);
+  position: relative;
+  padding-bottom: 0.3em;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.6),
+               0 -1px 1px rgba(0,0,0,0.2);
 }
 .recipe-title::after {
   content: "";
   position: absolute;
   bottom: -6px;
   left: 50%;
-  width: 100px; /* resized doodle */
+  width: 100px;
   height: 10px;
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="10"><path d="M5 5 Q40 0, 80 5 T95 5" stroke="%23d4af37" stroke-width="2" fill="transparent" stroke-linecap="round"/></svg>') no-repeat center;
   transform: translateX(-50%);
@@ -221,7 +245,7 @@ body {
 
 /* ================================
    Section Titles & Lists
-   ================================ */
+================================ */
 h2 {
   font-size: 1.5em;
   margin-bottom: 0.8em;
@@ -236,78 +260,79 @@ h2 {
   color: #333;
   padding-bottom: 0.3em;
 }
-
 .ingredients ul, .instructions ol, .notes ul {
-  padding-left: 0;
-  margin: 0;
+  padding-left: 0; margin: 0;
 }
 .ingredients li, .instructions li, .notes li {
   font-size: 1.05em;
   line-height: 1.6;
   margin-bottom: 0.6em;
-  user-select: text;
 }
 .ingredients ul { list-style: none; }
 .instructions ol { list-style-position: inside; }
 
 /* ================================
    Checkboxes
-   ================================ */
+================================ */
 .ingredients li label {
   display: flex; align-items: center; gap: 0.5em;
   cursor: pointer;
 }
 .ingredients li input[type="checkbox"] {
-  width: 18px; height: 18px;
-  accent-color: #d4af37; /* golden tick */
+  width: 18px;
+  height: 18px;
+  accent-color: #d4af37;
 }
 
 /* ================================
-   Navigation Buttons
-   ================================ */
+   Navigation Buttons (Outside)
+================================ */
 .nav-buttons {
   position: absolute;
-  bottom: 20px; 
+  top: 50%;
   width: 100%;
-  display: flex; justify-content: space-between;
-  padding: 0 2em;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 50;
 }
 .nav-buttons button {
-  padding: 0.6em 1.3em;
+  pointer-events: all;
+  padding: 0.8em 1.5em;
   background-color: #d4af37;
   border: none;
-  border-radius: 6px;
+  border-radius: 50%;
   font-weight: 600;
   color: white;
-  font-size: 1.1em;
+  font-size: 1.2em;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(212,175,55,0.4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   transition: background .3s ease, transform .2s ease;
 }
 .nav-buttons button:hover:not(:disabled) {
   background: #c09a2e;
-  transform: translateY(-2px);
+  transform: scale(1.05);
 }
 .nav-buttons button:disabled {
-  background: #aaa;
+  background: #999;
   box-shadow: none;
 }
 
 /* ================================
-   Page Animations (from original)
-   ================================ */
-@keyframes slideInRight { from {opacity:0; transform:translateX(100%);} to {opacity:1; transform:translateX(0);} }
-@keyframes slideOutLeft { from {opacity:1; transform:translateX(0);} to {opacity:0; transform:translateX(-100%);} }
-@keyframes slideInLeft { from {opacity:0; transform:translateX(-100%);} to {opacity:1; transform:translateX(0);} }
-@keyframes slideOutRight { from {opacity:1; transform:translateX(0);} to {opacity:0; transform:translateX(100%);} }
+   Page Animations (Original)
+================================ */
+@keyframes slideInRight { from{opacity:0;transform:translateX(100%);} to{opacity:1;transform:translateX(0);} }
+@keyframes slideOutLeft { from{opacity:1;transform:translateX(0);} to{opacity:0;transform:translateX(-100%);} }
+@keyframes slideInLeft { from{opacity:0;transform:translateX(-100%);} to{opacity:1;transform:translateX(0);} }
+@keyframes slideOutRight { from{opacity:1;transform:translateX(0);} to{opacity:0;transform:translateX(100%);} }
+
 .slide-in-right  { animation: slideInRight 0.6s ease forwards; z-index: 10; }
 .slide-out-left  { animation: slideOutLeft 0.6s ease forwards; z-index: 15; }
 .slide-in-left   { animation: slideInLeft 0.6s ease forwards; z-index: 10; }
 .slide-out-right { animation: slideOutRight 0.6s ease forwards; z-index: 15; }
 
-/* ================================
-   Instruction List
-   ================================ */
+/* Instruction lists */
 .instructions-list {
   margin-left: 1.5em;
   margin-bottom: 1.2em;
