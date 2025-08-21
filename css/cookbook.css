@@ -4,7 +4,7 @@
 
 /* General body styling for centering the book */
 body {
-  background-color: #e8e3d6; /* warm paper-like background */
+  background: radial-gradient(circle at center, #1b1b1b 0%, #0a0a0a 100%);
   display: flex;
   justify-content: center;
   align-items: center;
