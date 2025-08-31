@@ -160,12 +160,6 @@ body {
   text-shadow: 0 0 12px #fff;
 }
 
-/* 🎨 Pastel Chalk Variations */
-.recipe-item:nth-child(odd) { color: var(--chalk-soft); }
-.recipe-item:nth-child(2n) { color: var(--chalk-yellow); }
-.recipe-item:nth-child(3n) { color: var(--chalk-blue); }
-.recipe-item:nth-child(5n) { color: var(--chalk-green); }
-
 /* 🌫️ Dust Layer — simplified halo style */
 .recipe-item::after {
   content: '';
@@ -201,6 +195,7 @@ body {
     left: 15px;
   }
 }
+
 
 
 
