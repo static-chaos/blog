@@ -144,6 +144,11 @@ body {
     0 0 2px rgba(255,255,255,0.25),
     1px 1px 0 rgba(255,255,255,0.1);
 }
+/* — Link override for recipe items — */
+.recipe-item a {
+  color: var(--chalk-white);
+  text-decoration: none;
+}
 
 .recipe-item::before {
   content: "—";
@@ -195,6 +200,7 @@ body {
     left: 15px;
   }
 }
+
 
 
 
