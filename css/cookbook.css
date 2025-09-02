@@ -1,12 +1,9 @@
 /* ================================
-   Unified Recipe Book CSS
-   - No golden spine
-   - Subtle central spine (no text)
-   - Stacked page edges (left/right/top/bottom)
-   - Background & UI preserved
+   FULL RESTORED CSS (Golden Spine Removed)
+   Part 1/2
 ================================ */
 
-/* Velvet tabletop background */
+/* General body styling for centering the book */
 body {
   background-color: #5a2c2c; /* Warm burgundy-brown base */
   background-image:
@@ -31,12 +28,12 @@ body {
 body::before {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.4) 100%);
   z-index: 0;
 }
 
-/* Book container */
 .recipe-book {
   position: relative;
   z-index: 10;
@@ -50,7 +47,270 @@ body::before {
     0 12px 25px rgba(0,0,0,0.4);
 }
 
-/* Stacked page edges: left & right */
+/* Table runner effect under the book (will be overridden later by fixed edges if present after) */
+.recipe-book::before {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 10px;
+  background: #3a1f1f;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+  border-radius: 4px;
+  z-index: -1;
+}
+
+/* Right edge with stacked page effect (gets overridden later by fixed stacked edges) */
+.recipe-book::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 30px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to left,
+    #dcd6c9,
+    #dcd6c9 2px,
+    #f7f3ed 2px,
+    #f7f3ed 4px
+  );
+  box-shadow: inset -5px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+/* Book content holds all page spreads */
+.book-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1500px;
+  overflow: hidden;
+}
+
+/* Central divider (book spine) - subtle, no letters */
+.book-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 100%;
+  background: radial-gradient(circle, #b8b2a8 0%, #d6cfc2 70%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* Each page spread */
+.page-spread {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: opacity 0.4s ease;
+  box-sizing: border-box;
+}
+.page-spread.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 5;
+}
+
+/* Left and right page styling */
+.page {
+  width: 50%;
+  height: 100%;
+  padding: 1em 3em;
+  line-height: 1.4;
+  box-sizing: border-box;
+  background-color: #fffdfa;
+  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
+  font-size: 1.1em;
+  color: #4a463f;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dcd6c9;
+}
+
+.left-page {
+  background: linear-gradient(to right, #fffdfa, #f2eee9);
+  box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
+  border-radius: 0 0 0 8px;
+}
+.right-page {
+  background: linear-gradient(to left, #fffdfa, #f2eee9);
+  box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
+  border-radius: 0 0 8px 0;
+}
+
+/* Recipe title */
+.recipe-title {
+  text-align: center;
+  font-size: 2.8em;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.3em;
+  letter-spacing: 0.05em;
+  user-select: text;
+}
+
+/* Headings */
+h2 {
+  font-size: 1.6em;
+  margin-bottom: 0.8em;
+  border-bottom: 1.5px dashed #bbb;
+  padding-bottom: 0.4em;
+}
+.section-title {
+  font-size: 1.4em;
+  margin: 0.8em 0 0.6em;
+  border-bottom: 1.5px dashed #bbb;
+  padding-bottom: 0.3em;
+}
+
+/* Ingredients and Instructions */
+.ingredients ul,.instructions ol,.notes ul {padding-left:0;margin:0;}
+.ingredients li,.instructions li,.notes li {
+  font-size:1.1em; line-height:1.6;
+  margin-bottom:0.6em; user-select:text;
+}
+.ingredients ul {list-style:none;}
+.instructions ol {list-style-position: inside; padding-left: 1.2em;}
+.instructions-list{margin-left:1.5em;margin-bottom:1.2em;padding-left:1em;list-style-type:decimal;line-height:1.6;color:#4a4438;}
+.instructions-list li{margin-bottom:0.8em;}
+
+/* Checkbox styling */
+.ingredients li label {cursor:pointer; display:flex; align-items:center; gap:0.5em;}
+.ingredients li input[type=checkbox] {width:18px; height:18px; cursor:pointer; accent-color:#9c8f7a;}
+
+/* Navigation Buttons - container */
+.nav-buttons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1000px;   /* keep wide enough to push outside the book */
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  z-index: 500;
+  pointer-events: none;
+}
+
+/* Style for each button */
+.nav-buttons button {
+  pointer-events: all;
+  width: 50px;      /* fixed size so they're small and round */
+  height: 50px;
+  border-radius: 50%;
+  padding: 0;       /* remove extra padding */
+  
+  background: #d4af37;
+  border: none;
+  color: #fff;
+  font-size: 1.5em;
+  font-weight: bold;
+  cursor: pointer;
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  transition: transform 0.2s, background 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-buttons button:hover { background: #c09a2e; transform: scale(1.1); }
+.nav-buttons button:disabled { background: #777; box-shadow: none; }
+
+/* Animations */
+@keyframes slideInRight{from{opacity:0;transform:translateX(100%);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideOutLeft{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-100%);}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-100%);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideOutRight{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(100%);}}
+
+/* Slide helpers */
+.slide-in-right{animation:slideInRight 0.6s ease forwards; z-index:10;}
+.slide-out-left{animation:slideOutLeft 0.6s ease forwards; z-index:15;}
+.slide-in-left{animation:slideInLeft 0.6s ease forwards; z-index:10;}
+.slide-out-right{animation:slideOutRight 0.6s ease forwards; z-index:15;}
+
+/* ===================================
+   ENHANCEMENTS - LUXURY REAL LOOK
+   (Golden spine removed)
+   Part 2/2
+=================================== */
+
+/* Remove any injected golden spine (visual only, not functional) */
+.book-content .spine { display: none !important; }
+.book-content .spine::before,
+.book-content .spine::after { display: none !important; content: none !important; }
+.book-content .spine span { display: none !important; }
+
+/* Nav Buttons outside (duplicate block preserved) */
+.nav-buttons {
+  position:absolute;
+  top:50%; left:50%;
+  width:1000px;
+  transform:translate(-50%,-50%);
+  display:flex; justify-content:space-between;
+  z-index:500; pointer-events:none;
+}
+.nav-buttons button {
+  pointer-events:all;
+  padding:0.8em;
+  background:#d4af37; border:none; border-radius:50%;
+  font-size:1.4em;font-weight:700;color:#fff;
+  cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,0.6);
+  transition:transform 0.2s, background 0.3s;
+}
+.nav-buttons button:hover {background:#c09a2e; transform:scale(1.1);}
+.nav-buttons button:disabled {background:#777; box-shadow:none;}
+
+/* ===================================
+   BOOK SHADOW + REFLECTION
+   (reflection will be overridden by fixed stacked edges later in this file)
+=================================== */
+.recipe-book {
+  position: relative;
+  z-index: 10;
+  /* Stronger drop shadow to lift off wood */
+  box-shadow:
+    0 25px 45px rgba(0,0,0,0.55),
+    0 8px 20px rgba(0,0,0,0.35);
+}
+
+/* Reflection effect (temporary; see note above) */
+.recipe-book::after {
+  content: "";
+  position: absolute;
+  bottom: -80px;  /* push below book */
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.25), transparent 80%);
+  border-radius: 50%;
+  transform: scaleX(0.9);
+  filter: blur(12px);
+  z-index: -1;
+}
+
+/* ===================================
+   FIXED STACKED PAGE EFFECTS
+   (Left & right edges + top & bottom bands)
+   These override earlier ::before/::after on .recipe-book
+=================================== */
+
+/* Left & right stacked edges on .recipe-book (final) */
 .recipe-book::before {
   content: "";
   position: absolute;
@@ -65,7 +325,6 @@ body::before {
   );
   box-shadow: inset 10px 0 10px rgba(0,0,0,0.15);
   z-index: 1;
-  pointer-events: none;
 }
 .recipe-book::after {
   content: "";
@@ -81,181 +340,33 @@ body::before {
   );
   box-shadow: inset -10px 0 10px rgba(0,0,0,0.15);
   z-index: 1;
-  pointer-events: none;
 }
 
-/* Book content + central spine */
-.book-content {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  perspective: 1500px;
-  overflow: hidden;
-}
-
-/* Subtle central spine (no letters) */
-.book-content::before {
-  content: "";
+/* Top & bottom stacked edges (bands) */
+.book-content .top-stack,
+.book-content .bottom-stack {
   position: absolute;
-  top: 0;
-  left: 50%;
-  width: 8px;
-  height: 100%;
-  transform: translateX(-50%);
-  background: linear-gradient(to right, rgba(0,0,0,0.12), rgba(255,255,255,0.35), rgba(0,0,0,0.12));
-  box-shadow:
-    inset 0 0 8px rgba(0,0,0,0.2),
-    0 0 10px rgba(0,0,0,0.18);
-  border-radius: 3px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Top & bottom stacked page bands (single pseudo-element with two backgrounds) */
-.book-content::after {
-  content: "";
-  position: absolute;
-  inset: -9px 0 -9px 0; /* extend 9px above and below */
-  background:
-    repeating-linear-gradient(to bottom, #dcd6c9 0px, #dcd6c9 2px, #f7f3ed 2px, #f7f3ed 5px) top/100% 18px no-repeat,
-    repeating-linear-gradient(to bottom, #dcd6c9 0px, #dcd6c9 2px, #f7f3ed 2px, #f7f3ed 5px) bottom/100% 18px no-repeat;
-  box-shadow:
-    inset 0 10px 10px rgba(0,0,0,0.15),
-    inset 0 -10px 10px rgba(0,0,0,0.15);
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Hard-kill any injected golden spine */
-.book-content .spine { display: none !important; }
-
-/* Page spread */
-.page-spread {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  opacity: 0;
-  pointer-events: none;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  transition: opacity 0.4s ease;
-  box-sizing: border-box;
-}
-.page-spread.active {
-  opacity: 1;
-  pointer-events: auto;
+  left: 0; right: 0;
+  height: 18px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #dcd6c9 0px,
+    #dcd6c9 2px,
+    #f7f3ed 2px,
+    #f7f3ed 5px
+  );
   z-index: 5;
 }
-
-/* Pages */
-.page {
-  width: 50%;
-  height: 100%;
-  padding: 2em 3em;
-  line-height: 1.4;
-  box-sizing: border-box;
-  background-color: #fffdfa;
-  box-shadow:
-    inset 2px 0 4px rgba(0,0,0,0.05),
-    inset -2px 0 4px rgba(0,0,0,0.05);
-  font-size: 1.1em;
-  color: #4a463f;
-  user-select: none;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid #dcd6c9;
+.book-content .top-stack {
+  top: -9px;
+  box-shadow: inset 0 10px 10px rgba(0,0,0,0.15);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
-.left-page {
-  background: linear-gradient(to right, #fffdfa, #f2eee9);
-  box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
-  border-radius: 0 0 0 8px;
-}
-.right-page {
-  background: linear-gradient(to left, #fffdfa, #f2eee9);
-  box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
-  border-radius: 0 0 8px 0;
+.book-content .bottom-stack {
+  bottom: -9px;
+  box-shadow: inset 0 -10px 10px rgba(0,0,0,0.15);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
-/* Typography */
-.recipe-title {
-  text-align: center;
-  font-size: 2.2em;
-  margin-top: 0;
-  margin-bottom: 0.6em;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 0.3em;
-  letter-spacing: 0.05em;
-  user-select: text;
-}
-h2 {
-  font-size: 1.6em;
-  margin-bottom: 0.8em;
-  border-bottom: 1.5px dashed #bbb;
-  padding-bottom: 0.4em;
-}
-.section-title {
-  font-size: 1.4em;
-  margin: 1.4em 0 0.6em;
-  font-weight: 600;
-  color: #655940;
-  border-bottom: 1.5px dashed #b6ad94;
-  padding-bottom: 0.4em;
-}
-
-/* Lists */
-.ingredients ul, .instructions ol, .notes ul { padding-left: 0; margin: 0; }
-.ingredients li, .instructions li, .notes li {
-  font-size: 1.1em; line-height: 1.6;
-  margin-bottom: 0.6em; user-select: text;
-}
-.ingredients ul { list-style: none; }
-.instructions ol { list-style-position: inside; padding-left: 1.2em; }
-.instructions-list {
-  margin-left: 1.5em; margin-bottom: 1.2em; padding-left: 1em;
-  list-style-type: decimal; line-height: 1.6; color: #4a4438;
-}
-.instructions-list li { margin-bottom: 0.8em; }
-
-/* Buttons container */
-.nav-buttons {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 1000px; /* wide enough to place buttons outside the book */
-  transform: translate(-50%, -50%);
-  display: flex; justify-content: space-between;
-  z-index: 500; pointer-events: none;
-}
-
-/* Buttons */
-.nav-buttons button {
-  pointer-events: all;
-  width: 50px; height: 50px;
-  border-radius: 50%;
-  padding: 0;
-  background: #d4af37;
-  border: none;
-  color: #fff;
-  font-size: 1.5em;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-  transition: transform 0.2s, background 0.3s;
-  display: flex; justify-content: center; align-items: center;
-}
-.nav-buttons button:hover { background: #c09a2e; transform: scale(1.1); }
-.nav-buttons button:disabled { background: #777; box-shadow: none; }
-
-/* Animations */
-@keyframes slideInRight { from{opacity:0;transform:translateX(100%);} to{opacity:1;transform:translateX(0);} }
-@keyframes slideOutLeft  { from{opacity:1;transform:translateX(0);}   to{opacity:0;transform:translateX(-100%);} }
-@keyframes slideInLeft  { from{opacity:0;transform:translateX(-100%);} to{opacity:1;transform:translateX(0);} }
-@keyframes slideOutRight { from{opacity:1;transform:translateX(0);}   to{opacity:0;transform:translateX(100%);} }
-
-.slide-in-right { animation: slideInRight 0.6s ease forwards; z-index: 10; }
-.slide-out-left { animation: slideOutLeft  0.6s ease forwards; z-index: 15; }
-.slide-in-left  { animation: slideInLeft   0.6s ease forwards; z-index: 10; }
-.slide-out-right{ animation: slideOutRight 0.6s ease forwards; z-index: 15; }
-
-/* Optional: checkbox styling (if used) */
-.ingredients li label { cursor: pointer; display: flex; align-items: center; gap: 0.5em; }
-.ingredients li input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; accent-color: #9c8f7a; }
