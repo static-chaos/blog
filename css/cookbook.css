@@ -1,6 +1,5 @@
 /* ================================
-   FULL RESTORED CSS (Golden Spine Removed)
-   Part 1/2
+   ORIGINAL CSS YOU PASTED
 ================================ */
 
 /* General body styling for centering the book */
@@ -47,7 +46,6 @@ body::before {
     0 12px 25px rgba(0,0,0,0.4);
 }
 
-/* Table runner effect under the book (will be overridden later by fixed edges if present after) */
 .recipe-book::before {
   content: "";
   position: absolute;
@@ -62,7 +60,8 @@ body::before {
   z-index: -1;
 }
 
-/* Right edge with stacked page effect (gets overridden later by fixed stacked edges) */
+
+/* Right edge with stacked page effect */
 .recipe-book::after {
   content: "";
   position: absolute;
@@ -90,7 +89,7 @@ body::before {
   overflow: hidden;
 }
 
-/* Central divider (book spine) - subtle, no letters */
+/* Central divider (book spine) - base */
 .book-content::before {
   content: "";
   position: absolute;
@@ -142,6 +141,7 @@ body::before {
   border: 1px solid #dcd6c9;
 }
 
+/* Left page crease shadow + fold effect */
 .left-page {
   background: linear-gradient(to right, #fffdfa, #f2eee9);
   box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
@@ -187,14 +187,12 @@ h2 {
 }
 .ingredients ul {list-style:none;}
 .instructions ol {list-style-position: inside; padding-left: 1.2em;}
-.instructions-list{margin-left:1.5em;margin-bottom:1.2em;padding-left:1em;list-style-type:decimal;line-height:1.6;color:#4a4438;}
-.instructions-list li{margin-bottom:0.8em;}
 
 /* Checkbox styling */
 .ingredients li label {cursor:pointer; display:flex; align-items:center; gap:0.5em;}
 .ingredients li input[type=checkbox] {width:18px; height:18px; cursor:pointer; accent-color:#9c8f7a;}
 
-/* Navigation Buttons - container */
+/* Navigation Buttons - Small Circular Arrows */
 .nav-buttons {
   position: absolute;
   top: 50%;
@@ -232,31 +230,74 @@ h2 {
 .nav-buttons button:hover { background: #c09a2e; transform: scale(1.1); }
 .nav-buttons button:disabled { background: #777; box-shadow: none; }
 
+
 /* Animations */
 @keyframes slideInRight{from{opacity:0;transform:translateX(100%);}to{opacity:1;transform:translateX(0);}}
 @keyframes slideOutLeft{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-100%);}}
 @keyframes slideInLeft{from{opacity:0;transform:translateX(-100%);}to{opacity:1;transform:translateX(0);}}
 @keyframes slideOutRight{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(100%);}}
 
-/* Slide helpers */
 .slide-in-right{animation:slideInRight 0.6s ease forwards; z-index:10;}
 .slide-out-left{animation:slideOutLeft 0.6s ease forwards; z-index:15;}
 .slide-in-left{animation:slideInLeft 0.6s ease forwards; z-index:10;}
 .slide-out-right{animation:slideOutRight 0.6s ease forwards; z-index:15;}
 
+.recipe-title,.section-title,p,li {
+  margin-top: 0;
+  margin-bottom: 0.3em;
+  line-height: 1.3;
+}
+.instructions-list{margin-left:1.5em;margin-bottom:1.2em;padding-left:1em;list-style-type:decimal;line-height:1.6;color:#4a4438;}
+.instructions-list li{margin-bottom:0.8em;}
+.section-title{margin-top:1.4em;margin-bottom:0.6em;font-weight:600;color:#655940;border-bottom:1.5px dashed #b6ad94;padding-bottom:0.4em;}
+
+
 /* ===================================
    ENHANCEMENTS - LUXURY REAL LOOK
-   (Golden spine removed)
-   Part 2/2
 =================================== */
 
-/* Remove any injected golden spine (visual only, not functional) */
-.book-content .spine { display: none !important; }
-.book-content .spine::before,
-.book-content .spine::after { display: none !important; content: none !important; }
-.book-content .spine span { display: none !important; }
+/* Spine (thicker + gold seams) */
+.book-content .spine {
+  position:absolute;top:0;left:50%;
+  width:40px;height:100%;
+  transform:translateX(-50%);
+  background: radial-gradient(circle at center,#000 0%,#1a0d05 40%,#000 100%);
+  box-shadow: inset 0 0 15px rgba(255,255,255,0.15),0 0 35px rgba(0,0,0,0.9);
+  border-radius:8px;
+  z-index:200;
+}
+.book-content .spine::before,.book-content .spine::after {
+  content:""; position:absolute; top:5%; bottom:5%; width:3px;
+  background:rgba(212,175,55,0.85);
+}
+.book-content .spine::before{left:6px;}
+.book-content .spine::after{right:6px;}
+.book-content .spine span {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%) rotate(-90deg);
+  font-size:1.1em; font-weight:700; letter-spacing:0.25em;
+  color:#d4af37; text-shadow:0 2px 3px rgba(0,0,0,0.9);
+}
 
-/* Nav Buttons outside (duplicate block preserved) */
+/* Stacked pages on all edges */
+.book-content::before {
+  left:-22px !important;
+  background:repeating-linear-gradient(to right,#ddd 0 4px,#f9f9f9 4px 8px,#fff 8px 12px)!important;
+  box-shadow:inset 12px 0 14px rgba(0,0,0,0.25)!important;
+}
+.book-content::after {
+  right:-22px !important;
+  background:repeating-linear-gradient(to left,#ddd 0 4px,#f9f9f9 4px 8px,#fff 8px 12px)!important;
+  box-shadow:inset -12px 0 14px rgba(0,0,0,0.25)!important;
+}
+.book-content .top-stack,.book-content .bottom-stack {
+  position:absolute; left:0; right:0; height:24px;
+  background: repeating-linear-gradient(to bottom,#ddd 0 3px,#f9f9f9 3px 6px,#fff 6px 9px);
+}
+.book-content .top-stack{top:-12px;box-shadow:inset 0 12px 10px rgba(0,0,0,0.15);}
+.book-content .bottom-stack{bottom:-12px;box-shadow:inset 0 -12px 10px rgba(0,0,0,0.15);}
+
+/* Nav Buttons outside */
 .nav-buttons {
   position:absolute;
   top:50%; left:50%;
@@ -276,9 +317,12 @@ h2 {
 .nav-buttons button:hover {background:#c09a2e; transform:scale(1.1);}
 .nav-buttons button:disabled {background:#777; box-shadow:none;}
 
+/* Padding fix & smaller title */
+.page {padding:2em 3em 2em 3em !important;}
+.recipe-title {font-size:2.2em !important;margin-bottom:0.6em !important;}
+
 /* ===================================
    BOOK SHADOW + REFLECTION
-   (reflection will be overridden by fixed stacked edges later in this file)
 =================================== */
 .recipe-book {
   position: relative;
@@ -289,7 +333,7 @@ h2 {
     0 8px 20px rgba(0,0,0,0.35);
 }
 
-/* Reflection effect (temporary; see note above) */
+/* Reflection effect */
 .recipe-book::after {
   content: "";
   position: absolute;
@@ -303,14 +347,11 @@ h2 {
   filter: blur(12px);
   z-index: -1;
 }
-
 /* ===================================
    FIXED STACKED PAGE EFFECTS
-   (Left & right edges + top & bottom bands)
-   These override earlier ::before/::after on .recipe-book
 =================================== */
 
-/* Left & right stacked edges on .recipe-book (final) */
+/* Left & right stacked edges on .recipe-book */
 .recipe-book::before {
   content: "";
   position: absolute;
@@ -342,7 +383,7 @@ h2 {
   z-index: 1;
 }
 
-/* Top & bottom stacked edges (bands) */
+/* Top & bottom stacked edges */
 .book-content .top-stack,
 .book-content .bottom-stack {
   position: absolute;
@@ -369,4 +410,3 @@ h2 {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
-
