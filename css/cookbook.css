@@ -32,19 +32,29 @@ body {
   font-family: 'Playfair Display', serif;
   color: #333;
   position: relative;
+
+  /* space around the book for TOC */
+  padding: 2rem;
+  box-sizing: border-box;
 }
+
 
 
 /* Recipe book container */
 .recipe-book {
   position: relative;
-  width: 900px;
-  height: 600px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 90vw;       /* fills 90% of screen width */
+  height: 80vh;      /* fills 80% of screen height */
+  max-width: 1600px; /* optional cap for huge screens */
+  max-height: 1000px;
   background: #f7f3ed;
-  border-radius: 0 0 12px 12px;
+  border-radius: 0 0 20px 20px;
   overflow: hidden;
+  box-shadow:
+    0 25px 45px rgba(0,0,0,0.55),
+    0 8px 20px rgba(0,0,0,0.35);
 }
+
 
 /* Left edge with stacked page effect */
 .recipe-book::before {
@@ -132,18 +142,19 @@ body {
 .page {
   width: 50%;
   height: 100%;
-  padding: 1em 3em;
-  line-height: 1.4;
+  padding: 2em 4em;   /* more breathing room */
+  line-height: 1.6;   /* easier reading */
   box-sizing: border-box;
   background-color: #fffdfa;
   box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
-  font-size: 1.1em;
+  font-size: 1.3em;   /* bigger text */
   color: #4a463f;
   user-select: none;
   position: relative;
   overflow: hidden;
   border: 1px solid #dcd6c9;
 }
+
 
 /* Left page crease shadow + fold effect */
 .left-page {
