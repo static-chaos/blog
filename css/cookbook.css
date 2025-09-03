@@ -16,50 +16,49 @@ body {
   position: relative;
   box-sizing: border-box;
   padding: 2rem;
-  flex-direction: column; /* for stacking book and nav vertically */
+  flex-direction: column;
 }
 
 /* ---------- RECIPE BOOK CONTAINER ---------- */
 .recipe-book {
   position: relative;
-  width: min(80vw, 1100px); /* narrower for classic look */
+  width: min(80vw, 1050px);
   height: min(75vh, 850px);
-  max-width: 1200px;
+  max-width: 1100px;
   max-height: 900px;
-  aspect-ratio: 4 / 3; /* classic book proportions */
-  background: #f7f3ed;
+  aspect-ratio: 3.8 / 3; /* book ratio */
+  background: #fffefa; /* white paper background */
   border-radius: 0 0 20px 20px;
   overflow: visible;
   box-shadow: 0 25px 45px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.35);
   z-index: 10;
-  margin-bottom: 3.5rem; /* space for nav buttons */
+  margin-bottom: 4rem; /* space for nav buttons */
 }
 
-/* ---------- STYLES FOR BOOK EDGES (LEFT & RIGHT) ---------- */
-.recipe-book::before, 
+/* ---------- STACKED EDGES (LEFT & RIGHT) ---------- */
+.recipe-book::before,
 .recipe-book::after {
   content: "";
   position: absolute;
   top: 0;
   height: 100%;
-  width: 28px;
+  width: 36px;
+  background:
+    repeating-linear-gradient(to right, #e2ddd3, #e2ddd3 4px, #fffefa 4px, #fffefa 8px);
+  box-shadow: inset 12px 0 14px rgba(0,0,0,0.22);
   z-index: 1;
-  box-shadow: inset 10px 0 12px rgba(0,0,0,0.15);
-  border-radius: 0 12px 12px 0; /* Rounded edge for stacked look */
-  background: repeating-linear-gradient(to right, #dcd6c9 0 2px, #f7f3ed 2px 5px);
+  border-radius: 0 15px 15px 0;
 }
-
 .recipe-book::before {
-  left: -14px;
-  border-radius: 0 12px 12px 0;
-  background: repeating-linear-gradient(to right, #dcd6c9 0 2px, #f7f3ed 2px 5px);
+  left: -20px;
+  border-radius: 0 15px 15px 0;
 }
-
 .recipe-book::after {
-  right: -14px;
-  border-radius: 12px 0 0 12px;
-  box-shadow: inset -10px 0 12px rgba(0,0,0,0.15);
-  background: repeating-linear-gradient(to left, #dcd6c9 0 2px, #f7f3ed 2px 5px);
+  right: -20px;
+  border-radius: 15px 0 0 15px;
+  background:
+    repeating-linear-gradient(to left, #e2ddd3, #e2ddd3 4px, #fffefa 4px, #fffefa 8px);
+  box-shadow: inset -12px 0 14px rgba(0,0,0,0.22);
 }
 
 /* ---------- BOOK CONTENT HOLDER ---------- */
@@ -67,22 +66,27 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  perspective: 1500px;
+  perspective: 1900px;
   overflow: visible;
 }
 
-/* ---------- BOOK SPINE ---------- */
+/* ---------- CENTER SPINE WITH FOLD EFFECT ---------- */
 .book-content::before {
   content: "";
   position: absolute;
   top: 0;
   left: 50%;
-  width: 10px;
+  width: 18px;
   height: 100%;
-  background: radial-gradient(circle, #b8b2a8 0%, #d6cfc2 70%);
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+  background:
+    linear-gradient(90deg, 
+       #cfc6ba, #e6dfd6 10%, #cfc6ba 20%, #f6f1eb 50%, #cfc6ba 80%, #e6dfd6 90%, #cfc6ba);
+  box-shadow:
+    0 0 15px rgba(0,0,0,0.13),
+    inset 0 0 15px rgba(255,255,255,0.7);
   transform: translateX(-50%);
-  z-index: 2;
+  border-radius: 4px;
+  z-index: 300;
 }
 
 /* ---------- PAGE SPREADS ---------- */
@@ -111,63 +115,60 @@ body {
   width: 50%;
   min-height: 0;
   height: auto;
-  padding: 2em 3em 2em 3em;
-  line-height: 1.6;
+  padding: 1.8em 2.8em 2em 2.8em;
+  line-height: 1.65;
   box-sizing: border-box;
-  background-color: #fffdfa;
-  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
-  font-size: 1.25em;
-  color: #4a463f;
+  background-color: #fffefa;
+  border-radius: 0 0 8px 8px;
+  box-shadow:
+    inset 5px 0 10px rgba(255,255,255,0.6),
+    inset -5px 0 8px rgba(236, 224, 210, 0.6);
+  font-size: 1.22em;
+  color: #44403b;
   user-select: none;
   position: relative;
   overflow: visible;
-  border: 1px solid #dcd6c9;
+  border: 1px solid #D6CDC0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-
-  /* Slight page clipping for realism */
+  /* subtle page edge Clipping */
   clip-path: polygon(
     5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5%
   );
 }
-
 .left-page {
-  background: linear-gradient(to right, #fffdfa, #f2eee9);
-  box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
-  border-radius: 0 0 0 8px;
-  clip-path: polygon(
-    10% 0%, 100% 0%, 100% 100%, 10% 100%, 0% 90%, 0% 10%
-  );
+  background: linear-gradient(to right, #fffefa, #f7f3e9);
+  box-shadow: inset -10px 0 14px rgba(0,0,0,0.06);
+  border-radius: 0 0 0 10px;
 }
-
 .right-page {
-  background: linear-gradient(to left, #fffdfa, #f2eee9);
-  box-shadow: inset 8px 0 12px rgba(0,0,0,0.07);
-  border-radius: 0 0 8px 0;
-  clip-path: polygon(
-    0% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 0% 100%
-  );
+  background: linear-gradient(to left, #fffefa, #f7f3e9);
+  box-shadow: inset 10px 0 14px rgba(0,0,0,0.06);
+  border-radius: 0 0 10px 0;
 }
 
 /* ---------- TITLES & HEADINGS ---------- */
 .recipe-title {
   text-align: center;
-  font-size: 2.2em;
-  margin: 0 0 0.5em 0;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 0.3em;
-  letter-spacing: 0.05em;
+  font-size: 2.3em;
+  margin: 0 0 0.6em 0;
+  border-bottom: 3px solid #bba376;
+  padding-bottom: 0.4em;
+  letter-spacing: 0.07em;
   user-select: text;
+  font-weight: 700;
+  color: #7f6f4e;
+  text-shadow: 0 0 3px #ceb16a;
 }
 h2, .section-title {
-  font-size: 1.4em;
-  margin-bottom: 0.8em;
-  border-bottom: 1.5px dashed #bbb;
-  padding-bottom: 0.4em;
-  margin-top: 1.2em;
+  font-size: 1.45em;
+  margin-bottom: 0.85em;
+  border-bottom: 2px dashed #bba376;
+  padding-bottom: 0.5em;
+  margin-top: 1.3em;
   font-weight: 600;
-  color: #655940;
+  color: #8e7c5a;
 }
 
 /* ---------- LISTS ---------- */
@@ -175,30 +176,30 @@ h2, .section-title {
   padding-left:0; margin:0;
 }
 .ingredients li, .instructions li, .notes li {
-  font-size: 1.1em;
+  font-size: 1.12em;
   line-height: 1.6;
   margin-bottom:0.6em;
   user-select: text;
 }
 .ingredients ul { list-style: none; }
-.instructions ol { list-style-position: inside; padding-left: 1.2em; }
-.instructions-list { margin-left:1.5em; margin-bottom:1.2em; padding-left:1em; list-style-type:decimal; line-height:1.6; color:#4a4438; }
-.instructions-list li { margin-bottom:0.8em; }
-.ingredients li label { cursor:pointer; display:flex; align-items:center; gap:0.5em; }
-.ingredients li input[type=checkbox] { width:18px; height:18px; cursor:pointer; accent-color:#9c8f7a; }
+.instructions ol { list-style-position: inside; padding-left: 1.25em; }
+.instructions-list { margin-left:1.7em; margin-bottom:1.3em; padding-left:1em; list-style-type:decimal; line-height:1.65; color:#5f5947; }
+.instructions-list li { margin-bottom:0.75em; }
+.ingredients li label { cursor:pointer; display:flex; align-items:center; gap:0.6em; }
+.ingredients li input[type=checkbox] { width:20px; height:20px; cursor:pointer; accent-color:#bcae82; }
 
 /* ---------- BOOK SHADOW & REFLECTION ---------- */
 .recipe-book::after {
   content: "";
   position: absolute;
-  bottom: -63px;
+  bottom: -70px;
   left: 0;
   width: 100%;
-  height: 63px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.12), transparent 80%);
+  height: 70px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.18), transparent 80%);
   border-radius: 50%;
   transform: scaleX(0.9);
-  filter: blur(10px);
+  filter: blur(14px);
   z-index: -1;
 }
 
@@ -207,26 +208,26 @@ h2, .section-title {
   position: relative;
   width: fit-content;
   bottom: 0;
-  margin: 0 auto;
+  margin: 0 auto 10px;
   display: flex;
-  gap: 1.2rem;
+  gap: 1.3rem;
   justify-content: center;
   pointer-events: auto;
   user-select: none;
   z-index: 20;
 }
 .nav-buttons button {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   padding: 0;
   background: #d4af37;
   border: none;
   color: #fff;
-  font-size: 1.3em;
+  font-size: 1.4em;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  box-shadow: 0 5px 14px rgba(0,0,0,0.6);
   transition: transform 0.2s, background 0.3s;
   display: flex;
   justify-content: center;
@@ -257,7 +258,7 @@ h2, .section-title {
   }
   .book-content { height: auto; }
   .page-spread { position:relative; width:100%; height:auto; }
-  .page { font-size: 1em; padding: 1em 1.4em; }
+  .page { font-size: 1em; padding: 1.1em 1.6em; }
   .nav-buttons { width: 87vw; }
 }
 @media (max-width: 768px) {
@@ -268,13 +269,13 @@ h2, .section-title {
     border-radius: 0 0 10px 10px;
     box-shadow: 0 10px 18px rgba(0,0,0,0.30), 0 3px 12px rgba(0,0,0,0.14);
   }
-  .book-content::before { width: 5px;}
+  .book-content::before { width: 6px;}
   .page-spread, .page {
     width: 100%;
     min-width: 0;
     height: auto;
     min-height: 0;
-    padding: 1em 0.6em;
+    padding: 1em 1em;
     font-size: 0.97em;
     box-shadow: none;
     border-radius: 0;
@@ -283,7 +284,6 @@ h2, .section-title {
   .page { display:block; }
   .nav-buttons {
     width: 97vw;
-    bottom: 0;
     margin-top: 10px;
     left: 50%;
     transform: translateX(-50%);
@@ -295,13 +295,13 @@ h2, .section-title {
     min-width: 0 !important;
     height: auto !important;
     min-height: 0 !important;
-    padding: 0.4em 0.2em !important;
-    font-size: 0.93em !important;
+    padding: 0.3em 0.2em !important;
+    font-size: 0.9em !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     margin: 0 !important;
   }
-  .recipe-title { font-size: 1.4em; margin-bottom: 0.2em; }
+  .recipe-title { font-size: 1.3em; margin-bottom: 0.15em; }
   .nav-buttons {
     width: 96vw;
     top: 5px;
