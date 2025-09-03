@@ -58,17 +58,53 @@
       ]
     },
     {
-      "name": "Chocolate Chip Cookies",
-      "description": "Page Under Development",
+      "name": "Pasi Paaruppu Payasam",
+      "description": "Pasi Paruppu Payasam(Moong Dal Payasam),is a popular South Indian dessert enjoyed on special occasions and festivals. It’s made by lightly roasting yellow moong dal for a nutty aroma, then cooking it in creamy coconut milk and sweetening it with jaggery. Flavored with cardamom and topped with fried cashews and raisins, this payasam is rich, fragrant, and delicious.",
       "image": "chocolate_chip_cookies.jpg",
       "ingredients": [
-        { "item": "Coming soon", "quantity": "TBD" }
+        { "item": "Pasi Paruppu (Moong Dal)", "quantity": "250-300 gms" },
+        { "item": "Javvarisi (Sago)", "quantity": "50 gms" },
+        { "item": "Cashew Nut", "quantity": "handful" },
+        { "item": "Raisins", "quantity": "handful" },
+        { "item": "Elaichi powder", "quantity": "1-2spoon" },
+        { "item": "Cut coconut pieces", "quantity": "Handful" },
+        { "item": "Jaggery", "quantity": "300 gms" },
+        { "item": "Coconut milk", "quantity": "1st and 2nd milk from one coconut" }
       ],
       "instructions": [
-        "Coming soon. Stay tuned!"
-      ],
+        "Dry roast the moong dal until aromatic",
+
+"Dry roast the javvu arisi (sago) on very low heat, making sure the color does not change",
+
+"Transfer both roasted moong dal and javvu arisi to a pressure cooker. Add water in a 1:3 ratio and cook for 3–4 whistles",
+
+"In a frying pan, heat some ghee. Fry the cashews until they start to turn golden",
+
+"Add the raisins; once they puff up, add the coconut pieces. Fry until the coconut turns light golden. Set this mixture aside",
+
+"Once the cooker is opened, keep the flame low. Add jaggery to the cooked dal mixture and stir until it dissolves completely",
+
+"Add the fried cashew–raisin–coconut mixture to the dal and mix well",
+
+"Stir in cardamom powder (1–2 teaspoons, depending on your preference)",
+
+"Add the second extract of coconut milk and let it cook for a few minutes",
+
+"Add 1–2 teaspoons of ghee and continue cooking briefly",
+
+"Finally, add the first extract of coconut milk, stir gently, and turn off the heat"
+        
+    ],
       "extra_notes": [
-        "Stay tuned for more updates on this recipe!"
+        "How to Extract First and Second Coconut Milk",
+
+"Grate the coconut – Use fresh, mature coconut for best results.",
+
+"First extract (thick milk) – Place the grated coconut in a blender with about ½ cup of warm water. Blend until fine, then strain through a muslin cloth or fine sieve, squeezing well to collect the thick, creamy milk. This is the first extract.",
+
+"Second extract (thin milk) – Return the squeezed coconut pulp to the blender. Add another ½ cup of warm water, blend again, and strain. This lighter milk is the second extract.!",
+
+"For frying coconut, they can be cut length wise or smaller bite sized pieces"
       ]
     },
     {
