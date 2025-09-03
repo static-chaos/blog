@@ -58,11 +58,11 @@
       ]
     },
     {
-      "name": "Pasi Paaruppu Payasam",
-      "description": "Pasi Paruppu Payasam(Moong Dal Payasam),is a popular South Indian dessert enjoyed on special occasions and festivals. It’s made by lightly roasting yellow moong dal for a nutty aroma, then cooking it in creamy coconut milk and sweetening it with jaggery. Flavored with cardamom and topped with fried cashews and raisins, this payasam is rich, fragrant, and delicious.",
+      "name": "Paasi Paaruppu Payasam(Moong Dal Paysam)",
+      "description": "Paasi Paruppu Payasam(Moong Dal Payasam),is a popular South Indian dessert enjoyed on special occasions and festivals. It’s made by lightly roasting yellow moong dal for a nutty aroma, then cooking it in creamy coconut milk and sweetening it with jaggery. Flavored with cardamom and topped with fried cashews and raisins, this payasam is rich, fragrant, and delicious.",
       "image": "chocolate_chip_cookies.jpg",
       "ingredients": [
-        { "item": "Pasi Paruppu (Moong Dal)", "quantity": "250-300 gms" },
+        { "item": "Paasi Paruppu (Moong Dal)", "quantity": "250-300 gms" },
         { "item": "Javvarisi (Sago)", "quantity": "50 gms" },
         { "item": "Cashew Nut", "quantity": "handful" },
         { "item": "Raisins", "quantity": "handful" },
