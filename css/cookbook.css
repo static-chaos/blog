@@ -40,12 +40,12 @@ body {
 
 
 
-/* Recipe book container */
+/* Recipe book container — responsive with fixed aspect ratio */
 .recipe-book {
   position: relative;
-  width: 90vw;       /* fills 90% of screen width */
-  height: 80vh;      /* fills 80% of screen height */
-  max-width: 1600px; /* optional cap for huge screens */
+  aspect-ratio: 3 / 2;                  /* keep width:height like original 900×600 */
+  width: min(90vw, 135vh);               /* scale to fit screen without distortion */
+  max-width: 1600px;                     /* optional cap for huge screens */
   max-height: 1000px;
   background: #f7f3ed;
   border-radius: 0 0 20px 20px;
@@ -54,6 +54,7 @@ body {
     0 25px 45px rgba(0,0,0,0.55),
     0 8px 20px rgba(0,0,0,0.35);
 }
+
 
 
 /* Left edge with stacked page effect */
