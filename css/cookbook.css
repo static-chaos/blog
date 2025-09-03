@@ -38,14 +38,12 @@ body {
   box-sizing: border-box;
 }
 
-
-
 /* Recipe book container — responsive with fixed aspect ratio */
 .recipe-book {
   position: relative;
-  aspect-ratio: 3 / 2;                  /* keep width:height like original 900×600 */
-  width: min(90vw, 135vh);               /* scale to fit screen without distortion */
-  max-width: 1600px;                     /* optional cap for huge screens */
+  aspect-ratio: 3 / 2;
+  width: min(90vw, 135vh);
+  max-width: 1600px;
   max-height: 1000px;
   background: #f7f3ed;
   border-radius: 0 0 20px 20px;
@@ -54,8 +52,6 @@ body {
     0 25px 45px rgba(0,0,0,0.55),
     0 8px 20px rgba(0,0,0,0.35);
 }
-
-
 
 /* Left edge with stacked page effect */
 .recipe-book::before {
@@ -143,19 +139,18 @@ body {
 .page {
   width: 50%;
   height: 100%;
-  padding: 2em 4em;   /* more breathing room */
-  line-height: 1.6;   /* easier reading */
+  padding: 2em 4em;
+  line-height: 1.6;
   box-sizing: border-box;
   background-color: #fffdfa;
   box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
-  font-size: 1.3em;   /* bigger text */
+  font-size: 1.3em;
   color: #4a463f;
   user-select: none;
   position: relative;
   overflow: hidden;
   border: 1px solid #dcd6c9;
 }
-
 
 /* Left page crease shadow + fold effect */
 .left-page {
@@ -194,7 +189,6 @@ h2 {
   border-bottom: 1.5px dashed #bbb;
   padding-bottom: 0.3em;
 }
-
 /* Ingredients and Instructions */
 .ingredients ul,.instructions ol,.notes ul {padding-left:0;margin:0;}
 .ingredients li,.instructions li,.notes li {
@@ -246,7 +240,6 @@ h2 {
 .nav-buttons button:hover { background: #c09a2e; transform: scale(1.1); }
 .nav-buttons button:disabled { background: #777; box-shadow: none; }
 
-
 /* Animations */
 @keyframes slideInRight{from{opacity:0;transform:translateX(100%);}to{opacity:1;transform:translateX(0);}}
 @keyframes slideOutLeft{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-100%);}}
@@ -266,7 +259,6 @@ h2 {
 .instructions-list{margin-left:1.5em;margin-bottom:1.2em;padding-left:1em;list-style-type:decimal;line-height:1.6;color:#4a4438;}
 .instructions-list li{margin-bottom:0.8em;}
 .section-title{margin-top:1.4em;margin-bottom:0.6em;font-weight:600;color:#655940;border-bottom:1.5px dashed #b6ad94;padding-bottom:0.4em;}
-
 
 /* ===================================
    ENHANCEMENTS - LUXURY REAL LOOK
@@ -363,6 +355,7 @@ h2 {
   filter: blur(12px);
   z-index: -1;
 }
+
 /* ===================================
    FIXED STACKED PAGE EFFECTS
 =================================== */
@@ -377,7 +370,7 @@ h2 {
     to right,
     #dcd6c9 0px,
     #dcd6c9 2px,
-    #f7f3ed 2px,
+        #f7f3ed 2px,
     #f7f3ed 5px
   );
   box-shadow: inset 10px 0 10px rgba(0,0,0,0.15);
