@@ -16,41 +16,44 @@ body {
   position: relative;
   box-sizing: border-box;
   padding: 2rem;
+  flex-direction: column; /* to stack book and nav vertically */
 }
 
 /* ---------- RECIPE BOOK CONTAINER ---------- */
 .recipe-book {
   position: relative;
-  width: min(90vw, 1400px); /* Desktop: Large visible book, always fits screen */
-  height: min(75vh, 900px);
-  max-width: 1600px;
-  max-height: 1000px;
-  aspect-ratio: 3/2;
+  width: min(80vw, 1100px); /* Narrower width for classic book feel */
+  height: min(75vh, 850px);
+  max-width: 1200px;
+  max-height: 900px;
+  aspect-ratio: 4 / 3; /* Classic book proportion */
   background: #f7f3ed;
   border-radius: 0 0 20px 20px;
   overflow: visible;
   box-shadow: 0 25px 45px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.35);
   z-index: 10;
+  margin-bottom: 3.5rem; /* space for nav buttons below */
 }
 
 /* ---------- STYLES FOR BOOK EDGES ---------- */
+/* Make sure both edges appear */
 .recipe-book::before, .recipe-book::after {
   content: "";
   position: absolute;
   top: 0;
   height: 100%;
-  width: 30px;
+  width: 28px;
   z-index: 1;
+  box-shadow: inset 10px 0 12px rgba(0,0,0,0.15);
 }
 .recipe-book::before {
-  left: -10px;
-  background: repeating-linear-gradient(to right,#dcd6c9,#dcd6c9 2px,#f7f3ed 2px,#f7f3ed 4px);
-  box-shadow: inset 5px 0 8px rgba(0, 0, 0, 0.1);
+  left: -14px;
+  background: repeating-linear-gradient(to right,#dcd6c9,#dcd6c9 2px,#f7f3ed 2px,#f7f3ed 5px);
 }
 .recipe-book::after {
-  right: -10px;
-  background: repeating-linear-gradient(to left,#dcd6c9,#dcd6c9 2px,#f7f3ed 2px,#f7f3ed 4px);
-  box-shadow: inset -5px 0 8px rgba(0, 0, 0, 0.1);
+  right: -14px;
+  background: repeating-linear-gradient(to left,#dcd6c9,#dcd6c9 2px,#f7f3ed 2px,#f7f3ed 5px);
+  box-shadow: inset -10px 0 12px rgba(0,0,0,0.15);
 }
 
 /* ---------- BOOK CONTENT HOLDER ---------- */
@@ -71,7 +74,7 @@ body {
   width: 10px;
   height: 100%;
   background: radial-gradient(circle, #b8b2a8 0%, #d6cfc2 70%);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
   transform: translateX(-50%);
   z-index: 2;
 }
@@ -100,8 +103,8 @@ body {
 /* ---------- INDIVIDUAL PAGES ---------- */
 .page {
   width: 50%;
-  min-height: 0;       /* Only as tall as content */
-  height: auto;        /* Remove fixed 100% height */
+  min-height: 0;
+  height: auto;
   padding: 2em 3em 2em 3em;
   line-height: 1.6;
   box-sizing: border-box;
@@ -117,10 +120,6 @@ body {
   flex-direction: column;
   justify-content: flex-start;
 }
-
-/* Remove excess blank bottom space! */
-/* No forced vertical stretch, padding reduced */
-
 .left-page {
   background: linear-gradient(to right, #fffdfa, #f2eee9);
   box-shadow: inset -8px 0 12px rgba(0,0,0,0.07);
@@ -142,7 +141,6 @@ body {
   letter-spacing: 0.05em;
   user-select: text;
 }
-
 h2, .section-title {
   font-size: 1.4em;
   margin-bottom: 0.8em;
@@ -167,7 +165,6 @@ h2, .section-title {
 .instructions ol { list-style-position: inside; padding-left: 1.2em; }
 .instructions-list { margin-left:1.5em; margin-bottom:1.2em; padding-left:1em; list-style-type:decimal; line-height:1.6; color:#4a4438; }
 .instructions-list li { margin-bottom:0.8em; }
-
 .ingredients li label { cursor:pointer; display:flex; align-items:center; gap:0.5em; }
 .ingredients li input[type=checkbox] { width:18px; height:18px; cursor:pointer; accent-color:#9c8f7a; }
 
@@ -186,20 +183,20 @@ h2, .section-title {
   z-index: -1;
 }
 
-/* ---------- NAVIGATION BUTTONS ---------- */
+/* ---------- NAVIGATION BUTTONS OUTSIDE BELOW THE BOOK ---------- */
 .nav-buttons {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 920px;
-  transform: translate(-50%, -50%);
+  position: relative;
+  width: fit-content;
+  bottom: 0;
+  margin: 0 auto;
   display: flex;
-  justify-content: space-between;
-  z-index: 500;
-  pointer-events: none;
+  gap: 1.2rem;
+  justify-content: center;
+  pointer-events: auto;
+  user-select: none;
+  z-index: 20;
 }
 .nav-buttons button {
-  pointer-events: all;
   width: 46px;
   height: 46px;
   border-radius: 50%;
@@ -219,6 +216,7 @@ h2, .section-title {
 .nav-buttons button:hover { background: #c09a2e; transform: scale(1.1); }
 .nav-buttons button:disabled { background: #777; box-shadow: none; }
 
+/* ----- Animations ----- */
 @keyframes slideInRight{from{opacity:0;transform:translateX(100%);}to{opacity:1;transform:translateX(0);}}
 @keyframes slideOutLeft{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-100%);}}
 @keyframes slideInLeft{from{opacity:0;transform:translateX(-100%);}to{opacity:1;transform:translateX(0);}}
@@ -228,7 +226,7 @@ h2, .section-title {
 .slide-in-left{animation:slideInLeft 0.6s ease forwards;z-index:10;}
 .slide-out-right{animation:slideOutRight 0.6s ease forwards;z-index:15;}
 
-/* Responsive Fixes START HERE */
+/* ---------- RESPONSIVE FIXES ---------- */
 @media (max-width: 1024px) {
   .recipe-book {
     width: 98vw;
@@ -243,7 +241,6 @@ h2, .section-title {
   .page { font-size: 1em; padding: 1em 1.4em; }
   .nav-buttons { width: 87vw; }
 }
-
 @media (max-width: 768px) {
   .recipe-book {
     width: 99vw;
@@ -265,11 +262,16 @@ h2, .section-title {
     margin: 0;
   }
   .page { display:block; }
-  .nav-buttons { width: 97vw; top: 95%; left: 50%; transform: translate(-50%, -50%);}
+  .nav-buttons {
+    width: 97vw;
+    bottom: 0;
+    margin-top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
-
 @media (max-width: 520px) {
-  .body, .recipe-book, .book-content, .page-spread, .page {
+  body, .recipe-book, .book-content, .page-spread, .page {
     width: 100vw !important;
     min-width: 0 !important;
     height: auto !important;
@@ -280,11 +282,17 @@ h2, .section-title {
     border-radius: 0 !important;
     margin: 0 !important;
   }
-  .recipe-title { font-size: 1.4em; margin-bottom: 0.2em;}
-  .nav-buttons { width: 96vw; top: 99%; }
+  .recipe-title { font-size: 1.4em; margin-bottom: 0.2em; }
+  .nav-buttons {
+    width: 96vw;
+    top: 5px;
+    left: 50%;
+    bottom: auto;
+    margin-top: 0;
+    transform: translateX(-50%);
+  }
 }
-
-/* If you want only one page visible for mobile, hide right page: */
+/* ---------- MOBILE SINGLE PAGE ---------- */
 @media (max-width: 768px) {
   .right-page { display: none; }
   .left-page, .page { width: 100%; }
