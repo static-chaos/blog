@@ -419,3 +419,83 @@ h2 {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
+/* ================================
+   MERGED RESPONSIVE FIXES
+================================ */
+body {
+  /* Rosewood maroon desk */
+  background-color: #3b161f;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 100, 120, 0.05) 0px,
+      rgba(255, 100, 120, 0.05) 2px,
+      transparent 2px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.08) 0px,
+      rgba(0, 0, 0, 0.08) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    radial-gradient(circle at center, #582534 0%, #1a070b 100%);
+  background-blend-mode: overlay, overlay, normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  color: #333;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.recipe-book {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  width: min(90vw, 135vh);
+  height: auto;
+  max-width: 1600px;
+  max-height: 1000px;
+  background: #f7f3ed;
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+  box-shadow:
+    0 25px 45px rgba(0,0,0,0.55),
+    0 8px 20px rgba(0,0,0,0.35);
+}
+
+.page {
+  width: 50%;
+  height: 100%;
+  padding: 2em 4em;
+  line-height: 1.6;
+  box-sizing: border-box;
+  background-color: #fffdfa;
+  box-shadow: inset 2px 0 4px rgba(0,0,0,0.05), inset -2px 0 4px rgba(0,0,0,0.05);
+  font-size: 1.3em;
+  color: #4a463f;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dcd6c9;
+}
+
+@media (max-width: 768px) {
+  .recipe-book {
+    aspect-ratio: auto;
+    width: 95vw;
+    height: auto;
+  }
+  .page {
+    font-size: 0.95em;
+    padding: 1em 1.5em;
+    height: auto;
+  }
+  .recipe-title {
+    font-size: 1.8em;
+  }
+}
