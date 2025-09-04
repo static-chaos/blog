@@ -43,21 +43,18 @@ body {
   top: 0;
   height: 100%;
   width: 36px;
-  background:
-    repeating-linear-gradient(to right, #e2ddd3, #e2ddd3 4px, #fffefa 4px, #fffefa 8px);
-  box-shadow: inset 12px 0 14px rgba(0,0,0,0.22);
   z-index: 1;
-  border-radius: 0 15px 15px 0;
 }
 .recipe-book::before {
   left: -20px;
   border-radius: 0 15px 15px 0;
+  background: repeating-linear-gradient(to right, #e2ddd3, #e2ddd3 4px, #fffefa 4px, #fffefa 8px);
+  box-shadow: inset 12px 0 14px rgba(0,0,0,0.22);
 }
 .recipe-book::after {
   right: -20px;
   border-radius: 15px 0 0 15px;
-  background:
-    repeating-linear-gradient(to left, #e2ddd3, #e2ddd3 4px, #fffefa 4px, #fffefa 8px);
+  background: repeating-linear-gradient(to left, #e2ddd3, #e2ddd3 4px, #fffefa 4px, #fffefa 8px);
   box-shadow: inset -12px 0 14px rgba(0,0,0,0.22);
 }
 
@@ -188,8 +185,8 @@ h2, .section-title {
 .ingredients li label { cursor:pointer; display:flex; align-items:center; gap:0.6em; }
 .ingredients li input[type=checkbox] { width:20px; height:20px; cursor:pointer; accent-color:#bcae82; }
 
-/* ---------- BOOK SHADOW & REFLECTION ---------- */
-.recipe-book::after {
+/* ---------- BOOK SHADOW (SEPARATE ELEMENT) ---------- */
+.recipe-book-shadow {
   content: "";
   position: absolute;
   bottom: -70px;
