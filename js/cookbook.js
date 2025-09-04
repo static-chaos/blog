@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.recipe-book .book-content');
   const prevBtn   = document.getElementById('prevBtn');
   const nextBtn   = document.getElementById('nextBtn');
+    const isMobile = window.innerWidth <= 768;
+
 
   if (!container) {
     console.error('Missing .recipe-book .book-content container');
@@ -38,14 +40,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let currentSpreadIndex = 0;
 
-      const showSpread = (i) => {
-        currentSpreadIndex = i;
-        renderSpread(container, spreads[currentSpreadIndex]);
-        if (prevBtn) prevBtn.disabled = currentSpreadIndex === 0;
-        if (nextBtn) nextBtn.disabled = currentSpreadIndex >= spreads.length - 1;
+           const showSpread = (i) => {
+        if (isMobile) {
+          // On mobile: show ALL spreads stacked in one long scroll
+          container.innerHTML = spreads.map(spread => `
+            <div class="page-spread active">
+              ${spread.left}
+              ${spread.right}
+            </div>
+          `).join('');
+
+          if (prevBtn) prevBtn.style.display = "none";
+          if (nextBtn) nextBtn.style.display = "none";
+        } else {
+          // Desktop: normal paginated flip
+          currentSpreadIndex = i;
+          renderSpread(container, spreads[currentSpreadIndex]);
+          if (prevBtn) prevBtn.disabled = currentSpreadIndex === 0;
+          if (nextBtn) nextBtn.disabled = currentSpreadIndex >= spreads.length - 1;
+        }
       };
 
       showSpread(0);
+
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
