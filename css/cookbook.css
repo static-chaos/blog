@@ -309,10 +309,7 @@ h2, .section-title {
   }
 }
 /* ---------- MOBILE SINGLE PAGE ---------- */
-@media (max-width: 768px) {
-  .right-page { display: none; }
-  .left-page, .page { width: 100%; }
-}
+
 @media (max-width: 768px) {
   .recipe-book {
     width: 100vw;
