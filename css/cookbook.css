@@ -313,3 +313,35 @@ h2, .section-title {
   .right-page { display: none; }
   .left-page, .page { width: 100%; }
 }
+@media (max-width: 768px) {
+  .recipe-book {
+    width: 100vw;
+    height: auto;
+    aspect-ratio: unset;
+    box-shadow: none;
+    border-radius: 0;
+    transform: none;
+  }
+
+  /* Hide edges & spine for mobile */
+  .book-content::before,
+  .recipe-book::before,
+  .recipe-book::after {
+    display: none;
+  }
+
+  .page-spread, .page {
+    width: 100%;
+    height: auto;
+    clip-path: none;
+    box-shadow: none;
+    border: none;
+    padding: 1em 1.2em;
+  }
+
+  .page {
+    display: block;
+    background: #fffefa;
+    border-bottom: 1px solid #ddd; /* divider between sections */
+  }
+}
