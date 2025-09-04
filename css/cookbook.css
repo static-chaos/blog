@@ -276,16 +276,23 @@ h2, .section-title {
     display: none;
   }
 
-  /* Make spreads flow continuously */
+  /* Make all spreads visible & flowing */
   .page-spread {
-    position: relative !important;   /* override absolute */
-    display: block !important;       /* force block flow */
+    position: relative !important;
+    display: block !important;
     width: 100% !important;
     height: auto !important;
     margin-bottom: 2rem;
     opacity: 1 !important;
     pointer-events: auto !important;
-    transform: none !important;      /* disable 3D flip */
+    transform: none !important;
+  }
+
+  /* Force even non-active spreads to show */
+  .book-content .page-spread:not(.active) {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   .page {
@@ -317,9 +324,19 @@ h2, .section-title {
     border-radius: 0 !important;
     margin: 0 !important;
   }
+
+  /* Keep all spreads visible on extra-small screens */
+  .book-content .page-spread:not(.active) {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
   .recipe-title { font-size: 1.3em; margin-bottom: 0.15em; }
+
   .nav-buttons {
-    display: none !important; /* keep hidden for small screens too */
+    display: none !important;
   }
 }
+
 
