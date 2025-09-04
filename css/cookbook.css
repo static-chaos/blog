@@ -278,32 +278,30 @@ h2, .section-title {
 
   /* Make spreads flow continuously */
   .page-spread {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: auto;
-    margin-bottom: 2rem; /* space between recipes */
+    position: relative !important;   /* override absolute */
+    display: block !important;       /* force block flow */
+    width: 100% !important;
+    height: auto !important;
+    margin-bottom: 2rem;
     opacity: 1 !important;
-    pointer-events: auto;
+    pointer-events: auto !important;
+    transform: none !important;      /* disable 3D flip */
   }
 
   .page {
-    display: block;
-    width: 100%;
-    height: auto;
-    clip-path: none;
-    box-shadow: none;
-    border: none;
-    padding: 1em 1.2em;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    clip-path: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 1em 1.2em !important;
     background: #fffefa;
     border-bottom: 1px solid #ddd;
   }
 
   .nav-buttons {
-    width: 97vw;
-    margin-top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    display: none !important; /* hide flip arrows in scroll mode */
   }
 }
 
@@ -321,11 +319,7 @@ h2, .section-title {
   }
   .recipe-title { font-size: 1.3em; margin-bottom: 0.15em; }
   .nav-buttons {
-    width: 96vw;
-    top: 5px;
-    left: 50%;
-    bottom: auto;
-    margin-top: 0;
-    transform: translateX(-50%);
+    display: none !important; /* keep hidden for small screens too */
   }
 }
+
